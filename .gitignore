@@ -1,0 +1,42 @@
+# Unity 관련
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# 유니티 Collaborate
+.collab/
+
+# Visual Studio / JetBrains Rider 등 IDE 관련
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# 기타 설정 파일
+*.bak
+*.pidb
+*.booproj
+*.svd
+
+# 빌드된 실행파일
+*.apk
+*.exe
+
+# Crash Reports
+sysinfo.txt
+
+# 유니티 패키지 캐시
+Packages/com.unity.*
