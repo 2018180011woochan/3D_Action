@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: f6094f7ee4a233743b4d86815897490d
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 285964
+  packageName: Knight Lady Kira
+  packageVersion: 1.0
+  assetPath: Assets/Knight Lady Kira/Shaders/Standard_Two_Sided.shader
+  uploadId: 666643

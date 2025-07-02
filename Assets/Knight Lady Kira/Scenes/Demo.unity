@@ -1,0 +1,1671 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 9
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 705507994}
+  m_IndirectSpecularColor: {r: 0.1745163, g: 0.21022493, b: 0.254633, a: 1}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 12
+  m_GIWorkflowMode: 1
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 500
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 500
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 2
+    m_PVRDenoiserTypeDirect: 0
+    m_PVRDenoiserTypeIndirect: 0
+    m_PVRDenoiserTypeAO: 0
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 0
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 2
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &705507993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 705507995}
+  - component: {fileID: 705507994}
+  m_Layer: 0
+  m_Name: Directional Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &705507994
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 1
+  m_Shape: 0
+  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 1
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &705507995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_LocalRotation: {x: 0.97518575, y: -0.0833772, z: 0.18669066, w: 0.08489774}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 25
+  m_LocalEulerAnglesHint: {x: 168.655, y: -20.911987, z: 7.673004}
+--- !u!1 &963194225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 963194228}
+  - component: {fileID: 963194227}
+  - component: {fileID: 963194226}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!81 &963194226
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+--- !u!20 &963194227
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &963194228
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &112168048720764928
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4730643458236347769, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_belt
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5399058964652732355, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 273877d44f1130145a544ae9534fee91, type: 3}
+--- !u!1001 &611772688618872359
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6218946753663998838, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6703031570997330380, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_cherstArmor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8f3d802668fee5e43a8640956d83b894, type: 3}
+--- !u!1001 &775783069215531589
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.924
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447930927344068654, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9112687258260042388, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_face
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 05df16321d096274d8f602b68a5986fa, type: 3}
+--- !u!1001 &1390590057308837683
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_RootOrder
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958127214541948301, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442175511688650551, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_shoulderArmor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 638f4d1284d1a184fb4a48d100b074b6, type: 3}
+--- !u!1001 &1769134184853795112
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4821976470199018582, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_handArmor
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5305463156686028524, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 49a9b5b5f7a70764eb641563fc0b08b1, type: 3}
+--- !u!1001 &2172322209043467312
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 224005845703693450, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_armor1
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 598983756870045232, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57bfa9045064b1348bc5e77a54f8d1d5, type: 3}
+--- !u!1001 &2200963820049268303
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.587
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188954635937664338, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8858248921976805352, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_body1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fcf7c40d46ed44f409bd7fb1e2c1dc39, type: 3}
+--- !u!1001 &2543451152419383408
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1280195033675702738, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_button
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914023472930356072, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 73520a66a84edc2418096644b3b5d21d, type: 3}
+--- !u!1001 &3073987245915483512
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 364255465256838762, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_Name
+      value: SM_Knight_Lady_Kira_Sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_RootOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.833
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028448846756232400, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 80430bb3a76aa194895aba2f683dc8a7, type: 3}
+--- !u!1001 &3125852584366649232
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1627967123222130677, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_RootOrder
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.164
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+--- !u!1001 &3500602955093107721
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6991681551345557248, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_Toga
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_RootOrder
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7659675184049866170, guid: d85326a2965199b4592915166e074536, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d85326a2965199b4592915166e074536, type: 3}
+--- !u!1001 &3534838456577946140
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323247913111581479, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992402256178882973, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_legArmor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8c72785c442151746a18492ee35debe3, type: 3}
+--- !u!1001 &4497531898745807004
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_RootOrder
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.328
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420130058139813754, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7904459829994790336, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_withHelmet
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ef65f6f6987127d4e9bd4eb93fa32b66, type: 3}
+--- !u!1001 &4700524006542457191
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402067609194935711, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1071785177148124965, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_footArmor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 03bf36996a92a9f468541f7d92b56178, type: 3}
+--- !u!1001 &4733815266477363034
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_RootOrder
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.193
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750017968554147190, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558045062955542476, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_AddedBones
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7653ed06772a1fb4496b6d53b54b760b, type: 3}
+--- !u!1001 &5345437768805949672
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034129548351023021, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4375189725039754519, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_armor2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b605913cbfda1d745ae3566241f76fe8, type: 3}
+--- !u!1001 &5357966163624095362
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8226623386687979169, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_hair2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.444
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8746279435894088731, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 18a6a33d1c14d424c9010fbb1a951d8d, type: 3}
+--- !u!1001 &5388765938131353450
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8174136401601971866, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_Nude
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_RootOrder
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.376
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807788609695587360, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 52e0e4318f32b824cb6953dfe1921dc6, type: 3}
+--- !u!1001 &5959693282363310404
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375031581588815419, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3151989840260572289, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_Cloak
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 599fd18248dd4e64abbc4182f7a48c79, type: 3}
+--- !u!1001 &6804958114393221674
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3606687844125116119, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_helmet
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.633
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127082662323838061, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 81d11e016e2e9784cad4e9dc7aacc66c, type: 3}
+--- !u!1001 &6885745254720360366
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.989
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277716820078355882, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653292759018094352, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_hair1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0f43cfb9ff2c8af49bfdd5d5b223be5d, type: 3}
+--- !u!1001 &7120856433523909893
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.393
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775500372460740818, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5264194380393413224, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_hairHelmet
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e76290e52b977db4cb2c3d1fcc4842ce, type: 3}
+--- !u!1001 &7409046565543495736
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.168
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 131297584873588060, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 763825065588531174, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_bangs
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5d52d6e26f8629749ad841527b31d9f4, type: 3}
+--- !u!1001 &9159753558467205864
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 297863719607887167, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1110675884496666501, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
+      propertyPath: m_Name
+      value: SKM_Knight_Lady_Kira_belt1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d8a777ac0884969439c7ef0630fdebf8, type: 3}
