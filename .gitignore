@@ -1,4 +1,4 @@
-# Unity 관련
+# ===== Unity 기본 폴더 =====
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -7,36 +7,39 @@
 [Ll]ogs/
 [Mm]emoryCaptures/
 
-# 유니티 Collaborate
+# ===== Unity Collaborate =====
 .collab/
 
-# Visual Studio / JetBrains Rider 등 IDE 관련
+# ===== IDE / OS =====
 .vscode/
 .idea/
+*.sln
 *.csproj
 *.unityproj
-*.sln
 *.suo
-*.tmp
 *.user
 *.userprefs
-
-# OS 관련
+*.tmp
 .DS_Store
 Thumbs.db
 
-# 기타 설정 파일
-*.bak
+# ===== Crash Reports & 백업 =====
+sysinfo.txt
 *.pidb
 *.booproj
 *.svd
+*.bak
 
-# 빌드된 실행파일
+# ===== 빌드된 실행파일 =====
 *.apk
 *.exe
+*.app
 
-# Crash Reports
-sysinfo.txt
-
-# 유니티 패키지 캐시
-Packages/com.unity.*
+# ===== Git LFS로 관리할 대용량 에셋 =====
+# (추가로 설정한 후, git lfs track 으로 등록해야 합니다)
+*.psd
+*.tga
+*.png
+*.jpg
+*.fbx
+*.mp4
