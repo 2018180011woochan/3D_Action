@@ -584,10 +584,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 1015940007}
-  moveSpeed: 6
+  walkSpeed: 3
+  runSpeed: 6
   gravity: -9.81
   turnSmoothTime: 0.1
-  jumpHeight: 1.5
 --- !u!143 &881868601
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3074,6 +3074,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: dfa24fc8c1602914f963b850f3995a76, type: 2}
+    - target: {fileID: 5421294918140620597, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
