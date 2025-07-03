@@ -561,11 +561,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 201706615}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &557942786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1627967123222130677, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+  m_PrefabInstance: {fileID: 2135591344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &881868598 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2151704491661669711, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
   m_PrefabInstance: {fileID: 2135591344}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &881868600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557942786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8236727ea7e5f5f45b065063c5a8a46c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 1015940007}
+  moveSpeed: 6
+  gravity: -9.81
+  turnSmoothTime: 0.1
+  jumpHeight: 1.5
+--- !u!143 &881868601
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557942786}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.43
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.68, z: 0}
 --- !u!1 &894822542
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,6 +938,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: 1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -902,6 +951,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -913,6 +964,8 @@ MonoBehaviour:
       Input:
         InputAction: {fileID: 5082991133974614888, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
         Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
@@ -2082,7 +2135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 80
-  playerBody: {fileID: 0}
+  playerBody: {fileID: 881868598}
 --- !u!114 &1589245847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3017,10 +3070,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5421294918140620597, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: dfa24fc8c1602914f963b850f3995a76, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1627967123222130677, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 881868601}
+    - targetCorrespondingSourceObject: {fileID: 1627967123222130677, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 881868600}
   m_SourcePrefab: {fileID: 100100000, guid: 231dc37a0f16a674aa816ee26894d1e9, type: 3}
 --- !u!1001 &1821911521223183831
 PrefabInstance:
