@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,8 +8,20 @@ public class PlayerController : MonoBehaviour
     [Header("속도 세팅")]
     public float walkSpeed = 3f;
     public float runSpeed = 6;
-    public float gravity = -9.81f;
+    public float gravity = -18.81f;
     public float turnSmoothTime = 0.1f;
+
+    [Header("대시 세팅")]
+    public KeyCode dashKey = KeyCode.LeftControl;
+    public float dashDistance = 3f;      
+    public float dashDuration = 0.2f;    
+    bool isDashing = false;
+
+    [Header("점프 세팅")]
+    public KeyCode jumpKey = KeyCode.Space;
+    public float jumpHeight = 2f;
+    public int maxJumpCount = 2;
+    int jumpCount = 0;
 
     CharacterController controller;
     Animator animator;
@@ -23,9 +36,40 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (isDashing) return;
+
+        if (controller.isGrounded)
+        {
+            if (velocity.y < 0f)
+                velocity.y = -2f;      
+            jumpCount = 0;             
+            animator.SetBool("isGrounded", true);
+        }
+        else
+        {
+            animator.SetBool("isGrounded", false);
+        }
+
+        if (Input.GetKeyDown(jumpKey) && jumpCount < maxJumpCount)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            jumpCount++;
+
+            if (jumpCount == 1) animator.SetTrigger("Jump");
+            else animator.SetTrigger("DoubleJump");
+        }
+
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
         Vector3 inputDir = new Vector3(h, 0, v).normalized;
+
+        // 2) Dash 트리거
+        if (inputDir.magnitude >= 0.1f
+            && Input.GetKeyDown(dashKey))
+        {
+            StartCoroutine(DoDash(inputDir));
+            return;
+        }
 
         bool isWalking = inputDir.magnitude >= 0.1f;
         bool isRunning = isWalking && Input.GetKey(KeyCode.LeftShift);
@@ -50,7 +94,30 @@ public class PlayerController : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-        if (controller.isGrounded && velocity.y < 0f)
-            velocity.y = -2f;
+/*        if (controller.isGrounded && velocity.y < 0f)
+            velocity.y = -2f;*/
+    }
+
+    IEnumerator DoDash(Vector3 inputDir)
+    {
+        isDashing = true;
+        animator.SetTrigger("Dash");
+
+        yield return new WaitForSeconds(0.2f);
+
+        Vector3 dashDir = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0)
+                          * new Vector3(inputDir.x, 0, inputDir.z);
+
+        float elapsed = 0f;
+        float dashSpeed = dashDistance / dashDuration;
+
+        while (elapsed < dashDuration)
+        {
+            controller.Move(dashDir * dashSpeed * Time.deltaTime);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        isDashing = false;
     }
 }

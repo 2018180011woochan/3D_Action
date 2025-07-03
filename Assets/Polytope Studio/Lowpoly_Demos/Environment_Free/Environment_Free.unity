@@ -586,8 +586,14 @@ MonoBehaviour:
   cameraTransform: {fileID: 1015940007}
   walkSpeed: 3
   runSpeed: 6
-  gravity: -9.81
+  gravity: -18.81
   turnSmoothTime: 0.1
+  dashKey: 306
+  dashDistance: 5
+  dashDuration: 0.2
+  jumpKey: 32
+  jumpHeight: 2
+  maxJumpCount: 2
 --- !u!143 &881868601
 CharacterController:
   m_ObjectHideFlags: 0
