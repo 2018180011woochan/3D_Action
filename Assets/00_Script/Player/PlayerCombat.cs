@@ -18,13 +18,11 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        // 1) 타이머 감소 & 만료 시 콤보 초기화
         if (comboTimer > 0f)
             comboTimer -= Time.deltaTime;
         else
-            comboStep = 0;  // Idle 상태로
+            comboStep = 0;  
 
-        // 2) 좌클릭 입력 처리
         if (Input.GetMouseButtonDown(0))
             HandleComboClick();
     }
@@ -46,11 +44,9 @@ public class PlayerCombat : MonoBehaviour
                 animator.SetTrigger("Attack3");
                 break;
             default:
-                // comboStep == 3 일 때는 더 이상 단계 없음
                 return;
         }
 
-        // 클릭할 때마다 타이머 리셋
         comboTimer = comboResetTime;
     }
 }

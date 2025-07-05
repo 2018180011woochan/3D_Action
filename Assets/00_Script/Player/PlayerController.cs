@@ -36,6 +36,15 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        if (state.IsTag("Attack"))
+        {
+            // 중력은 계속 먹여주고
+            velocity.y += gravity * Time.deltaTime;
+            controller.Move(velocity * Time.deltaTime);
+            return;
+        }
+
         if (isDashing) return;
 
         if (controller.isGrounded)
