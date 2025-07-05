@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
         if (state.IsTag("Attack"))
         {
-            // 중력은 계속 먹여주고
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
             return;
@@ -103,8 +102,6 @@ public class PlayerController : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-/*        if (controller.isGrounded && velocity.y < 0f)
-            velocity.y = -2f;*/
     }
 
     IEnumerator DoDash(Vector3 inputDir)

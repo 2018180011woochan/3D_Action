@@ -636,7 +636,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8a1a6d060c46d478ed128872a4bf26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comboMaxDelay: 0.5
+  maxCombo: 3
+  comboResetTime: 1
+  attack1MoveDuration: 0.3
+  attack1MoveDistance: 0.5
+  attack2SpinDuration: 0.6
+  attack2ForwardDistance: 3
+  attack3Duration: 0.8
+  attack3JumpHeight: 1.5
+  attack3ForwardDistance: 4
 --- !u!1 &894822542
 GameObject:
   m_ObjectHideFlags: 0
