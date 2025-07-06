@@ -32,8 +32,6 @@ public class PlayerCombat : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         playerState = GetComponentInChildren<PlayerState>();
-        if (playerState == null)
-            Debug.LogError("PlayerState 컴포넌트가 없습니다!");
     }
 
     void Update()
