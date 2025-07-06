@@ -24,6 +24,7 @@ public class MonsterAI : MonoBehaviour
 
     NavMeshAgent agent;
     Animator animator;
+    AnimatorStateInfo stateInfo;
     float timer;    // 배회 타이머
     float attackTimer;  // 공격 타이머 
     void Awake()
@@ -41,12 +42,17 @@ public class MonsterAI : MonoBehaviour
     void Update()
     {
         if (playerTransform == null) return;
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsTag("Attack"))
+        {
+            agent.isStopped = true;
+            return;
+        }
 
         float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
         animator.SetFloat("Speed", speed);
 
         float dist = Vector3.Distance(transform.position, playerTransform.position);
-
         attackTimer -= Time.deltaTime;
         if (dist <= attackRange)
         {
