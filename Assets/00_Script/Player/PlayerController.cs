@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     public float runStaminaCostPerSecond = 15f;  // 달릴 때 소모
     public float walkRecoverPerSecond = 5f;  // 걸을 때 회복
     public float idleRecoverPerSecond = 10f;  // 대기 시 회복
+    public float jumpStaminaCost = 10f;    // 점프 1회당 소모
+    public float dashStaminaCost = 20f;    // 대시 1회당 소모
 
     CharacterController controller;
     Animator animator;
@@ -65,8 +67,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isGrounded", false);
         }
 
-        if (Input.GetKeyDown(jumpKey) && jumpCount < maxJumpCount)
+        if (Input.GetKeyDown(jumpKey)
+            && jumpCount < maxJumpCount
+            && playerState.currentStamina >= jumpStaminaCost)
         {
+            playerState.ConsumeStamina(jumpStaminaCost);
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             jumpCount++;
 
@@ -79,8 +84,10 @@ public class PlayerController : MonoBehaviour
         Vector3 inputDir = new Vector3(h, 0, v).normalized;
 
         if (inputDir.magnitude >= 0.1f
-            && Input.GetKeyDown(dashKey))
+            && Input.GetKeyDown(dashKey)
+            && playerState.currentStamina >= dashStaminaCost)
         {
+            playerState.ConsumeStamina(dashStaminaCost);
             StartCoroutine(DoDash(inputDir));
             return;
         }
