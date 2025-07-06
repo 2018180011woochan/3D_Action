@@ -5108,9 +5108,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28030ea40dadaa842a78704662b084f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 5
+  detectionRange: 7
+  attackRange: 2
+  attackCooldown: 1
   wanderRadius: 5
   wanderTimer: 4
+  wanderSpeed: 2
+  chaseSpeed: 4
   playerTransform: {fileID: 881868598}
 --- !u!95 &2168068442233452364
 Animator:
