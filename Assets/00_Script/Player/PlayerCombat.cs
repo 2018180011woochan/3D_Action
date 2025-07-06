@@ -44,8 +44,6 @@ public class PlayerCombat : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             HandleComboClick();
-            Debug.Log("공격! 데미지 받아야 함");
-            playerState.TakeDamage(30f);
         }
     }
 
