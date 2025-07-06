@@ -7,59 +7,81 @@ public class UIManager : MonoBehaviour
     [Header("HP Bar")]
     [SerializeField] private Image hpFillImage;     
     [SerializeField] private Image hpDamageImage;
-    public float damageDelay = 0.5f;
-    public float damageDuration = 0.5f;
-    private Coroutine damageCoroutine;
+    public float damageDelay = 0.1f;
+    public float damageDuration = 0.3f;
+    private Coroutine hpCoroutine;
+
+    [Header("Stamina Bar")]
+    [SerializeField] private Image stamFillImage;
+    [SerializeField] private Image stamDamageImage;
+    private Coroutine stamCoroutine;
 
     [SerializeField] private PlayerState playerState;
 
     void OnEnable()
     {
         if (playerState != null)
+        {
             playerState.onHealthChanged.AddListener(OnHealthChanged);
+            playerState.onStaminaChanged.AddListener(OnStaminaChanged);
+        }
     }
 
     void OnDisable()
     {
         if (playerState != null)
+        {
             playerState.onHealthChanged.RemoveListener(OnHealthChanged);
+            playerState.onStaminaChanged.RemoveListener(OnStaminaChanged);
+        }
     }
 
     void Start()
     {
-        // 초기 세팅
-        float norm = playerState.currentHP / playerState.maxHP;
-        hpFillImage.fillAmount = norm;
-        hpDamageImage.fillAmount = norm;
+        float hpNorm = playerState.currentHP / playerState.maxHP;
+        hpFillImage.fillAmount = hpNorm;
+        hpDamageImage.fillAmount = hpNorm;
+
+        float stNorm = playerState.currentStamina / playerState.maxStamina;
+        stamFillImage.fillAmount = stNorm;
+        stamDamageImage.fillAmount = stNorm;
     }
 
     void OnHealthChanged(float normalizedHP)
     {
-        // 1) 앞바(빨강)는 즉시
+        // 앞바 즉시
         hpFillImage.fillAmount = normalizedHP;
 
-        // 2) 뒤바(노랑)는 지연 후 천천히
-        if (damageCoroutine != null) StopCoroutine(damageCoroutine);
-        damageCoroutine = StartCoroutine(AnimateDamageBar(normalizedHP));
+        // 뒷바 애니메이션
+        if (hpCoroutine != null) StopCoroutine(hpCoroutine);
+        hpCoroutine = StartCoroutine(
+            AnimateBar(hpDamageImage, normalizedHP));
     }
 
-    IEnumerator AnimateDamageBar(float targetFill)
+    void OnStaminaChanged(float normalizedStam)
     {
-        // 잠시 기다렸다가
+        stamFillImage.fillAmount = normalizedStam;
+
+        if (stamCoroutine != null) StopCoroutine(stamCoroutine);
+        stamCoroutine = StartCoroutine(
+            AnimateBar(stamDamageImage, normalizedStam));
+    }
+
+    IEnumerator AnimateBar(Image barImage, float targetFill)
+    {
         yield return new WaitForSeconds(damageDelay);
 
-        float startFill = hpDamageImage.fillAmount;
+        float startFill = barImage.fillAmount;
         float elapsed = 0f;
 
         while (elapsed < damageDuration)
         {
             elapsed += Time.deltaTime;
-            hpDamageImage.fillAmount =
+            barImage.fillAmount =
                 Mathf.Lerp(startFill, targetFill, elapsed / damageDuration);
             yield return null;
         }
 
-        hpDamageImage.fillAmount = targetFill;
-        damageCoroutine = null;
+        barImage.fillAmount = targetFill;
     }
 }
