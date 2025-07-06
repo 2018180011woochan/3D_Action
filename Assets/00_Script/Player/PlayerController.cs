@@ -23,15 +23,22 @@ public class PlayerController : MonoBehaviour
     public int maxJumpCount = 2;
     int jumpCount = 0;
 
+
+    [Header("스태미너 회복/소모 속도")]
+    public float runStaminaCostPerSecond = 15f;  // 달릴 때 소모
+    public float walkRecoverPerSecond = 5f;  // 걸을 때 회복
+    public float idleRecoverPerSecond = 10f;  // 대기 시 회복
+
     CharacterController controller;
     Animator animator;
     float turnSmoothVelocity;
     Vector3 velocity;
-
+    PlayerState playerState;
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
+        playerState = GetComponentInChildren<PlayerState>();
     }
 
     void Update()
@@ -71,33 +78,46 @@ public class PlayerController : MonoBehaviour
         float v = Input.GetAxis("Vertical");
         Vector3 inputDir = new Vector3(h, 0, v).normalized;
 
-        // 2) Dash 트리거
         if (inputDir.magnitude >= 0.1f
             && Input.GetKeyDown(dashKey))
         {
             StartCoroutine(DoDash(inputDir));
             return;
         }
-
         bool isWalking = inputDir.magnitude >= 0.1f;
-        bool isRunning = isWalking && Input.GetKey(KeyCode.LeftShift);
+        bool shiftDown = Input.GetKey(KeyCode.LeftShift);
+        bool wantRun = isWalking && shiftDown;
+        bool canRun = wantRun && playerState.currentStamina > 0f;
+        bool isRunning = canRun;
+
+        if (isRunning)
+        {
+            playerState.ConsumeStamina(runStaminaCostPerSecond * Time.deltaTime);
+        }
+        else if (isWalking)
+        {
+            playerState.RecoverStamina(walkRecoverPerSecond * Time.deltaTime);
+        }
+        else
+        {
+            playerState.RecoverStamina(idleRecoverPerSecond * Time.deltaTime);
+        }
+
         animator.SetBool("isWalking", isWalking);
         animator.SetBool("isRunning", isRunning);
 
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
-
         if (isWalking)
         {
+            float speed = isRunning ? runSpeed : walkSpeed;
+
             float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg
                                 + cameraTransform.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(
-                transform.eulerAngles.y, targetAngle,
-                ref turnSmoothVelocity, turnSmoothTime
-            );
-            transform.rotation = Quaternion.Euler(0, angle, 0);
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle,
+                                                 ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-            Vector3 moveDir = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-            controller.Move(moveDir * currentSpeed * Time.deltaTime);
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            controller.Move(moveDir * speed * Time.deltaTime);
         }
 
         velocity.y += gravity * Time.deltaTime;
