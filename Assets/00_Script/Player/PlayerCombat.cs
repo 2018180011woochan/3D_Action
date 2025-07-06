@@ -26,10 +26,14 @@ public class PlayerCombat : MonoBehaviour
     private Animator animator;
 
     private Coroutine attackCoroutine;
+    private PlayerState playerState;
 
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
+        playerState = GetComponentInChildren<PlayerState>();
+        if (playerState == null)
+            Debug.LogError("PlayerState 컴포넌트가 없습니다!");
     }
 
     void Update()
@@ -40,14 +44,15 @@ public class PlayerCombat : MonoBehaviour
             comboStep = 0;  
 
         if (Input.GetMouseButtonDown(0))
+        {
             HandleComboClick();
+            Debug.Log("공격! 데미지 받아야 함");
+            playerState.TakeDamage(30f);
+        }
     }
 
     void HandleComboClick()
     {
-        if (attackCoroutine != null)
-            StopCoroutine(attackCoroutine);
-
         switch (comboStep)
         {
             case 0:
@@ -87,10 +92,17 @@ public class PlayerCombat : MonoBehaviour
         attackCoroutine = StartCoroutine(Attack3(attack3Duration, attack3JumpHeight, attack3ForwardDistance));
     }
 
+    public void StopAttackEffect()
+    {
+        if (attackCoroutine != null)
+        {
+            StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
+        }
+    }
+
     IEnumerator Attack1(float duration, float distance)
     {
-        // (원하는 타이밍 딜레이)
-        yield return new WaitForSeconds(0.1f);
         Vector3 dir = transform.forward;
         float elapsed = 0f;
         while (elapsed < duration)
@@ -99,7 +111,6 @@ public class PlayerCombat : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
-        attackCoroutine = null;
     }
 
     IEnumerator Attack2(float duration, float distance)
@@ -114,7 +125,6 @@ public class PlayerCombat : MonoBehaviour
             elapsed += delta;
             yield return null;
         }
-        attackCoroutine = null;
     }
 
     IEnumerator Attack3(float duration, float jumpHeight, float forwardDist)
@@ -126,11 +136,12 @@ public class PlayerCombat : MonoBehaviour
         {
             float delta = Time.deltaTime;
             float t = elapsed / duration;
+
             // 포물선 점프
             float y = 4f * jumpHeight * t * (1 - t);
-            Vector3 pos = transform.position;
+            var pos = transform.position;
             pos.y = startPos.y + y;
-            transform.position = new Vector3(transform.position.x, pos.y, transform.position.z);
+            transform.position = new Vector3(pos.x, pos.y, pos.z);
 
             // 회전 + 전진
             transform.Rotate(0, 360f * delta / duration, 0, Space.World);
@@ -139,10 +150,10 @@ public class PlayerCombat : MonoBehaviour
             elapsed += delta;
             yield return null;
         }
-        // Y 복원
-        Vector3 end = transform.position;
+
+        // 안전하게 Y 복원
+        var end = transform.position;
         end.y = startPos.y;
         transform.position = end;
-        attackCoroutine = null;
     }
 }

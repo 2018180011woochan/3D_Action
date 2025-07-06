@@ -9,4 +9,9 @@ public class Attack1Behaviour : StateMachineBehaviour
             pc = animator.GetComponentInParent<PlayerCombat>();
         pc.StartAttack1Effect();
     }
+
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        pc.StopAttackEffect();
+    }
 }
