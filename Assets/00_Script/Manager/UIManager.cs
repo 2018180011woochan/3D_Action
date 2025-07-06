@@ -1,41 +1,65 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     [Header("HP Bar")]
-    [SerializeField] private Image fillImage;
+    [SerializeField] private Image hpFillImage;     
+    [SerializeField] private Image hpDamageImage;
+    public float damageDelay = 0.5f;
+    public float damageDuration = 0.5f;
+    private Coroutine damageCoroutine;
 
-    [Header("References")]
-    [SerializeField] private PlayerState playerHealth;
+    [SerializeField] private PlayerState playerState;
 
     void OnEnable()
     {
-        if (playerHealth != null)
-            playerHealth.onHealthChanged.AddListener(UpdateHPBar);
+        if (playerState != null)
+            playerState.onHealthChanged.AddListener(OnHealthChanged);
     }
 
     void OnDisable()
     {
-        if (playerHealth != null)
-            playerHealth.onHealthChanged.RemoveListener(UpdateHPBar);
+        if (playerState != null)
+            playerState.onHealthChanged.RemoveListener(OnHealthChanged);
     }
 
     void Start()
     {
-        if (fillImage == null)
-            Debug.LogError("Fill Image 슬롯이 비어있습니다!");
-        if (playerHealth == null)
-            Debug.LogError("Player Health 슬롯이 비어있습니다!");
-
-        // 초기값 세팅
-        if (playerHealth != null)
-            UpdateHPBar(playerHealth.currentHP / playerHealth.maxHP);
+        // 초기 세팅
+        float norm = playerState.currentHP / playerState.maxHP;
+        hpFillImage.fillAmount = norm;
+        hpDamageImage.fillAmount = norm;
     }
 
-    void UpdateHPBar(float normalizedHP)
+    void OnHealthChanged(float normalizedHP)
     {
-        Debug.Log($"[UIManager] UpdateHPBar → {normalizedHP}");
-        fillImage.fillAmount = normalizedHP;
+        // 1) 앞바(빨강)는 즉시
+        hpFillImage.fillAmount = normalizedHP;
+
+        // 2) 뒤바(노랑)는 지연 후 천천히
+        if (damageCoroutine != null) StopCoroutine(damageCoroutine);
+        damageCoroutine = StartCoroutine(AnimateDamageBar(normalizedHP));
+    }
+
+    IEnumerator AnimateDamageBar(float targetFill)
+    {
+        // 잠시 기다렸다가
+        yield return new WaitForSeconds(damageDelay);
+
+        float startFill = hpDamageImage.fillAmount;
+        float elapsed = 0f;
+
+        while (elapsed < damageDuration)
+        {
+            elapsed += Time.deltaTime;
+            hpDamageImage.fillAmount =
+                Mathf.Lerp(startFill, targetFill, elapsed / damageDuration);
+            yield return null;
+        }
+
+        hpDamageImage.fillAmount = targetFill;
+        damageCoroutine = null;
     }
 }
