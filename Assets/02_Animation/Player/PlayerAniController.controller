@@ -389,6 +389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea5fa13da4073e46b4dfa3070c432f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerTime: 0.7
 --- !u!1102 &-1260616416416894995
 AnimatorState:
   serializedVersion: 6

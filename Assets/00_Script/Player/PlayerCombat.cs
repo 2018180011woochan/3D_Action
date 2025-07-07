@@ -25,6 +25,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("¿Ã∆Â∆Æ ºº∆√")]
     public GameObject slashEffectPrefab;   
+    public GameObject FinalAttackEffectPrefab;   
     public Transform swordTransform;
 
     private Animator animator;
@@ -158,7 +159,7 @@ public class PlayerCombat : MonoBehaviour
         transform.position = end;
     }
 
-    public void SpawnSlashEffect()
+    public void Attack1Effect()
     {
         Vector3 forwardDir = transform.forward;
 
@@ -171,7 +172,7 @@ public class PlayerCombat : MonoBehaviour
         );
     }
 
-    public void SpawnSlashEffectCardinal()
+    public void Attack2Effect()
     {
         Vector3 basePos = transform.position;                    
         Quaternion baseRot = Quaternion.LookRotation(transform.forward, Vector3.up);
@@ -190,5 +191,18 @@ public class PlayerCombat : MonoBehaviour
                 dirRot
             );
         }
+    }
+
+    public void Attack3Effect()
+    {
+        Vector3 forwardDir = transform.forward;
+
+        Quaternion rot = Quaternion.LookRotation(forwardDir, Vector3.up);
+
+        Instantiate(
+            FinalAttackEffectPrefab,
+            swordTransform.position,
+            rot
+        );
     }
 }

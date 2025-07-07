@@ -10,7 +10,7 @@ public class Attack2Behaviour : StateMachineBehaviour
             pc = animator.GetComponentInParent<PlayerCombat>();
         pc.swordTrail.Begin();
         pc.StartAttack2Effect();
-        pc.SpawnSlashEffectCardinal();
+        pc.Attack2Effect();
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

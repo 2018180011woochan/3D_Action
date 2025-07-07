@@ -1145,6 +1145,9 @@ MonoBehaviour:
   attack3Duration: 0.8
   attack3JumpHeight: 1.5
   attack3ForwardDistance: 4
+  slashEffectPrefab: {fileID: 5634270508458958113, guid: 2da6e1f01130751428449fde93a6ac71, type: 3}
+  FinalAttackEffectPrefab: {fileID: 158938507390237682, guid: f577584c4b6f1734b9c1d011cdd1e8cb, type: 3}
+  swordTransform: {fileID: 1181193168}
   swordTrail: {fileID: 1181193171}
 --- !u!114 &881868603
 MonoBehaviour:
