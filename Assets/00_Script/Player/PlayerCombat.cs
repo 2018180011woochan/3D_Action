@@ -42,6 +42,9 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
+            return;
+
         if (comboTimer > 0f)
             comboTimer -= Time.deltaTime;
         else

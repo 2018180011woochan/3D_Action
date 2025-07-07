@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
+            return;
+
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
         if (state.IsTag("Attack"))
         {

@@ -14,17 +14,22 @@ public class PlayerState : MonoBehaviour
     public float currentStamina { get; private set; }
 
     public UnityEvent<float> onStaminaChanged = new UnityEvent<float>();
-
+    Animator animator;
+    public BloodScreen bloodScreen;
     void Awake()
     {
         currentHP = maxHP;
         currentStamina = maxStamina;
+        animator = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(float dmg)
     {
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
+
+        animator.SetTrigger("GetHit");
+        bloodScreen?.Flash();
     }
 
     public void Heal(float amount)

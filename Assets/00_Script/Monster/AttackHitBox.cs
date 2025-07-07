@@ -4,7 +4,7 @@ public class AttackHitBox : MonoBehaviour
 {
     public float damage = 20f;
     Animator animator;
-
+    bool hasAttacked;
     void Awake()
     {
         animator = GetComponentInParent<Animator>();
@@ -16,8 +16,9 @@ public class AttackHitBox : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerState>()?.TakeDamage(damage);
-            Debug.Log("플레이어 공격 성공");
+            var ps = other.GetComponent<PlayerState>();
+            if (ps != null)
+                ps.TakeDamage(damage);
         }
     }
 }
