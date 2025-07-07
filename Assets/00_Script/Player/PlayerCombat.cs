@@ -23,6 +23,10 @@ public class PlayerCombat : MonoBehaviour
     public float attack3JumpHeight = 1.5f;
     public float attack3ForwardDistance = 4f;
 
+    [Header("¿Ã∆Â∆Æ ºº∆√")]
+    public GameObject slashEffectPrefab;   
+    public Transform swordTransform;
+
     private Animator animator;
 
     private Coroutine attackCoroutine;
@@ -152,5 +156,39 @@ public class PlayerCombat : MonoBehaviour
         var end = transform.position;
         end.y = startPos.y;
         transform.position = end;
+    }
+
+    public void SpawnSlashEffect()
+    {
+        Vector3 forwardDir = transform.forward;
+
+        Quaternion rot = Quaternion.LookRotation(forwardDir, Vector3.up);
+
+        Instantiate(
+            slashEffectPrefab,
+            swordTransform.position,
+            rot
+        );
+    }
+
+    public void SpawnSlashEffectCardinal()
+    {
+        Vector3 basePos = transform.position;                    
+        Quaternion baseRot = Quaternion.LookRotation(transform.forward, Vector3.up);
+        float angleStep = 360f / 4;
+
+        for (int i = 0; i < 4; i++)
+        {
+            Quaternion dirRot = baseRot * Quaternion.Euler(0f, i * angleStep, 0f);
+            Vector3 dir = dirRot * Vector3.forward;               
+
+            Vector3 spawnPos = basePos + dir * 1f;
+
+            Instantiate(
+                slashEffectPrefab,
+                spawnPos,
+                dirRot
+            );
+        }
     }
 }

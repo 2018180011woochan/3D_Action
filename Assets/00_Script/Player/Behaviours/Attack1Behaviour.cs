@@ -10,6 +10,7 @@ public class Attack1Behaviour : StateMachineBehaviour
 
         pc.StartAttack1Effect();
         pc.swordTrail.Begin();
+        pc.SpawnSlashEffect();
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

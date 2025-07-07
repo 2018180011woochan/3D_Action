@@ -27,6 +27,8 @@ public class MonsterAI : MonoBehaviour
     AnimatorStateInfo stateInfo;
     float timer;    // 배회 타이머
     float attackTimer;  // 공격 타이머 
+
+    
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
