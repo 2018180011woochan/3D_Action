@@ -344,8 +344,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8158b2f7e0579a54fb34d881bb5edf30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitTimeStart: 1.5
-  hitTimeEnd: 2
+  hitTimeStart: 1.2667
+  hitTimeEnd: 1.6667
 --- !u!1102 &1170286290773431099
 AnimatorState:
   serializedVersion: 6

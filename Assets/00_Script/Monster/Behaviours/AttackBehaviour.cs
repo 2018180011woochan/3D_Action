@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class AttackBehaviour : StateMachineBehaviour
 {
     [Tooltip("히트박스 ON 시작 (초)")]
@@ -9,12 +8,12 @@ public class AttackBehaviour : StateMachineBehaviour
 
     Transform hitBox;
     bool isEnabled;
-
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         hitBox = animator.transform.Find("hand.r/AttackHitBox");
         if (hitBox) hitBox.gameObject.SetActive(false);
         isEnabled = false;
+
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

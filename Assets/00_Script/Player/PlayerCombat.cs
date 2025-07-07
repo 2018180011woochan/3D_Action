@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-
+using Drakkar.GameUtils;
 public class PlayerCombat : MonoBehaviour
 {
     [Header("ÄÞº¸ ¼³Á¤")]
@@ -28,6 +28,7 @@ public class PlayerCombat : MonoBehaviour
     private Coroutine attackCoroutine;
     private PlayerState playerState;
 
+    public DrakkarTrail swordTrail;
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();

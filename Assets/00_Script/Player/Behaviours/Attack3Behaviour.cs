@@ -7,11 +7,13 @@ public class Attack3Behaviour : StateMachineBehaviour
     {
         if (pc == null)
             pc = animator.GetComponentInParent<PlayerCombat>();
+        pc.swordTrail.Begin();
         pc.StartAttack3Effect();
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        pc.swordTrail.End();
         pc.StopAttackEffect();
     }
 }
