@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class AttackBehaviour : StateMachineBehaviour
 {
-    public float hitTimeStart = 1.08f;
-    public float hitTimeEnd = 1.18f;
+    [Tooltip("히트박스 ON 시작 (초)")]
+    public float hitTimeStart = 1f + 8f / 30f;   
+    [Tooltip("히트박스 OFF (초)")]
+    public float hitTimeEnd = 1f + 20f / 30f;  
 
     Transform hitBox;
     bool isEnabled;
@@ -19,7 +21,7 @@ public class AttackBehaviour : StateMachineBehaviour
     {
         if (hitBox == null) return;
 
-        float clipLength = stateInfo.length; 
+        float clipLength = stateInfo.length;
         float time = (stateInfo.normalizedTime % 1f) * clipLength;
 
         if (!isEnabled && time >= hitTimeStart && time < hitTimeEnd)
