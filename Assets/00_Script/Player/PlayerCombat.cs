@@ -40,6 +40,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("ºÒ²É ½ºÅ³")]
     public GameObject FireSkillEfecctPrefab;
     public bool fireSkill = false;
+    private float fireSkillCoolTime = 20f;
 
     [Header("ÄÆ¾À ¼³Á¤")]
     public PlayableDirector skillCutsceneDirector;
@@ -85,7 +86,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (isPlayingCutscene) return;
         if (fireSkill) return;
-
+        UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
         isPlayingCutscene = true;
 
         animator.SetTrigger("Skill1");

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance;
+
     [Header("HP Bar")]
     [SerializeField] private Image hpFillImage;     
     [SerializeField] private Image hpDamageImage;
@@ -16,7 +18,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image stamDamageImage;
     private Coroutine stamCoroutine;
 
+    [Header("FireSkill")]
+    [SerializeField] private Image FireSkillTimer;
+    private Coroutine cooldownCoroutine;
+
+
     [SerializeField] private PlayerState playerState;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void OnEnable()
     {
@@ -45,6 +57,33 @@ public class UIManager : MonoBehaviour
         float stNorm = playerState.currentStamina / playerState.maxStamina;
         stamFillImage.fillAmount = stNorm;
         stamDamageImage.fillAmount = stNorm;
+
+        FireSkillTimer.fillAmount = 0f;
+        FireSkillTimer.gameObject.SetActive(false);
+    }
+
+    public void StartFireSkillCooldown(float cooldownTime)
+    {
+        if (cooldownCoroutine != null) StopCoroutine(cooldownCoroutine);
+        cooldownCoroutine = StartCoroutine(FireSkillCooldownRoutine(cooldownTime));
+    }
+
+    IEnumerator FireSkillCooldownRoutine(float cooldownTime)
+    {
+        FireSkillTimer.gameObject.SetActive(true);
+        FireSkillTimer.fillAmount = 1f;
+
+        float elapsed = 0f;
+
+        while (elapsed < cooldownTime)
+        {
+            elapsed += Time.deltaTime;
+            FireSkillTimer.fillAmount = 1f - (elapsed / cooldownTime);
+            yield return null;
+        }
+
+        FireSkillTimer.fillAmount = 0f;
+        FireSkillTimer.gameObject.SetActive(false);
     }
 
     void OnHealthChanged(float normalizedHP)
