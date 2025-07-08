@@ -40,6 +40,8 @@ public class PlayerCombat : MonoBehaviour
     [Header("ºÒ²É ½ºÅ³")]
     public GameObject FireSkillEfecctPrefab;
     public bool fireSkill = false;
+    private bool fireSkillOnCooldown = false;   
+    private float fireSkillDuration = 10f;      
     private float fireSkillCoolTime = 20f;
 
     [Header("ÄÆ¾À ¼³Á¤")]
@@ -85,9 +87,11 @@ public class PlayerCombat : MonoBehaviour
     void StartSkillCutscene()
     {
         if (isPlayingCutscene) return;
-        if (fireSkill) return;
+        if (fireSkillOnCooldown) return;
+
         UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
         isPlayingCutscene = true;
+        fireSkillOnCooldown = true;
 
         animator.SetTrigger("Skill1");
         fireSkill = true;
@@ -104,7 +108,8 @@ public class PlayerCombat : MonoBehaviour
             skillCutsceneDirector.Play();
         }
 
-        StartCoroutine(Skill1(10f)); 
+        StartCoroutine(Skill1(fireSkillDuration));
+        StartCoroutine(SkillCooldown(fireSkillCoolTime));
     }
 
     private void OnCutsceneComplete(PlayableDirector director)
@@ -281,5 +286,12 @@ public class PlayerCombat : MonoBehaviour
 
         fireSkill = false;
         FireSkillEfecctPrefab.SetActive(false);
+    }
+
+    IEnumerator SkillCooldown(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+
+        fireSkillOnCooldown = false;
     }
 }
