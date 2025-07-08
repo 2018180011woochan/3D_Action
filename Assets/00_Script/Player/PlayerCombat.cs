@@ -1,6 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
 using Drakkar.GameUtils;
+using UnityEngine.Timeline;
+using Unity.Cinemachine;
+
 public class PlayerCombat : MonoBehaviour
 {
     [Header("ÄÞº¸ ¼³Á¤")]
@@ -37,13 +41,27 @@ public class PlayerCombat : MonoBehaviour
     public GameObject FireSkillEfecctPrefab;
     public bool fireSkill = false;
 
+    [Header("ÄÆ¾À ¼³Á¤")]
+    public PlayableDirector skillCutsceneDirector;
+    public CinemachineCamera mainCamera;
+    public CinemachineCamera skillCutsceneCamera;
+    private bool isPlayingCutscene = false;
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
+
+        if (skillCutsceneDirector != null)
+        {
+            skillCutsceneDirector.stopped += OnCutsceneComplete;
+        }
     }
 
     void Update()
     {
+        if (isPlayingCutscene)
+            return;
+
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
             return;
 
@@ -59,10 +77,46 @@ public class PlayerCombat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            animator.SetTrigger("Skill1");
-            fireSkill = true;
-            FireSkillEfecctPrefab.SetActive(true);
-            StartCoroutine(Skill1(10));
+            StartSkillCutscene();
+        }
+    }
+
+    void StartSkillCutscene()
+    {
+        if (isPlayingCutscene) return;
+
+        isPlayingCutscene = true;
+
+        animator.SetTrigger("Skill1");
+        fireSkill = true;
+        FireSkillEfecctPrefab.SetActive(true);
+
+        if (mainCamera != null && skillCutsceneCamera != null)
+        {
+            mainCamera.Priority = 0;
+            skillCutsceneCamera.Priority = 10;
+        }
+
+        if (skillCutsceneDirector != null)
+        {
+            skillCutsceneDirector.Play();
+        }
+
+        StartCoroutine(Skill1(10f)); 
+    }
+
+    private void OnCutsceneComplete(PlayableDirector director)
+    {
+        if (director == skillCutsceneDirector)
+        {
+            isPlayingCutscene = false;
+
+            // ¸ÞÀÎ Ä«¸Þ¶ó·Î º¹±Í
+            if (mainCamera != null && skillCutsceneCamera != null)
+            {
+                mainCamera.Priority = 10;
+                skillCutsceneCamera.Priority = 0;
+            }
         }
     }
 
