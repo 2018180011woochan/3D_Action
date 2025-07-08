@@ -84,6 +84,7 @@ public class PlayerCombat : MonoBehaviour
     void StartSkillCutscene()
     {
         if (isPlayingCutscene) return;
+        if (fireSkill) return;
 
         isPlayingCutscene = true;
 
