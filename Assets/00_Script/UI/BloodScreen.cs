@@ -4,19 +4,17 @@ using UnityEngine.UI;
 
 public class BloodScreen : MonoBehaviour
 {
-    [Header("BloodOverlay Image")]
-    public Image overlay;       // 에디터에서 드래그할 BloodOverlay Image
+    public Image overlay;      
 
     [Header("페이드 세팅")]
-    public float flashAlpha = 0.6f;  // 최대 붉기
-    public float fadeInTime = 0.05f; // 페이드 인 시간
-    public float fadeOutTime = 0.5f; // 페이드 아웃 시간
+    public float flashAlpha = 0.6f;  
+    public float fadeInTime = 0.05f; 
+    public float fadeOutTime = 0.5f; 
 
     private Coroutine routine;
 
     void Awake()
     {
-        // 초기에는 완전 투명
         if (overlay != null)
         {
             var c = overlay.color;
@@ -36,7 +34,6 @@ public class BloodScreen : MonoBehaviour
         float t = 0f;
         Color c = overlay.color;
 
-        // 1) 페이드 인
         while (t < fadeInTime)
         {
             t += Time.deltaTime;
@@ -45,9 +42,6 @@ public class BloodScreen : MonoBehaviour
             yield return null;
         }
 
-        // 2) 잠깐 대기 (원하면 yield return new WaitForSeconds(0.05f);)
-
-        // 3) 페이드 아웃
         t = 0f;
         while (t < fadeOutTime)
         {
@@ -57,7 +51,6 @@ public class BloodScreen : MonoBehaviour
             yield return null;
         }
 
-        // 4) 마무리
         c.a = 0f;
         overlay.color = c;
         routine = null;

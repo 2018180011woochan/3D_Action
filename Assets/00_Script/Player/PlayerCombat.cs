@@ -31,13 +31,15 @@ public class PlayerCombat : MonoBehaviour
     private Animator animator;
 
     private Coroutine attackCoroutine;
-    private PlayerState playerState;
-
     public DrakkarTrail swordTrail;
+
+    [Header("ºÒ²É ½ºÅ³")]
+    public GameObject FireSkillEfecctPrefab;
+    public bool fireSkill = false;
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
-        playerState = GetComponentInChildren<PlayerState>();
     }
 
     void Update()
@@ -53,6 +55,14 @@ public class PlayerCombat : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             HandleComboClick();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            animator.SetTrigger("Skill1");
+            fireSkill = true;
+            FireSkillEfecctPrefab.SetActive(true);
+            StartCoroutine(Skill1(10));
         }
     }
 
@@ -207,5 +217,13 @@ public class PlayerCombat : MonoBehaviour
             swordTransform.position,
             rot
         );
+    }
+
+    IEnumerator Skill1(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        fireSkill = false;
+        FireSkillEfecctPrefab.SetActive(false);
     }
 }

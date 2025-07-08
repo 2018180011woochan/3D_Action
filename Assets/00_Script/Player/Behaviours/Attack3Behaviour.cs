@@ -27,7 +27,8 @@ public class Attack3Behaviour : StateMachineBehaviour
 
         if (playedTime >= triggerTime)
         {
-            pc.Attack3Effect();
+            if (pc.fireSkill)
+                pc.Attack3Effect();
             hasTriggered = true;
         }
     }

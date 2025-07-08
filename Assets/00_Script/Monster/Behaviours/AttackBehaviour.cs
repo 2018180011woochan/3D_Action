@@ -10,8 +10,13 @@ public class AttackBehaviour : StateMachineBehaviour
     bool isEnabled;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        hitBox = animator.transform.Find("hand.r/AttackHitBox");
-        if (hitBox) hitBox.gameObject.SetActive(false);
+        var hitBoxScript = animator.GetComponentInChildren<AttackHitBox>();
+        if (hitBoxScript != null)
+        {
+            hitBox = hitBoxScript.transform;
+            hitBox.gameObject.SetActive(false);
+        }
+
         isEnabled = false;
 
     }
@@ -31,6 +36,7 @@ public class AttackBehaviour : StateMachineBehaviour
         else if (isEnabled && time >= hitTimeEnd)
         {
             hitBox.gameObject.SetActive(false);
+            isEnabled = false;
         }
     }
 
