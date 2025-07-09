@@ -3,225 +3,310 @@ using UnityEngine.AI;
 
 public class MonsterAI : MonoBehaviour
 {
-    [Header("플레이어 탐지 반경")]
-    public float detectionRange = 5f;
-    [Header("사정 거리")]
-    public float attackRange = 2f;
-    [Header("공격 쿨다운")]
-    public float attackCooldown = 1f;
+    [Header("탐지 설정")]
+    public float detectionRange = 10f;  // 플레이어 탐지 범위
+    public float attackRange = 2f;      // 공격 가능 범위
 
+    [Header("배회 설정")]
+    public float wanderRadius = 10f;    // 배회 반경
+    public float wanderInterval = 3f;   // 배회 목적지 변경 주기
+    public float wanderSpeed = 2f;      // 배회 속도
 
-    [Header("배회 반경 & 주기")]
-    public float wanderRadius = 5f;
-    public float wanderTimer = 4f;
+    [Header("추격 설정")]
+    public float chaseSpeed = 4f;       // 추격 속도
 
-    [Header("속도 세팅")]
-    public float wanderSpeed = 2f;  
-    public float chaseSpeed = 4f;
+    [Header("대치 설정")]
+    public float confrontDuration = 2f;     // 대치 지속 시간
+    public float confrontRadius = 3f;       // 원형 이동 반경
+    public float confrontSpeed = 60f;       // 원형 이동 속도 (도/초)
+    public float confrontMoveSpeed = 2f;    // 대치 중 이동 속도
 
-    [Header("탐지할 타겟 플레이어")]
-    public Transform playerTransform;
+    [Header("공격 설정")]
+    public float attackCooldown = 1.5f;     // 공격 쿨다운
 
-    NavMeshAgent agent;
-    Animator animator;
-    AnimatorStateInfo stateInfo;
-    float timer;    // 배회 타이머
-    float attackTimer;  // 공격 타이머 
-    public float leftMoveDuration = 2f;
-    enum MonsterState
-    {
-        Wander,
-        MovingLeft,
-        Chase,
-        Attack
-    }
+    [Header("후퇴 설정")]
+    public float retreatDistance = 3f;      // 후퇴 거리
+    public float retreatSpeed = 3f;         // 후퇴 속도
+    public float retreatDuration = 1.5f;    // 후퇴 시간
 
-    MonsterState currentState = MonsterState.Wander;
-    float leftMoveTimer = 0f;
-    Vector3 leftMoveStartPos;
-    Vector3 leftMoveDirection;
-    bool hasMovedLeft = false;
+    // 컴포넌트
+    private NavMeshAgent agent;
+    private Animator animator;
+    private Transform player;
 
-    void Awake()
+    // 상태 관리
+    private enum State { Idle, Wander, Chase, Confront, Attack, Cooldown, Retreat }
+    private State currentState = State.Idle;
+
+    // 타이머
+    private float wanderTimer = 0f;
+    private float confrontTimer = 0f;
+    private float attackCooldownTimer = 0f;
+    private float retreatTimer = 0f;
+    private float stateTimer = 0f;
+
+    // 플래그
+    private bool hasConfrontedOnce = false;    // 최초 대치를 했는지
+    private bool isAttackAnimating = false;     // 공격 애니메이션 중인지
+    private bool hasTriggeredAttack = false;    // 공격 트리거를 보냈는지
+
+    // 대치 관련
+    private float currentAngle = 0f;
+
+    void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        timer = wanderTimer;
-        attackTimer = 0f;
 
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-            playerTransform = player.transform;
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            player = playerObj.transform;
+
+        ChangeState(State.Wander);
     }
 
     void Update()
     {
-        if (playerTransform == null) return;
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsTag("Attack"))
-        {
-            agent.isStopped = true;
-            return;
-        }
+        if (player == null) return;
+
+        UpdateAnimationState();
 
         float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
         animator.SetFloat("Speed", speed);
 
-        float dist = Vector3.Distance(transform.position, playerTransform.position);
-        attackTimer -= Time.deltaTime;
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         switch (currentState)
         {
-            case MonsterState.Wander:
-                HandleWanderState(dist);
+            case State.Idle:
+                ProcessIdle();
                 break;
-            case MonsterState.MovingLeft:
-                HandleMovingLeftState(dist);
+            case State.Wander:
+                ProcessWander(distanceToPlayer);
                 break;
-            case MonsterState.Chase:
-                HandleChaseState(dist);
+            case State.Chase:
+                ProcessChase(distanceToPlayer);
                 break;
-            case MonsterState.Attack:
-                HandleAttackState(dist);
+            case State.Confront:
+                ProcessConfront(distanceToPlayer);
+                break;
+            case State.Attack:
+                ProcessAttack(distanceToPlayer);
+                break;
+            case State.Cooldown:
+                ProcessCooldown(distanceToPlayer);
+                break;
+            case State.Retreat:
+                ProcessRetreat(distanceToPlayer);
                 break;
         }
+
+        stateTimer += Time.deltaTime;
     }
 
-    void HandleWanderState(float dist)
+    void ProcessIdle()
     {
-        if (dist <= attackRange)
-        {
-            ChangeState(MonsterState.Attack);
-            return;
-        }
+        agent.isStopped = true;
+        ChangeState(State.Wander);
+    }
 
-        if (dist <= detectionRange && !hasMovedLeft)
+    void ProcessWander(float distance)
+    {
+        // 플레이어 탐지
+        if (distance <= detectionRange)
         {
-            StartLeftMove();
-            return;
-        }
-
-        // 감지 범위 안에 있고 이미 왼쪽 이동을 했다면 추격
-        if (dist <= detectionRange && hasMovedLeft)
-        {
-            hasMovedLeft = false;
+            ChangeState(State.Chase);
             return;
         }
 
         // 배회 로직
-        agent.isStopped = false;
         agent.speed = wanderSpeed;
-        timer += Time.deltaTime;
-        if (timer >= wanderTimer)
+        agent.isStopped = false;
+
+        wanderTimer += Time.deltaTime;
+        if (wanderTimer >= wanderInterval)
         {
-            Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-            agent.SetDestination(newPos);
-            timer = 0f;
+            SetRandomWanderDestination();
+            wanderTimer = 0f;
         }
     }
 
-    void HandleMovingLeftState(float dist)
+    void ProcessChase(float distance)
     {
-        leftMoveTimer += Time.deltaTime;
-
-        // 공격 범위 안에 들어오면 즉시 공격
-        if (dist <= attackRange)
+        // 탐지 범위를 벗어남
+        if (distance > detectionRange * 1.2f)  // 약간의 여유를 둠
         {
-            ChangeState(MonsterState.Attack);
+            ChangeState(State.Wander);
             return;
         }
 
-        // 2초간 왼쪽으로 이동
-        if (leftMoveTimer < leftMoveDuration)
+        // 공격 범위 도달
+        if (distance <= attackRange)
         {
-            // NavMeshAgent를 사용하여 왼쪽으로 이동
-            Vector3 targetPos = leftMoveStartPos + leftMoveDirection * chaseSpeed * leftMoveTimer;
-            agent.SetDestination(targetPos);
-
-            // 플레이어 방향 바라보기
-            LookAtPlayer();
-        }
-        else
-        {
-            // 2초 후 공격 상태로 전환
-            ChangeState(MonsterState.Attack);
-        }
-    }
-
-    void HandleChaseState(float dist)
-    {
-        if (dist <= attackRange)
-        {
-            ChangeState(MonsterState.Attack);
-            return;
-        }
-
-        if (dist > detectionRange)
-        {
-            // 플레이어를 놓쳤을 때 배회로 돌아가고 왼쪽 이동 플래그 리셋
-            hasMovedLeft = false;
-            ChangeState(MonsterState.Wander);
+            // 처음이면 대치, 아니면 바로 공격
+            if (!hasConfrontedOnce)
+            {
+                ChangeState(State.Confront);
+            }
+            else
+            {
+                ChangeState(State.Attack);
+            }
             return;
         }
 
         // 추격
-        agent.isStopped = false;
         agent.speed = chaseSpeed;
-        agent.SetDestination(playerTransform.position);
-        timer = wanderTimer;
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
     }
 
-    void HandleAttackState(float dist)
+    void ProcessConfront(float distance)
     {
-        agent.isStopped = true;
-        animator.SetFloat("Speed", 0f);
-
-        if (attackTimer <= 0f)
+        // 플레이어가 멀어지면 다시 추격
+        if (distance > attackRange * 1.5f)
         {
-            animator.SetTrigger("Attack");
-            attackTimer = attackCooldown;
+            ChangeState(State.Chase);
+            return;
         }
 
-        // 공격 후 상태 결정
-        if (attackTimer <= attackCooldown - 0.5f) // 공격 후 잠시 대기
+        confrontTimer += Time.deltaTime;
+
+        // 대치 시간이 끝나면 공격
+        if (confrontTimer >= confrontDuration)
         {
-            if (dist <= detectionRange)
+            hasConfrontedOnce = true;
+            ChangeState(State.Attack);
+            return;
+        }
+
+        // 원형으로 이동
+        PerformCircularMovement();
+
+        // 플레이어를 바라봄
+        LookAtPlayer();
+    }
+
+    void ProcessAttack(float distance)
+    {
+        agent.isStopped = true;
+
+        // 공격 트리거를 한 번만 보냄
+        if (!hasTriggeredAttack && stateTimer >= 0.1f)
+        {
+            animator.SetTrigger("Attack");
+            hasTriggeredAttack = true;
+        }
+
+        // 공격 애니메이션이 끝났고 충분한 시간이 지났으면 쿨다운으로
+        if (!isAttackAnimating && hasTriggeredAttack && stateTimer >= 1f)
+        {
+            ChangeState(State.Cooldown);
+        }
+
+        LookAtPlayer();
+    }
+
+    void ProcessCooldown(float distance)
+    {
+        attackCooldownTimer += Time.deltaTime;
+
+        // 쿨다운이 끝났으면
+        if (attackCooldownTimer >= attackCooldown)
+        {
+            // 거리에 따라 다음 행동 결정
+            if (distance > attackRange)
             {
-                ChangeState(MonsterState.Chase);
+                // 공격 범위 밖이면 추격
+                ChangeState(State.Chase);
             }
             else
             {
-                hasMovedLeft = false;
-                ChangeState(MonsterState.Wander);
+                // 공격 범위 안이면 후퇴
+                ChangeState(State.Retreat);
             }
+        }
+
+        // 쿨다운 중에도 플레이어를 바라봄
+        LookAtPlayer();
+    }
+
+    void ProcessRetreat(float distance)
+    {
+        retreatTimer += Time.deltaTime;
+
+        // 후퇴 시간이 끝났거나 충분히 멀어졌으면
+        if (retreatTimer >= retreatDuration || distance > attackRange * 1.5f)
+        {
+            // 다시 공격 범위 체크
+            if (distance <= attackRange)
+            {
+                ChangeState(State.Attack);
+            }
+            else
+            {
+                ChangeState(State.Chase);
+            }
+            return;
+        }
+
+        Vector3 retreatDirection = (transform.position - player.position).normalized;
+        Vector3 retreatTarget = transform.position + retreatDirection * retreatDistance;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(retreatTarget, out hit, retreatDistance * 2f, NavMesh.AllAreas))
+        {
+            agent.speed = retreatSpeed;
+            agent.isStopped = false;
+            agent.SetDestination(hit.position);
+        }
+
+        // 후퇴하면서도 플레이어를 바라봄
+        LookAtPlayer();
+    }
+
+    void PerformCircularMovement()
+    {
+        // 각도 업데이트
+        currentAngle += confrontSpeed * Time.deltaTime;
+
+        // 원형 궤도 계산
+        float radian = currentAngle * Mathf.Deg2Rad;
+        Vector3 offset = new Vector3(
+            Mathf.Cos(radian) * confrontRadius,
+            0,
+            Mathf.Sin(radian) * confrontRadius
+        );
+
+        Vector3 targetPosition = player.position + offset;
+
+        // NavMesh 위의 유효한 위치 찾기
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(targetPosition, out hit, confrontRadius * 2f, NavMesh.AllAreas))
+        {
+            agent.speed = confrontMoveSpeed;
+            agent.isStopped = false;
+            agent.SetDestination(hit.position);
         }
     }
 
-    void StartLeftMove()
+    void SetRandomWanderDestination()
     {
-        ChangeState(MonsterState.MovingLeft);
-        leftMoveTimer = 0f;
-        leftMoveStartPos = transform.position;
-        hasMovedLeft = true;
+        Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
+        randomDirection += transform.position;
+        randomDirection.y = transform.position.y;
 
-        // 플레이어를 기준으로 왼쪽 방향 계산
-        Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
-        leftMoveDirection = Vector3.Cross(directionToPlayer, Vector3.up).normalized;
-
-        // LeftMove 애니메이션 재생
-        if (animator != null)
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomDirection, out hit, wanderRadius, NavMesh.AllAreas))
         {
-            animator.SetTrigger("LeftMove");
+            agent.SetDestination(hit.position);
         }
-
-        agent.isStopped = false;
-        agent.speed = chaseSpeed;
     }
 
     void LookAtPlayer()
     {
-        Vector3 direction = (playerTransform.position - transform.position);
-        direction.y = 0; // Y축 회전 방지
+        Vector3 direction = player.position - transform.position;
+        direction.y = 0;
 
         if (direction != Vector3.zero)
         {
@@ -230,16 +315,75 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    void ChangeState(MonsterState newState)
+    void UpdateAnimationState()
     {
-        currentState = newState;
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (stateInfo.IsTag("Attack"))
+        {
+            isAttackAnimating = true;
+            agent.isStopped = true;
+        }
+        else
+        {
+            isAttackAnimating = false;
+        }
     }
 
-    public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layerMask)
+    void ChangeState(State newState)
     {
-        Vector3 randDir = Random.insideUnitSphere * dist + origin;
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randDir, out hit, dist, layerMask);
-        return hit.position;
+        // 이전 상태 정리
+        switch (currentState)
+        {
+            case State.Confront:
+                animator.ResetTrigger("LeftMove");
+                break;
+            case State.Attack:
+                hasTriggeredAttack = false;
+                break;
+        }
+
+        currentState = newState;
+        stateTimer = 0f;
+
+        // 새 상태 초기화
+        switch (newState)
+        {
+            case State.Wander:
+                wanderTimer = wanderInterval;  // 즉시 새 목적지 설정
+                hasConfrontedOnce = false;     // 플레이어를 놓치면 대치 리셋
+                agent.isStopped = false;
+                break;
+
+            case State.Chase:
+                agent.speed = chaseSpeed;
+                agent.isStopped = false;
+                break;
+
+            case State.Confront:
+                confrontTimer = 0f;
+                Vector3 toPlayer = player.position - transform.position;
+                currentAngle = Mathf.Atan2(toPlayer.z, toPlayer.x) * Mathf.Rad2Deg + 90f;
+                animator.SetTrigger("LeftMove");
+                break;
+
+            case State.Attack:
+                agent.isStopped = true;
+                isAttackAnimating = false;
+                hasTriggeredAttack = false;
+                break;
+
+            case State.Cooldown:
+                attackCooldownTimer = 0f;
+                agent.isStopped = true;
+                break;
+
+            case State.Retreat:
+                retreatTimer = 0f;
+                agent.speed = retreatSpeed;
+                agent.isStopped = false;
+                break;
+        }
     }
+
 }
