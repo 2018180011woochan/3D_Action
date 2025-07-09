@@ -49,6 +49,14 @@ public class PlayerCombat : MonoBehaviour
     private bool battoSkillOnCooldown = false;
     private float battoSkillDuration = 3f;
     private float battoSkillCoolTime = 20f;
+    public GameObject BattoEffect1;
+    public GameObject BattoEffect2;
+    public GameObject BattoEffect3;
+    public GameObject BattoAttackEffect;
+    public GameObject BattoSwordEffect;
+    private GameObject spawnedBattoEffect1;
+    private GameObject spawnedBattoEffect2;
+    private GameObject spawnedBattoEffect3;
 
     [Header("컷씬 설정")]
     public PlayableDirector skillCutsceneDirector;
@@ -132,11 +140,18 @@ public class PlayerCombat : MonoBehaviour
     {
         if (isPlayingCutscene) return;
         if (battoSkillOnCooldown) return;
-        Debug.Log("스킬2발동");
+
         // 나중에
         //UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
         isPlayingCutscene = true;
         battoSkillOnCooldown = true;
+
+        Vector3 forwardDir = transform.forward;
+        Quaternion rot = Quaternion.LookRotation(forwardDir, Vector3.up);
+
+        spawnedBattoEffect1 = Instantiate(BattoEffect1, transform.position, rot);
+        spawnedBattoEffect2 = Instantiate(BattoEffect2, transform.position, rot);
+        spawnedBattoEffect3 = Instantiate(BattoEffect3, transform.position, rot);
 
         animator.SetTrigger("Skill2Ready");
         battoSkill = true;
@@ -341,6 +356,26 @@ public class PlayerCombat : MonoBehaviour
         animator.SetTrigger("Skill2");
         StartCoroutine(BattoSlash(0.3f, 10f));
 
+        yield return new WaitForSeconds(0.1f);
+        Debug.Log("이펙트끄기");
+
+        // 생성된 이펙트 오브젝트들 제거
+        if (spawnedBattoEffect1 != null)
+        {
+            Destroy(spawnedBattoEffect1);
+            spawnedBattoEffect1 = null;
+        }
+        if (spawnedBattoEffect2 != null)
+        {
+            Destroy(spawnedBattoEffect2);
+            spawnedBattoEffect2 = null;
+        }
+        if (spawnedBattoEffect3 != null)
+        {
+            Destroy(spawnedBattoEffect3);
+            spawnedBattoEffect3 = null;
+        }
+
         battoSkill = false;
     }
 
@@ -362,6 +397,18 @@ public class PlayerCombat : MonoBehaviour
         }
 
         transform.position = targetPos;
+
+        Vector3 forwardDir = transform.forward;
+
+        Quaternion rot = Quaternion.LookRotation(forwardDir, Vector3.up);
+
+        Instantiate(
+            BattoSwordEffect,
+            swordTransform.position,
+            rot
+        );
+
+        Instantiate(BattoAttackEffect, transform.position, transform.rotation);
     }
 
     IEnumerator FireSkillCooldown(float cooldownTime)

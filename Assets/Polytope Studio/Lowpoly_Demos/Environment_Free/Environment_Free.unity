@@ -1294,6 +1294,11 @@ MonoBehaviour:
   FireSkillEfecctPrefab: {fileID: 266705583}
   fireSkill: 0
   battoSkill: 0
+  BattoEffect1: {fileID: 7938996159871676162, guid: efa945522e0b5b64cbd82f045ed172ee, type: 3}
+  BattoEffect2: {fileID: 6023828359440960330, guid: cee8f93d79b899b41a14cde94ba4acd5, type: 3}
+  BattoEffect3: {fileID: 7493244502594454474, guid: 6d1bc8dc52ae7dc46918036a8976c2dd, type: 3}
+  BattoAttackEffect: {fileID: 9089291930476553685, guid: 827f62a2fc34b4642b26694228b093cb, type: 3}
+  BattoSwordEffect: {fileID: 6436177712251960022, guid: b7995021b00754445afcfe130b78d7ae, type: 3}
   skillCutsceneDirector: {fileID: 623092398}
   mainCamera: {fileID: 1015940006}
   skillCutsceneCamera: {fileID: 1425863663}
