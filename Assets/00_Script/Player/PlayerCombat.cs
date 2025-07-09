@@ -44,11 +44,21 @@ public class PlayerCombat : MonoBehaviour
     private float fireSkillDuration = 10f;      
     private float fireSkillCoolTime = 20f;
 
+    [Header("¹ßµµ¼ú")]
+    public bool battoSkill = false;
+    private bool battoSkillOnCooldown = false;
+    private float battoSkillDuration = 3f;
+    private float battoSkillCoolTime = 20f;
+
     [Header("ÄÆ¾À ¼³Á¤")]
     public PlayableDirector skillCutsceneDirector;
     public CinemachineCamera mainCamera;
     public CinemachineCamera skillCutsceneCamera;
     private bool isPlayingCutscene = false;
+
+    [Header("Timeline Assets")]
+    public TimelineAsset fireSkillTimeline;    // ºÒ²É ½ºÅ³ ÄÆ¾À Å¸ÀÓ¶óÀÎ
+    public TimelineAsset battoSkillTimeline;    // ¹ßµµ ½ºÅ³ ÄÇ¾À Å¸ÀÓ¶óÀÎ
 
     void Awake()
     {
@@ -82,6 +92,11 @@ public class PlayerCombat : MonoBehaviour
         {
             StartSkillCutscene();
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            StartSkill2Cutscene();
+        }
     }
 
     void StartSkillCutscene()
@@ -103,13 +118,43 @@ public class PlayerCombat : MonoBehaviour
             skillCutsceneCamera.Priority = 10;
         }
 
-        if (skillCutsceneDirector != null)
+        if (skillCutsceneDirector != null && fireSkillTimeline != null)
         {
+            skillCutsceneDirector.playableAsset = fireSkillTimeline;
             skillCutsceneDirector.Play();
         }
 
         StartCoroutine(Skill1(fireSkillDuration));
-        StartCoroutine(SkillCooldown(fireSkillCoolTime));
+        StartCoroutine(FireSkillCooldown(fireSkillCoolTime));
+    }
+
+    void StartSkill2Cutscene()
+    {
+        if (isPlayingCutscene) return;
+        if (battoSkillOnCooldown) return;
+        Debug.Log("½ºÅ³2¹ßµ¿");
+        // ³ªÁß¿¡
+        //UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
+        isPlayingCutscene = true;
+        battoSkillOnCooldown = true;
+
+        animator.SetTrigger("Skill2Ready");
+        battoSkill = true;
+
+        if (mainCamera != null && skillCutsceneCamera != null)
+        {
+            mainCamera.Priority = 0;
+            skillCutsceneCamera.Priority = 10;
+        }
+
+        if (skillCutsceneDirector != null && battoSkillTimeline != null)
+        {
+            skillCutsceneDirector.playableAsset = battoSkillTimeline;
+            skillCutsceneDirector.Play();
+        }
+
+        StartCoroutine(Skill2(battoSkillDuration));
+        StartCoroutine(battoSkillCooldown(battoSkillCoolTime));
     }
 
     private void OnCutsceneComplete(PlayableDirector director)
@@ -288,10 +333,48 @@ public class PlayerCombat : MonoBehaviour
         FireSkillEfecctPrefab.SetActive(false);
     }
 
-    IEnumerator SkillCooldown(float cooldownTime)
+    IEnumerator Skill2(float time)
+    {
+        // ÄÆ¾À Àç»ý ´ë±â
+        yield return new WaitForSeconds(time);
+
+        animator.SetTrigger("Skill2");
+        StartCoroutine(BattoSlash(0.3f, 10f));
+
+        battoSkill = false;
+    }
+
+    IEnumerator BattoSlash(float duration, float distance)
+    {
+        Vector3 startPos = transform.position;
+        Vector3 dir = transform.forward;
+        Vector3 targetPos = startPos + dir * distance;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            t = 1f - (1f - t) * (1f - t);
+
+            transform.position = Vector3.Lerp(startPos, targetPos, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPos;
+    }
+
+    IEnumerator FireSkillCooldown(float cooldownTime)
     {
         yield return new WaitForSeconds(cooldownTime);
 
         fireSkillOnCooldown = false;
+    }
+
+    IEnumerator battoSkillCooldown(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+
+        battoSkillOnCooldown = false;
     }
 }
