@@ -20,8 +20,11 @@ public class UIManager : MonoBehaviour
 
     [Header("FireSkill")]
     [SerializeField] private Image FireSkillTimer;
-    private Coroutine cooldownCoroutine;
+    private Coroutine fireCooldownCoroutine;
 
+    [Header("BattoSkill")]
+    [SerializeField] private Image battoSkillTimer;
+    private Coroutine battoCooldownCoroutine;
 
     [SerializeField] private PlayerState playerState;
 
@@ -60,12 +63,14 @@ public class UIManager : MonoBehaviour
 
         FireSkillTimer.fillAmount = 0f;
         FireSkillTimer.gameObject.SetActive(false);
+        battoSkillTimer.fillAmount = 0f;
+        battoSkillTimer.gameObject.SetActive(false);
     }
 
     public void StartFireSkillCooldown(float cooldownTime)
     {
-        if (cooldownCoroutine != null) StopCoroutine(cooldownCoroutine);
-        cooldownCoroutine = StartCoroutine(FireSkillCooldownRoutine(cooldownTime));
+        if (fireCooldownCoroutine != null) StopCoroutine(fireCooldownCoroutine);
+        fireCooldownCoroutine = StartCoroutine(FireSkillCooldownRoutine(cooldownTime));
     }
 
     IEnumerator FireSkillCooldownRoutine(float cooldownTime)
@@ -84,6 +89,30 @@ public class UIManager : MonoBehaviour
 
         FireSkillTimer.fillAmount = 0f;
         FireSkillTimer.gameObject.SetActive(false);
+    }
+
+    public void StartBattoSkillCooldown(float cooldownTime)
+    {
+        if (battoCooldownCoroutine != null) StopCoroutine(battoCooldownCoroutine);
+        battoCooldownCoroutine = StartCoroutine(BattoSkillCooldownRoutine(cooldownTime));
+    }
+
+    IEnumerator BattoSkillCooldownRoutine(float cooldownTime)
+    {
+        battoSkillTimer.gameObject.SetActive(true);
+        battoSkillTimer.fillAmount = 1f;
+
+        float elapsed = 0f;
+
+        while (elapsed < cooldownTime)
+        {
+            elapsed += Time.deltaTime;
+            battoSkillTimer.fillAmount = 1f - (elapsed / cooldownTime);
+            yield return null;
+        }
+
+        battoSkillTimer.fillAmount = 0f;
+        battoSkillTimer.gameObject.SetActive(false);
     }
 
     void OnHealthChanged(float normalizedHP)

@@ -142,7 +142,7 @@ public class PlayerCombat : MonoBehaviour
         if (battoSkillOnCooldown) return;
 
         // ³ªÁß¿¡
-        //UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
+        UIManager.Instance.StartBattoSkillCooldown(battoSkillCoolTime);
         isPlayingCutscene = true;
         battoSkillOnCooldown = true;
 
