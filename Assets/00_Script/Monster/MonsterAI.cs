@@ -23,6 +23,9 @@ public class MonsterAI : MonoBehaviour
 
     [Header("공격 설정")]
     public float attackCooldown = 1.5f;     // 공격 쿨다운
+    public float attackLungeDistance = 1f;  // 공격 시 전진 거리
+    public float attackLungeSpeed = 5f;     // 공격 시 전진 속도
+    public float attackLungeDuration = 0.3f; // 공격 전진 시간
 
     [Header("후퇴 설정")]
     public float retreatDistance = 3f;      // 후퇴 거리
@@ -49,6 +52,8 @@ public class MonsterAI : MonoBehaviour
     private bool hasConfrontedOnce = false;    // 최초 대치를 했는지
     private bool isAttackAnimating = false;     // 공격 애니메이션 중인지
     private bool hasTriggeredAttack = false;    // 공격 트리거를 보냈는지
+    private bool isLunging = false;             // 전진 중인지
+    private float lungeTimer = 0f;              // 전진 타이머
 
     // 대치 관련
     private float currentAngle = 0f;
@@ -76,6 +81,7 @@ public class MonsterAI : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
+        // 상태별 처리
         switch (currentState)
         {
             case State.Idle:
@@ -180,31 +186,54 @@ public class MonsterAI : MonoBehaviour
             return;
         }
 
-        // 원형으로 이동
         PerformCircularMovement();
 
-        // 플레이어를 바라봄
         LookAtPlayer();
     }
 
     void ProcessAttack(float distance)
     {
-        agent.isStopped = true;
+        LookAtPlayer();
 
         // 공격 트리거를 한 번만 보냄
         if (!hasTriggeredAttack && stateTimer >= 0.1f)
         {
             animator.SetTrigger("Attack");
             hasTriggeredAttack = true;
+            isLunging = true;
+            lungeTimer = 0f;
+        }
+
+        if (isLunging && lungeTimer < attackLungeDuration)
+        {
+            lungeTimer += Time.deltaTime;
+
+            // 플레이어 방향으로 전진
+            Vector3 lungeDirection = (player.position - transform.position).normalized;
+            lungeDirection.y = 0; 
+
+            Vector3 lungeTarget = transform.position + lungeDirection * attackLungeDistance;
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(lungeTarget, out hit, attackLungeDistance * 2f, NavMesh.AllAreas))
+            {
+                agent.isStopped = false;
+                agent.speed = attackLungeSpeed;
+                agent.SetDestination(hit.position);
+            }
+        }
+        else if (lungeTimer >= attackLungeDuration)
+        {
+            // 전진 완료 후 정지
+            isLunging = false;
+            agent.isStopped = true;
         }
 
         // 공격 애니메이션이 끝났고 충분한 시간이 지났으면 쿨다운으로
-        if (!isAttackAnimating && hasTriggeredAttack && stateTimer >= 1f)
+        if (!isAttackAnimating && hasTriggeredAttack && stateTimer >= 1.5f)
         {
             ChangeState(State.Cooldown);
         }
-
-        LookAtPlayer();
     }
 
     void ProcessCooldown(float distance)
@@ -250,6 +279,7 @@ public class MonsterAI : MonoBehaviour
             return;
         }
 
+        // 플레이어 반대 방향으로 후퇴
         Vector3 retreatDirection = (transform.position - player.position).normalized;
         Vector3 retreatTarget = transform.position + retreatDirection * retreatDistance;
 
@@ -267,10 +297,8 @@ public class MonsterAI : MonoBehaviour
 
     void PerformCircularMovement()
     {
-        // 각도 업데이트
         currentAngle += confrontSpeed * Time.deltaTime;
 
-        // 원형 궤도 계산
         float radian = currentAngle * Mathf.Deg2Rad;
         Vector3 offset = new Vector3(
             Mathf.Cos(radian) * confrontRadius,
@@ -280,7 +308,6 @@ public class MonsterAI : MonoBehaviour
 
         Vector3 targetPosition = player.position + offset;
 
-        // NavMesh 위의 유효한 위치 찾기
         NavMeshHit hit;
         if (NavMesh.SamplePosition(targetPosition, out hit, confrontRadius * 2f, NavMesh.AllAreas))
         {
@@ -322,7 +349,10 @@ public class MonsterAI : MonoBehaviour
         if (stateInfo.IsTag("Attack"))
         {
             isAttackAnimating = true;
-            agent.isStopped = true;
+            if (!isLunging)
+            {
+                agent.isStopped = true;
+            }
         }
         else
         {
@@ -346,6 +376,8 @@ public class MonsterAI : MonoBehaviour
         currentState = newState;
         stateTimer = 0f;
 
+        Debug.Log($"[{Time.time:F2}] State: {currentState}");
+
         // 새 상태 초기화
         switch (newState)
         {
@@ -362,6 +394,7 @@ public class MonsterAI : MonoBehaviour
 
             case State.Confront:
                 confrontTimer = 0f;
+                // 플레이어 기준 왼쪽에서 시작
                 Vector3 toPlayer = player.position - transform.position;
                 currentAngle = Mathf.Atan2(toPlayer.z, toPlayer.x) * Mathf.Rad2Deg + 90f;
                 animator.SetTrigger("LeftMove");
@@ -371,6 +404,8 @@ public class MonsterAI : MonoBehaviour
                 agent.isStopped = true;
                 isAttackAnimating = false;
                 hasTriggeredAttack = false;
+                isLunging = false;
+                lungeTimer = 0f;
                 break;
 
             case State.Cooldown:
@@ -385,5 +420,4 @@ public class MonsterAI : MonoBehaviour
                 break;
         }
     }
-
 }
