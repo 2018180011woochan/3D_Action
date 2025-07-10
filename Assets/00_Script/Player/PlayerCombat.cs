@@ -54,6 +54,7 @@ public class PlayerCombat : MonoBehaviour
     public GameObject BattoEffect3;
     public GameObject BattoAttackEffect;
     public GameObject BattoSwordEffect;
+    
     private GameObject spawnedBattoEffect1;
     private GameObject spawnedBattoEffect2;
     private GameObject spawnedBattoEffect3;
@@ -370,7 +371,6 @@ public class PlayerCombat : MonoBehaviour
         StartCoroutine(BattoSlash(0.3f, 10f));
 
         yield return new WaitForSeconds(0.1f);
-        Debug.Log("이펙트끄기");
 
         // 생성된 이펙트 오브젝트들 제거
         if (spawnedBattoEffect1 != null)
@@ -412,16 +412,26 @@ public class PlayerCombat : MonoBehaviour
         transform.position = targetPos;
 
         Vector3 forwardDir = transform.forward;
-
         Quaternion rot = Quaternion.LookRotation(forwardDir, Vector3.up);
 
-        Instantiate(
-            BattoSwordEffect,
-            swordTransform.position,
-            rot
-        );
-
+        Instantiate(BattoSwordEffect, swordTransform.position, rot);
         Instantiate(BattoAttackEffect, transform.position, transform.rotation);
+
+        float attackRadius = 5f;
+        float attackDamage = 10f; 
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attackRadius);
+        foreach (Collider hit in hitColliders)
+        {
+            if (hit.CompareTag("Monster"))
+            {
+                MonsterState monster = hit.GetComponent<MonsterState>();
+                if (monster != null)
+                {
+                    monster.TakeBatto(attackDamage);
+                }
+            }
+        }
     }
 
     IEnumerator FireSkillCooldown(float cooldownTime)
