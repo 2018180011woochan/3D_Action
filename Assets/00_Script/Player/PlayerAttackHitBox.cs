@@ -23,12 +23,11 @@ public class PlayerAttackHitBox : MonoBehaviour
             var ms = other.GetComponent<MonsterState>();
             if (ms != null)
             {
-                Debug.Log("충돌 성공");
+                UIManager.Instance.SetTargetMonster(ms);
                 ms.TakeDamage(damage);
 
                 if (AttackEffect != null)
                 {
-                    // 충돌 지점에 이펙트 생성
                     Vector3 hitPoint = other.ClosestPoint(transform.position);
                     GameObject effect = Instantiate(AttackEffect, hitPoint, Quaternion.identity);
 

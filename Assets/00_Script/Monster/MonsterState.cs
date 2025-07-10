@@ -5,6 +5,7 @@ public class MonsterState : MonoBehaviour
 {
     [Header("체력 설정")]
     public float maxHP = 100f;
+    public string monsterName;
     public float currentHP { get; private set; }
 
     public UnityEvent<float> onHealthChanged = new UnityEvent<float>();

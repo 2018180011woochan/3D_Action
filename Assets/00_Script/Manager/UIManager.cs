@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,15 @@ public class UIManager : MonoBehaviour
     [Header("BattoSkill")]
     [SerializeField] private Image battoSkillTimer;
     private Coroutine battoCooldownCoroutine;
+
+    [Header("Monster HP Bar")]
+    [SerializeField] private GameObject monsterHPUI;
+    [SerializeField] private Image monsterHPFillImage;
+    [SerializeField] private Image monsterHPDamageImage;
+    [SerializeField] private TextMeshProUGUI monsterNameText;
+    //[SerializeField] private TextMeshProUGUI monsterHPText;
+    private MonsterState currentTargetMonster;
+    private Coroutine monsterHPCoroutine;
 
     [SerializeField] private PlayerState playerState;
 
@@ -152,4 +162,40 @@ public class UIManager : MonoBehaviour
 
         barImage.fillAmount = targetFill;
     }
+
+    public void SetTargetMonster(MonsterState newTarget)
+    {
+        if (currentTargetMonster != null)
+            currentTargetMonster.onHealthChanged.RemoveListener(OnMonsterHealthChanged);
+
+        currentTargetMonster = newTarget;
+
+        if (currentTargetMonster != null)
+        {
+            monsterHPUI.SetActive(true);
+            monsterNameText.text = currentTargetMonster.monsterName;
+
+            float norm = currentTargetMonster.currentHP / currentTargetMonster.maxHP;
+            monsterHPFillImage.fillAmount = norm;
+            monsterHPDamageImage.fillAmount = norm;
+
+            currentTargetMonster.onHealthChanged.AddListener(OnMonsterHealthChanged);
+        }
+        else
+        {
+            monsterHPUI.SetActive(false);
+        }
+    }
+
+    private void OnMonsterHealthChanged(float normalizedHP)
+    {
+        monsterHPFillImage.fillAmount = normalizedHP;
+
+        if (monsterHPCoroutine != null)
+            StopCoroutine(monsterHPCoroutine);
+        monsterHPCoroutine = StartCoroutine(
+            AnimateBar(monsterHPDamageImage, normalizedHP)
+        );
+    }
+
 }
