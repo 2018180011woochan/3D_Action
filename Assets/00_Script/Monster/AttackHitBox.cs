@@ -11,7 +11,6 @@ public class AttackHitBox : MonoBehaviour
         animator = GetComponentInParent<Animator>();
     }
 
-
     void OnTriggerEnter(Collider other)
     {
 

@@ -68,6 +68,8 @@ public class PlayerCombat : MonoBehaviour
     public TimelineAsset fireSkillTimeline;    // ∫“≤… Ω∫≈≥ ƒ∆æ¿ ≈∏¿”∂Û¿Œ
     public TimelineAsset battoSkillTimeline;    // πﬂµµ Ω∫≈≥ ƒ«æ¿ ≈∏¿”∂Û¿Œ
 
+
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
