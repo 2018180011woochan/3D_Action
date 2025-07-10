@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AttackHitBox : MonoBehaviour
+public class PlayerAttackHitBox : MonoBehaviour
 {
     public float damage = 10f;
     Animator animator;
@@ -18,12 +18,13 @@ public class AttackHitBox : MonoBehaviour
         if (!animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             return;
 
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Monster"))
         {
-            var ps = other.GetComponent<PlayerState>();
-            if (ps != null)
+            var ms = other.GetComponent<MonsterState>();
+            if (ms != null)
             {
-                ps.TakeDamage(damage);
+                Debug.Log("충돌 성공");
+                ms.TakeDamage(damage);
 
                 if (AttackEffect != null)
                 {

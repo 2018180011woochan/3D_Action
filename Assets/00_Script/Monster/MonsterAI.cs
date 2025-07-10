@@ -73,7 +73,8 @@ public class MonsterAI : MonoBehaviour
     void Update()
     {
         if (player == null) return;
-
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
+            return;
         UpdateAnimationState();
 
         float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
@@ -376,7 +377,6 @@ public class MonsterAI : MonoBehaviour
         currentState = newState;
         stateTimer = 0f;
 
-        Debug.Log($"[{Time.time:F2}] State: {currentState}");
 
         // 새 상태 초기화
         switch (newState)
