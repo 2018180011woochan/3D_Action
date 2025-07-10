@@ -38,8 +38,8 @@ public class MonsterAI : MonoBehaviour
     private Transform player;
 
     // 상태 관리
-    private enum State { Idle, Wander, Chase, Confront, Attack, Cooldown, Retreat }
-    private State currentState = State.Idle;
+    public enum State { Idle, Wander, Chase, Confront, Attack, Cooldown, Retreat, Dead }
+    public State currentState = State.Idle;
 
     // 타이머
     private float wanderTimer = 0f;
@@ -72,9 +72,9 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
+        if (currentState == State.Dead) return;
         if (player == null) return;
-        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
-            return;
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit")) return;
         UpdateAnimationState();
 
         float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;

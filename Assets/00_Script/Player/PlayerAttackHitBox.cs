@@ -21,6 +21,7 @@ public class PlayerAttackHitBox : MonoBehaviour
         if (other.CompareTag("Monster"))
         {
             var ms = other.GetComponent<MonsterState>();
+            if (ms.isDead) return;
             if (ms != null)
             {
                 UIManager.Instance.SetTargetMonster(ms);

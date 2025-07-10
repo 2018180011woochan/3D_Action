@@ -7,6 +7,7 @@ public class MonsterState : MonoBehaviour
     public float maxHP = 100f;
     public string monsterName;
     public float currentHP { get; private set; }
+    public bool isDead = false;
 
     public UnityEvent<float> onHealthChanged = new UnityEvent<float>();
     Animator animator;
@@ -23,5 +24,14 @@ public class MonsterState : MonoBehaviour
         onHealthChanged.Invoke(currentHP / maxHP);
 
         animator.SetTrigger("GetHit");
+
+        if (currentHP <= 0f)
+        {
+            isDead = true;
+            var monAI = GetComponent<MonsterAI>();
+            monAI.currentState = MonsterAI.State.Dead;
+            animator.SetTrigger("Dead");
+            UIManager.Instance.SetTargetMonster(null);
+        }
     }
 }
