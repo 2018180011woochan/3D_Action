@@ -30,7 +30,7 @@ public class PlayerState : MonoBehaviour
             blockParticle = BlockEffect.GetComponent<ParticleSystem>();
     }
 
-    public void TakeDamage(float dmg)
+    public bool TakeDamage(float dmg)
     {
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block"))
         {
@@ -38,13 +38,14 @@ public class PlayerState : MonoBehaviour
             blockParticle?.Play();
 
             StartCoroutine(DisableBlockEffect());
-            return;
+            return false;
         }
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
 
         animator.SetTrigger("GetHit");
         bloodScreen?.Flash();
+        return true;
     }
     IEnumerator DisableBlockEffect()
     {

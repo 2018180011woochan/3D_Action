@@ -13,7 +13,6 @@ public class AttackHitBox : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-
         if (!animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             return;
 
@@ -22,7 +21,13 @@ public class AttackHitBox : MonoBehaviour
             var ps = other.GetComponent<PlayerState>();
             if (ps != null)
             {
-                ps.TakeDamage(damage);
+                bool isAttackSucces = ps.TakeDamage(damage);
+
+                if (false == isAttackSucces)
+                {
+                    // 패링 효과로 기절 
+                    animator.SetTrigger("GetHit");
+                }
 
                 if (AttackEffect != null)
                 {
