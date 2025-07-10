@@ -163,11 +163,9 @@ public class UIManager : MonoBehaviour
 
     public void AddTargetMonster(MonsterState m)
     {
-        // 이미 표시 중이면 패스
         if (activeBars.Exists(b => b.nameText.text == m.monsterName))
             return;
 
-        // 슬롯 여유가 없으면 가장 오래된 것 제거
         if (activeBars.Count >= maxBars)
         {
             var old = activeBars[0];
@@ -175,7 +173,6 @@ public class UIManager : MonoBehaviour
             Destroy(old.gameObject);
         }
 
-        // 프리팹 인스턴스화
         var bar = Instantiate(monsterHPBarPrefab, monsterHPParent);
         bar.Initialize(m);
         activeBars.Add(bar);

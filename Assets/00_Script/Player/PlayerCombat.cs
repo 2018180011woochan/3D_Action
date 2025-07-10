@@ -96,6 +96,12 @@ public class PlayerCombat : MonoBehaviour
             HandleComboClick();
         }
 
+        if (Input.GetMouseButtonDown(1))    
+        {
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsTag("Block"))
+                HandleBlock();
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             StartSkillCutscene();
@@ -208,6 +214,11 @@ public class PlayerCombat : MonoBehaviour
         }
 
         comboTimer = comboResetTime;
+    }
+
+    void HandleBlock()
+    {
+        animator.SetTrigger("Block");
     }
 
     public void StartAttack1Effect()
