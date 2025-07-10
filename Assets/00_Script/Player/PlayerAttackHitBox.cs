@@ -24,7 +24,7 @@ public class PlayerAttackHitBox : MonoBehaviour
             if (ms.isDead) return;
             if (ms != null)
             {
-                UIManager.Instance.SetTargetMonster(ms);
+                UIManager.Instance.AddTargetMonster(ms);
                 ms.TakeDamage(damage);
 
                 if (AttackEffect != null)

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,13 +29,10 @@ public class UIManager : MonoBehaviour
     private Coroutine battoCooldownCoroutine;
 
     [Header("Monster HP Bar")]
-    [SerializeField] private GameObject monsterHPUI;
-    [SerializeField] private Image monsterHPFillImage;
-    [SerializeField] private Image monsterHPDamageImage;
-    [SerializeField] private TextMeshProUGUI monsterNameText;
-    //[SerializeField] private TextMeshProUGUI monsterHPText;
-    private MonsterState currentTargetMonster;
-    private Coroutine monsterHPCoroutine;
+    [SerializeField] public MonsterHPBar monsterHPBarPrefab;
+    [SerializeField] public Transform monsterHPParent;
+    private List<MonsterHPBar> activeBars = new List<MonsterHPBar>();
+    private int maxBars = 2;
 
     [SerializeField] private PlayerState playerState;
 
@@ -145,7 +143,7 @@ public class UIManager : MonoBehaviour
             AnimateBar(stamDamageImage, normalizedStam));
     }
 
-    IEnumerator AnimateBar(Image barImage, float targetFill)
+    public IEnumerator AnimateBar(Image barImage, float targetFill)
     {
         yield return new WaitForSeconds(damageDelay);
 
@@ -163,39 +161,35 @@ public class UIManager : MonoBehaviour
         barImage.fillAmount = targetFill;
     }
 
-    public void SetTargetMonster(MonsterState newTarget)
+    public void AddTargetMonster(MonsterState m)
     {
-        if (currentTargetMonster != null)
-            currentTargetMonster.onHealthChanged.RemoveListener(OnMonsterHealthChanged);
+        // 이미 표시 중이면 패스
+        if (activeBars.Exists(b => b.nameText.text == m.monsterName))
+            return;
 
-        currentTargetMonster = newTarget;
-
-        if (currentTargetMonster != null)
+        // 슬롯 여유가 없으면 가장 오래된 것 제거
+        if (activeBars.Count >= maxBars)
         {
-            monsterHPUI.SetActive(true);
-            monsterNameText.text = currentTargetMonster.monsterName;
-
-            float norm = currentTargetMonster.currentHP / currentTargetMonster.maxHP;
-            monsterHPFillImage.fillAmount = norm;
-            monsterHPDamageImage.fillAmount = norm;
-
-            currentTargetMonster.onHealthChanged.AddListener(OnMonsterHealthChanged);
+            var old = activeBars[0];
+            activeBars.RemoveAt(0);
+            Destroy(old.gameObject);
         }
-        else
-        {
-            monsterHPUI.SetActive(false);
-        }
+
+        // 프리팹 인스턴스화
+        var bar = Instantiate(monsterHPBarPrefab, monsterHPParent);
+        bar.Initialize(m);
+        activeBars.Add(bar);
     }
 
-    private void OnMonsterHealthChanged(float normalizedHP)
+    // 몬스터가 사망하거나 타겟에서 해제될 때 호출
+    public void RemoveTargetMonster(MonsterState m)
     {
-        monsterHPFillImage.fillAmount = normalizedHP;
-
-        if (monsterHPCoroutine != null)
-            StopCoroutine(monsterHPCoroutine);
-        monsterHPCoroutine = StartCoroutine(
-            AnimateBar(monsterHPDamageImage, normalizedHP)
-        );
+        var bar = activeBars.Find(b => b.nameText.text == m.monsterName);
+        if (bar != null)
+        {
+            activeBars.Remove(bar);
+            Destroy(bar.gameObject);
+        }
     }
 
 }

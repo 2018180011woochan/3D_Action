@@ -31,7 +31,7 @@ public class MonsterState : MonoBehaviour
             var monAI = GetComponent<MonsterAI>();
             monAI.currentState = MonsterAI.State.Dead;
             animator.SetTrigger("Dead");
-            UIManager.Instance.SetTargetMonster(null);
+            UIManager.Instance.RemoveTargetMonster(this);
         }
     }
 }
