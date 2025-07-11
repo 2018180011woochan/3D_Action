@@ -233,6 +233,9 @@ public class KerriganAI : MonoBehaviour
         if (isMovingToKick && !isPerformingKick)
         {
             kickTimer += Time.deltaTime;
+
+            agent.SetDestination(player.position);
+
             // 사거리에 도달했는지 확인
             if (distanceToPlayer <= kickRange)
             {

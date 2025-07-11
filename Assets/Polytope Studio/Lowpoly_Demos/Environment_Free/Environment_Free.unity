@@ -3928,8 +3928,9 @@ MonoBehaviour:
   backStepDistance: 5
   backStepSpeed: 2
   confrontDecisionTime: 3
-  kickRange: 1
+  kickRange: 2
   kickDuration: 3
+  kickApproachTimeout: 5
   player: {fileID: 881868598}
   currentState: 0
 --- !u!1 &1589245842
@@ -7005,6 +7006,7 @@ GameObject:
   - component: {fileID: 931810331081023829}
   - component: {fileID: 1583921502}
   - component: {fileID: 931810331081023830}
+  - component: {fileID: 931810331081023831}
   m_Layer: 0
   m_Name: Kerrigan
   m_TagString: Monster
@@ -13009,7 +13011,7 @@ Transform:
   m_GameObject: {fileID: 13261616404634129}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.69515103, z: -0, w: 0.71886367}
-  m_LocalPosition: {x: 30.5051, y: 3.135, z: 68.90192}
+  m_LocalPosition: {x: 17.35, y: 3.32, z: 65.04}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13190,6 +13192,27 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!65 &931810331081023831
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13261616404634129}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.84, z: 1}
+  m_Center: {x: 0, y: 1.06, z: 0}
 --- !u!1 &933429376714913770
 GameObject:
   m_ObjectHideFlags: 0
