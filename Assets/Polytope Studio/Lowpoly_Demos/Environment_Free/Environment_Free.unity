@@ -2492,7 +2492,6 @@ MonoBehaviour:
   lockOnKey: 9
   lockOnRange: 15
   playerCamera: {fileID: 1015940006}
-  cameraResetSpeed: 5
 --- !u!1 &894822542
 GameObject:
   m_ObjectHideFlags: 0

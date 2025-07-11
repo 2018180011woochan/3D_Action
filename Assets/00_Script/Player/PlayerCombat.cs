@@ -61,7 +61,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("ÄÆ¾À ¼³Á¤")]
     public PlayableDirector skillCutsceneDirector;
-    public CinemachineCamera mainCamera;
+    public CinemachineCamera playerCamera;
     public CinemachineCamera skillCutsceneCamera;
     private bool isPlayingCutscene = false;
 
@@ -129,9 +129,9 @@ public class PlayerCombat : MonoBehaviour
         fireSkill = true;
         FireSkillEfecctPrefab.SetActive(true);
 
-        if (mainCamera != null && skillCutsceneCamera != null)
+        if (playerCamera != null && skillCutsceneCamera != null)
         {
-            mainCamera.Priority = 0;
+            playerCamera.Priority = 0;
             skillCutsceneCamera.Priority = 10;
         }
 
@@ -165,9 +165,9 @@ public class PlayerCombat : MonoBehaviour
         animator.SetTrigger("Skill2Ready");
         battoSkill = true;
 
-        if (mainCamera != null && skillCutsceneCamera != null)
+        if (playerCamera != null && skillCutsceneCamera != null)
         {
-            mainCamera.Priority = 0;
+            playerCamera.Priority = 0;
             skillCutsceneCamera.Priority = 10;
         }
 
@@ -188,9 +188,9 @@ public class PlayerCombat : MonoBehaviour
             isPlayingCutscene = false;
 
             // ¸ÞÀÎ Ä«¸Þ¶ó·Î º¹±Í
-            if (mainCamera != null && skillCutsceneCamera != null)
+            if (playerCamera != null && skillCutsceneCamera != null)
             {
-                mainCamera.Priority = 10;
+                playerCamera.Priority = 10;
                 skillCutsceneCamera.Priority = 0;
             }
         }
