@@ -32,6 +32,22 @@ public class KerriganAI : MonoBehaviour
     private float kickTimer = 0f;             // 킥 타이머
     private bool isMovingToKick = false;      // 킥 위치로 이동 중인지
     public float kickApproachTimeout = 5f;
+
+    [Header("근접 공격 관련")]
+    private bool isPerformingMelee = false;    
+    private float meleeTimer = 0f;             // 공격 시작한지 몇 초 됐나?
+    public float leftHookDuration = 1.15f;      // 레프트훅은 1.15초 걸림
+    private bool hasDecidedCloseAction = false;
+    public float leftHookMoveSpeed = 2f;        // 추가
+    private Vector3 leftHookDirection;
+
+    [Header("스윙 공격 관련")]
+    public float swingForwardDistance = 3f;    // 앞으로 이동할 거리
+    public float swingDuration = 0.5f;         // 스윙 애니메이션/이동 지속 시간
+    private bool isPerformingSwing = false;    // 스윙 중인지
+    private float swingTimer = 0f;             // 스윙 타이머
+    private Vector3 swingStartPos;
+    private Vector3 swingDirection;
     private enum ConfrontAction
     {
         Circling,    // 공전
@@ -287,20 +303,110 @@ public class KerriganAI : MonoBehaviour
 
     void HandleCirclingBehavior()
     {
+        if (isPerformingMelee)
+        {
+            HandleLeftHookAttack();
+            return;
+        }
+        if (isPerformingSwing)
+        {
+            HandleSwingAttack();
+            return;
+        }
+
         float currentDistance = Vector3.Distance(transform.position, player.position);
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         Vector3 Direction = Vector3.Cross(Vector3.up, directionToPlayer);
 
         if (currentDistance < backStepDistance)
         {
-            isBackStep = true;
-            Vector3 backDirection = -directionToPlayer;
-            transform.position += backDirection * backStepSpeed * Time.deltaTime;
+            if (!hasDecidedCloseAction)
+            {
+                hasDecidedCloseAction = true;
+
+                if (Random.Range(0, 2) == 0)
+                {
+                    isBackStep = true;
+                    Debug.Log("보스 백스텝");
+                }
+                else
+                {
+                    isBackStep = false;
+                    StartLeftHookAttack();
+                    Debug.Log("보스 레프트훅");
+                }
+            }
+
+            if (isBackStep)
+            {
+                Vector3 backDirection = -directionToPlayer;
+                transform.position += backDirection * backStepSpeed * Time.deltaTime;
+            }
         }
         else
         {
-            transform.position += Direction * confrontSpeed * Time.deltaTime;
+            hasDecidedCloseAction = false;
             isBackStep = false;
+
+            transform.position += Direction * confrontSpeed * Time.deltaTime;
+        }
+    }
+    void StartLeftHookAttack()
+    {
+        isPerformingMelee = true;
+        meleeTimer = 0f;
+
+        leftHookDirection = (player.position - transform.position).normalized;
+        leftHookDirection.y = 0;
+
+        if (agent != null && agent.enabled)
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+        }
+
+        animator.SetTrigger("LeftHook");
+    }
+
+    void HandleLeftHookAttack()
+    {
+        meleeTimer += Time.deltaTime;
+
+        transform.position += leftHookDirection * leftHookMoveSpeed * Time.deltaTime;
+
+        if (meleeTimer >= leftHookDuration)
+        {
+            isPerformingMelee = false;
+            meleeTimer = 0f;
+            //hasDecidedCloseAction = false;
+            StartSwingAttack();
+        }
+    }
+
+    void StartSwingAttack()
+    {
+        isPerformingSwing = true;
+        swingTimer = 0f;
+        swingStartPos = transform.position;
+        swingDirection = (player.position - transform.position).normalized;
+
+        // Animator에 "Swing" 트리거를 설정해 주세요
+        animator.SetTrigger("Swing");
+    }
+
+    void HandleSwingAttack()
+    {
+        swingTimer += Time.deltaTime;
+        float t = Mathf.Min(swingTimer / swingDuration, 1f);
+        // 선형 보간으로 앞으로 이동
+        transform.position = swingStartPos + swingDirection * (swingForwardDistance * t);
+
+        if (swingTimer >= swingDuration)
+        {
+            // 스윙 끝나면 상태 초기화
+            isPerformingSwing = false;
+            swingTimer = 0f;
+            hasDecidedCloseAction = false;
         }
     }
 
