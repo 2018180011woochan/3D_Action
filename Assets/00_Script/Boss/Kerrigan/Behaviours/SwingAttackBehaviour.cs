@@ -24,7 +24,7 @@ public class SwingAttackBehaviour : StateMachineBehaviour
             if (hitBoxCollider == null)
                 Debug.LogWarning("히트박스 오브젝트에 Collider가 없습니다!");
             else
-                hitBoxCollider.enabled = false;    // 처음엔 꺼둠
+                hitBoxCollider.enabled = false;    
 
             Debug.Log("스윙어택박스 스크립트 찾음ㅋ");
         }
@@ -48,14 +48,12 @@ public class SwingAttackBehaviour : StateMachineBehaviour
         {
             hitBoxCollider.enabled = true;
             isEnabled = true;
-            Debug.Log($"히트박스 ON at {currentTime:F2}초");
         }
         // 히트박스 끄기
         else if (isEnabled && currentTime >= hitTimeEnd)
         {
             hitBoxCollider.enabled = false;
             isEnabled = false;
-            Debug.Log($"히트박스 OFF at {currentTime:F2}초");
         }
     }
 

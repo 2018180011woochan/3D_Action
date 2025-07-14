@@ -231,8 +231,11 @@ public class KerriganAI : MonoBehaviour
 
     void HandleConfrontingBehavior()
     {
-        // 킥 공격 중이 아닐 때만 타이머 업데이트
-        if (!isPerformingKick && !isMovingToKick)
+        bool isAttacking = isPerformingKick || isMovingToKick || isPerformingRanged ||
+                           isPerformingMelee || isPerformingSwing;
+
+        // 공격 중이 아닐 때만 타이머 업데이트
+        if (!isAttacking)
         {
             confrontTimer += Time.deltaTime;
 
@@ -289,8 +292,7 @@ public class KerriganAI : MonoBehaviour
         // 보스가 바라보는 방향의 앞쪽에 소환 위치 계산
         Vector3 spawnPosition = transform.position + transform.forward * 1f;
 
-        // 바닥 높이에 맞추기 
-        spawnPosition.y = transform.position.y;
+        spawnPosition.y = transform.position.y + 3f;
 
         // 불꽃 파티클 생성
         GameObject projectile = Instantiate(pase1Projectile, spawnPosition, transform.rotation);

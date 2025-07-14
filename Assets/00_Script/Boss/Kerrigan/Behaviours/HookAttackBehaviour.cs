@@ -47,14 +47,12 @@ public class HookAttackBehaviour : StateMachineBehaviour
         {
             hitBoxCollider.enabled = true;
             isEnabled = true;
-            Debug.Log($"히트박스 ON at {currentTime:F2}초");
         }
         // 히트박스 끄기
         else if (isEnabled && currentTime >= hitTimeEnd)
         {
             hitBoxCollider.enabled = false;
             isEnabled = false;
-            Debug.Log($"히트박스 OFF at {currentTime:F2}초");
         }
     }
 

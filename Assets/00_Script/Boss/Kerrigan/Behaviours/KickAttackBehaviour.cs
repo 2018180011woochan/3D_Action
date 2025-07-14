@@ -33,19 +33,16 @@ public class KickAttackBehaviour : StateMachineBehaviour
     {
         if (hitBoxCollider == null) return;
 
-        // stateInfo.normalizedTime: 0~무한대 (0~1이 1회차)
         float clipTime = (stateInfo.normalizedTime % 1f) * stateInfo.length;
 
         if (!hasActivated && clipTime >= hitTimeStart && clipTime < hitTimeEnd)
         {
             hitBoxCollider.enabled = true;
             hasActivated = true;
-            Debug.Log($"Kick 히트박스 ON @ {clipTime:F2}s");
         }
         else if (hasActivated && clipTime >= hitTimeEnd)
         {
             hitBoxCollider.enabled = false;
-            Debug.Log($"Kick 히트박스 OFF @ {clipTime:F2}s");
         }
     }
 
