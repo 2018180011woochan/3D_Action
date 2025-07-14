@@ -48,6 +48,14 @@ public class KerriganAI : MonoBehaviour
     private float swingTimer = 0f;             // 스윙 타이머
     private Vector3 swingStartPos;
     private Vector3 swingDirection;
+
+    [Header("페이즈1 투사체")]
+    public GameObject pase1Projectile;
+    public float rangedAttackDuration = 2.08f;  // 원거리 공격 애니메이션 지속 시간
+    public float projectileSpawnTime = 1.2f;    // 공격하려고 팔을 뻗는 프레임 시간 
+    private bool isPerformingRanged = false;    // 원거리 공격 중인지
+    private float rangedTimer = 0f;             // 원거리 공격 타이머
+    private bool hasSpawnedProjectile = false;
     private enum ConfrontAction
     {
         Circling,    // 공전
@@ -135,10 +143,6 @@ public class KerriganAI : MonoBehaviour
                 EnterConfrontState();
             }
         }
-        else
-        {
-            //EnterAttackState();
-        }
     }
 
     void ApproachPlayer()
@@ -187,13 +191,14 @@ public class KerriganAI : MonoBehaviour
                 break;
             case 1:
                 currentConfrontAction = ConfrontAction.KickAttack;
-                Debug.Log("보스: 킥 공격 선택! ");
                 StartKickAttack();
+
+                Debug.Log("보스: 킥 공격 선택!");
                 break;
             case 2:
                 currentConfrontAction = ConfrontAction.RangedAttack;
-                Debug.Log("보스: 원거리 공격 선택! (킥공격 테스트해야대니까 여기도 킥)");
-                StartKickAttack();
+                Debug.Log("보스: 원거리 공격 선택! ");
+                StartRangedAttack();
                 break;
         }
     }
@@ -209,6 +214,19 @@ public class KerriganAI : MonoBehaviour
         agent.stoppingDistance = kickRange;
         agent.SetDestination(player.position);
        
+    }
+
+    void StartRangedAttack()
+    {
+        isPerformingRanged = true;
+        rangedTimer = 0f;
+        hasSpawnedProjectile = false;
+
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+
+        animator.SetTrigger("RangeAttack"); 
+        
     }
 
     void HandleConfrontingBehavior()
@@ -235,10 +253,49 @@ public class KerriganAI : MonoBehaviour
                 HandleKickAttack();
                 break;
             case ConfrontAction.RangedAttack:
-                // 킥테스트를 위해 여기도 킥
-                HandleKickAttack();
+                HandleRangedAttack();
                 break;
         }
+    }
+
+    void HandleRangedAttack()
+    {
+        if (isPerformingRanged)
+        {
+            rangedTimer += Time.deltaTime;
+
+            if (!hasSpawnedProjectile && rangedTimer >= projectileSpawnTime)
+            {
+                SpawnProjectile();
+                hasSpawnedProjectile = true;
+            }
+
+            // 원거리 공격 종료
+            if (rangedTimer >= rangedAttackDuration)
+            {
+                isPerformingRanged = false;
+                rangedTimer = 0f;
+                confrontTimer = 0f;
+
+                // 다시 공전 상태로
+                currentConfrontAction = ConfrontAction.Circling;
+                Debug.Log("보스: 원거리 공격 종료, 공전 상태로 복귀");
+            }
+        }
+    }
+
+    void SpawnProjectile()
+    {
+        // 보스가 바라보는 방향의 앞쪽에 소환 위치 계산
+        Vector3 spawnPosition = transform.position + transform.forward * 1f;
+
+        // 바닥 높이에 맞추기 
+        spawnPosition.y = transform.position.y;
+
+        // 불꽃 파티클 생성
+        GameObject projectile = Instantiate(pase1Projectile, spawnPosition, transform.rotation);
+
+        Debug.Log("보스: 불꽃 공격 발동!");
     }
 
     void HandleKickAttack()
@@ -313,6 +370,11 @@ public class KerriganAI : MonoBehaviour
             HandleSwingAttack();
             return;
         }
+        if (isPerformingRanged)
+        {
+            HandleRangedAttack();
+            return;
+        }
 
         float currentDistance = Vector3.Distance(transform.position, player.position);
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
@@ -335,6 +397,7 @@ public class KerriganAI : MonoBehaviour
                     StartLeftHookAttack();
                     Debug.Log("보스 레프트훅");
                 }
+
             }
 
             if (isBackStep)
@@ -378,7 +441,6 @@ public class KerriganAI : MonoBehaviour
         {
             isPerformingMelee = false;
             meleeTimer = 0f;
-            //hasDecidedCloseAction = false;
             StartSwingAttack();
         }
     }
@@ -390,7 +452,6 @@ public class KerriganAI : MonoBehaviour
         swingStartPos = transform.position;
         swingDirection = (player.position - transform.position).normalized;
 
-        // Animator에 "Swing" 트리거를 설정해 주세요
         animator.SetTrigger("Swing");
     }
 
@@ -398,7 +459,6 @@ public class KerriganAI : MonoBehaviour
     {
         swingTimer += Time.deltaTime;
         float t = Mathf.Min(swingTimer / swingDuration, 1f);
-        // 선형 보간으로 앞으로 이동
         transform.position = swingStartPos + swingDirection * (swingForwardDistance * t);
 
         if (swingTimer >= swingDuration)
@@ -407,6 +467,7 @@ public class KerriganAI : MonoBehaviour
             isPerformingSwing = false;
             swingTimer = 0f;
             hasDecidedCloseAction = false;
+
         }
     }
 
@@ -429,8 +490,7 @@ public class KerriganAI : MonoBehaviour
         else if (currentState == BossState.Confronting)
         {
             // 킥 공격 중일 때
-            if (currentConfrontAction == ConfrontAction.KickAttack ||
-            currentConfrontAction == ConfrontAction.RangedAttack)
+            if (currentConfrontAction == ConfrontAction.KickAttack)
             {
                 if (isMovingToKick)
                 {
@@ -446,6 +506,14 @@ public class KerriganAI : MonoBehaviour
                 else if (isPerformingKick)
                 {
                     // 킥 동작 중
+                    animator.SetFloat("Speed", 0);
+                }
+            }
+            else if (currentConfrontAction == ConfrontAction.RangedAttack)
+            {
+                if (isPerformingRanged)
+                {
+                    // 원거리 공격 동작 중
                     animator.SetFloat("Speed", 0);
                 }
             }
