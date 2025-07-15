@@ -63,17 +63,11 @@ public class PlayerState : MonoBehaviour
         animator.SetTrigger("GetCritical");
         bloodScreen?.Flash();
 
-        StartKnockback(dir);
-        return true;
-    }
-
-    void StartKnockback(Vector3 dir)
-    {
         if (playerController != null)
         {
             playerController.ApplyKnockback(dir.normalized, knockbackForce);
         }
-
+        return true;
     }
 
     IEnumerator DisableBlockEffect()

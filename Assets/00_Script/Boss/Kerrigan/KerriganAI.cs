@@ -156,7 +156,7 @@ public class KerriganAI : MonoBehaviour
         }
 
         UpdateAnimatorParameters();
-        Debug.Log("보스: 추격 상태 진입!");
+        //Debug.Log("보스: 추격 상태 진입!");
     }
 
     void EnterConfrontState()
@@ -174,7 +174,7 @@ public class KerriganAI : MonoBehaviour
         confrontTimer = 0f;
 
         UpdateAnimatorParameters();
-        Debug.Log("보스: 대치 상태 진입!");
+        //Debug.Log("보스: 대치 상태 진입!");
     }
 
     void DecideConfrontAction()
@@ -187,17 +187,17 @@ public class KerriganAI : MonoBehaviour
         {
             case 0:
                 currentConfrontAction = ConfrontAction.Circling;
-                Debug.Log("보스: 공전하며 대치!");
+                //Debug.Log("보스: 공전하며 대치!");
                 break;
             case 1:
                 currentConfrontAction = ConfrontAction.KickAttack;
                 StartKickAttack();
 
-                Debug.Log("보스: 킥 공격 선택!");
+                //Debug.Log("보스: 킥 공격 선택!");
                 break;
             case 2:
                 currentConfrontAction = ConfrontAction.RangedAttack;
-                Debug.Log("보스: 원거리 공격 선택! ");
+                //Debug.Log("보스: 원거리 공격 선택! ");
                 StartRangedAttack();
                 break;
         }
@@ -282,7 +282,7 @@ public class KerriganAI : MonoBehaviour
 
                 // 다시 공전 상태로
                 currentConfrontAction = ConfrontAction.Circling;
-                Debug.Log("보스: 원거리 공격 종료, 공전 상태로 복귀");
+                //Debug.Log("보스: 원거리 공격 종료, 공전 상태로 복귀");
             }
         }
     }
@@ -297,7 +297,7 @@ public class KerriganAI : MonoBehaviour
         // 불꽃 파티클 생성
         GameObject projectile = Instantiate(pase1Projectile, spawnPosition, transform.rotation);
 
-        Debug.Log("보스: 불꽃 공격 발동!");
+        //Debug.Log("보스: 불꽃 공격 발동!");
     }
 
     void HandleKickAttack()
@@ -327,7 +327,7 @@ public class KerriganAI : MonoBehaviour
             // 5초 동안 접근 못하면 포기
             else if (kickTimer >= kickApproachTimeout)
             {
-                Debug.Log("보스: 킥 공격 포기! 플레이어가 너무 멀어짐");
+                //Debug.Log("보스: 킥 공격 포기! 플레이어가 너무 멀어짐");
 
                 // 킥 공격 취소
                 isMovingToKick = false;
@@ -391,13 +391,13 @@ public class KerriganAI : MonoBehaviour
                 if (Random.Range(0, 2) == 0)
                 {
                     isBackStep = true;
-                    Debug.Log("보스 백스텝");
+                    //Debug.Log("보스 백스텝");
                 }
                 else
                 {
                     isBackStep = false;
                     StartLeftHookAttack();
-                    Debug.Log("보스 레프트훅");
+                    //Debug.Log("보스 레프트훅");
                 }
 
             }
