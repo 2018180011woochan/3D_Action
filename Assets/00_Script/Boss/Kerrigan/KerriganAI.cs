@@ -60,6 +60,9 @@ public class KerriganAI : MonoBehaviour
     [Header("페이즈 2 관련")]
     private bool isPhase2 = false; // 2페이즈 최초 진입했는가
     private float phase2Timer = 0f; // 2페이즈 타이머
+    public float flyAltitude = 8f;
+    public float flyUpAnimDuration = 5f;
+
     public float upConfrontSpeed = 4f;  // 공중에서 공전하는 속도
     public float upDuration = 5f; // 공전 지속 시간 
     public float restDuration = 3f;  // 착지 후 휴식 시간 
@@ -155,7 +158,7 @@ public class KerriganAI : MonoBehaviour
             currentPhase2State = Phase2State.Uping;
             phase2Timer = 0f; // 타이머 초기화
 
-            animator.SetTrigger("FlyUp"); 
+            animator.SetTrigger("FlyUp");
             Debug.Log("보스: 2페이즈 시작! 공중으로 떠오릅니다.");
         }
 
@@ -165,9 +168,9 @@ public class KerriganAI : MonoBehaviour
             case Phase2State.Uping:
                 HandleUping();
                 break;
-                // case Phase2State.Orbiting:
-                //     // HandleOrbiting(); // 다음 단계에서 구현
-                //     break;
+            case Phase2State.FlyContront:
+                HandleFlyContront(); // 다음 단계에서 구현
+                break;
                 // case Phase2State.Attacking:
                 //     // HandlePhase2Attack(); // 다음 단계에서 구현
                 //     break;
@@ -182,23 +185,37 @@ public class KerriganAI : MonoBehaviour
 
     void HandleUping()
     {
-/*        // 목표 높이에 도달할 때까지 위로 이동
-        // 목표 위치: 현재 X, Z 위치는 그대로 두고 Y축(높이)만 phase2Altitude로 변경
-        Vector3 targetPosition = new Vector3(transform.position.x, upDistance, transform.position.z);
+        Vector3 targetPosition = new Vector3(transform.position.x, flyAltitude, transform.position.z);
 
-        // MoveTowards를 사용해 부드럽게 목표 위치로 이동
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, upMoveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, 3f * Time.deltaTime);
 
-        // 목표 높이에 거의 도달했다면
-        if (transform.position.y >= upDistance - 0.1f)
+        if (transform.position.y >= flyAltitude)
         {
-            // 다음 상태인 '공전'으로 전환
             currentPhase2State = Phase2State.FlyContront;
-            phase2Timer = 0f; // 다음 상태를 위해 타이머 초기화
-            Debug.Log("보스: 목표 고도 도달. 플레이어 주위를 공전합니다.");
-        }*/
+            phase2Timer = 0f; 
+        }
+    }
 
+    void HandleFlyContront()
+    {
+        phase2Timer += Time.deltaTime;
 
+        if (phase2Timer >= upDuration)
+        {
+            currentPhase2State = Phase2State.FlyAttack;
+            phase2Timer = 0f; 
+            Debug.Log("원거리 공격 시작");
+            return; 
+        }
+
+        Vector3 directionToPlayer = player.position - transform.position;
+        directionToPlayer.y = 0; 
+        directionToPlayer.Normalize();
+
+        Vector3 orbitDirection = Vector3.Cross(directionToPlayer, Vector3.up);
+
+        transform.position += orbitDirection * upConfrontSpeed * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, flyAltitude, transform.position.z);
     }
 
     bool IsPhase1()
@@ -564,53 +581,66 @@ public class KerriganAI : MonoBehaviour
         animator.SetBool("isMovingRight", false);
         animator.SetBool("isWalkingBack", false);
 
-        if (currentState == Phase1State.Walk)
+        if (!isPhase2)
         {
-            currentSpeed = agent.velocity.magnitude;
-            animator.SetFloat("Speed", currentSpeed);
-            animator.SetBool("isWalking", currentSpeed > 0.1f);
-        }
-        else if (currentState == Phase1State.Confronting)
-        {
-            // 킥 공격 중일 때
-            if (currentConfrontAction == ConfrontAction.KickAttack)
+            if (currentState == Phase1State.Walk)
             {
-                if (isMovingToKick)
+                currentSpeed = agent.velocity.magnitude;
+                animator.SetFloat("Speed", currentSpeed);
+                animator.SetBool("isWalking", currentSpeed > 0.1f);
+            }
+            else if (currentState == Phase1State.Confronting)
+            {
+                // 킥 공격 중일 때
+                if (currentConfrontAction == ConfrontAction.KickAttack)
                 {
-                    // 킥 위치로 이동 중
-                    currentSpeed = agent.velocity.magnitude;
-                    animator.SetFloat("Speed", currentSpeed);
-                    if (currentSpeed > 0.1f)
+                    if (isMovingToKick)
                     {
-                        animator.SetBool("isRunning", true);
-                        animator.SetBool("isWalking", false);
+                        // 킥 위치로 이동 중
+                        currentSpeed = agent.velocity.magnitude;
+                        animator.SetFloat("Speed", currentSpeed);
+                        if (currentSpeed > 0.1f)
+                        {
+                            animator.SetBool("isRunning", true);
+                            animator.SetBool("isWalking", false);
+                        }
+                    }
+                    else if (isPerformingKick)
+                    {
+                        // 킥 동작 중
+                        animator.SetFloat("Speed", 0);
                     }
                 }
-                else if (isPerformingKick)
+                else if (currentConfrontAction == ConfrontAction.RangedAttack)
                 {
-                    // 킥 동작 중
-                    animator.SetFloat("Speed", 0);
+                    if (isPerformingRanged)
+                    {
+                        // 원거리 공격 동작 중
+                        animator.SetFloat("Speed", 0);
+                    }
                 }
-            }
-            else if (currentConfrontAction == ConfrontAction.RangedAttack)
-            {
-                if (isPerformingRanged)
-                {
-                    // 원거리 공격 동작 중
-                    animator.SetFloat("Speed", 0);
-                }
-            }
-            // 공전 중일 때
-            else
-            {
-                animator.SetFloat("Speed", 0);
-                if (isBackStep)
-                    animator.SetBool("isWalkingBack", true);
+                // 공전 중일 때
                 else
-                    animator.SetBool("isMovingRight", true);
+                {
+                    animator.SetFloat("Speed", 0);
+                    if (isBackStep)
+                        animator.SetBool("isWalkingBack", true);
+                    else
+                        animator.SetBool("isMovingRight", true);
+                }
             }
         }
-
+        else    // 2페이즈
+        {
+            animator.SetBool("isFlyingLeft", false);
+            switch (currentPhase2State)
+            {
+                case Phase2State.FlyContront:
+                    animator.SetBool("isFlyingLeft", true);
+                    break;
+            }
+            return;
+        }
 
     }
 
