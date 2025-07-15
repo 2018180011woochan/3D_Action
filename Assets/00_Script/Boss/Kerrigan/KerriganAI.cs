@@ -100,8 +100,8 @@ public class KerriganAI : MonoBehaviour
 
     void Start()
     {
-        //currentHp = maxHp;
-        currentHp = 40;
+        currentHp = maxHp;
+        //currentHp = 40;
         if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");

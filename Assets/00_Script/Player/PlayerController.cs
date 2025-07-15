@@ -5,6 +5,8 @@ public class PlayerController : MonoBehaviour
 {
     public Transform cameraTransform;
 
+
+
     [Header("속도 세팅")]
     public float walkSpeed = 3f;
     public float runSpeed = 6;

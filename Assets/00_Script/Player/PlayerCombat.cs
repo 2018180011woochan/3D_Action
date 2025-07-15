@@ -7,6 +7,9 @@ using Unity.Cinemachine;
 
 public class PlayerCombat : MonoBehaviour
 {
+    [Header("디버깅용 임시")]
+    public GameObject boss;
+
     [Header("콤보 설정")]
     public int maxCombo = 3;               // 최대 콤보 단계
     public float comboResetTime = 1f;      // 마지막 공격 후 이 시간 안에 클릭하면 콤보 이어감
@@ -113,6 +116,27 @@ public class PlayerCombat : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             StartSkill2Cutscene();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            // null 체크 추가
+            if (boss != null)
+            {
+                KerriganAI kerriganAI = boss.GetComponent<KerriganAI>();
+                if (kerriganAI != null)
+                {
+                    kerriganAI.currentHp = 30;
+                }
+                else
+                {
+                    Debug.LogError("KerriganAI 컴포넌트를 찾을 수 없습니다!");
+                }
+            }
+            else
+            {
+                Debug.LogError("Boss 오브젝트가 null입니다!");
+            }
         }
     }
 
