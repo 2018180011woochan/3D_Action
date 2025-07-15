@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class KerriganFireSkill : MonoBehaviour
@@ -10,6 +11,8 @@ public class KerriganFireSkill : MonoBehaviour
     public Vector3 colliderOffset;
     private BoxCollider damageCollider;
 
+    [Header("지연 시간")]
+    public float damageDelay = 0.5f;
 
     void Start()
     {
@@ -19,7 +22,19 @@ public class KerriganFireSkill : MonoBehaviour
         damageCollider.isTrigger = true;
         damageCollider.size = colliderSize;
         damageCollider.center = colliderOffset;
+        damageCollider.enabled = false;
 
+        StartCoroutine(EnableDamageAfterDelay());
+    }
+
+    IEnumerator EnableDamageAfterDelay()
+    {
+        yield return new WaitForSeconds(damageDelay);
+
+        if (damageCollider != null)
+        {
+            damageCollider.enabled = true;
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -36,15 +51,4 @@ public class KerriganFireSkill : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            PlayerState playerState = other.GetComponent<PlayerState>();
-            if (playerState != null)
-            {
-                Debug.Log("플레이어가 불꽃 영역에서 탈출!");
-            }
-        }
-    }
 }

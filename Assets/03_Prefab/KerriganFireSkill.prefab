@@ -38215,6 +38215,7 @@ MonoBehaviour:
   Damage: 10
   colliderSize: {x: 7.3, y: 10.77, z: 31.90226}
   colliderOffset: {x: 0.18, y: -0.6136677, z: 17.07249}
+  damageDelay: 0.3
 --- !u!114 &4030911773159908770
 MonoBehaviour:
   m_ObjectHideFlags: 0

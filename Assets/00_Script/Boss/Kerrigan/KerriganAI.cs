@@ -56,6 +56,14 @@ public class KerriganAI : MonoBehaviour
     private bool isPerformingRanged = false;    // 원거리 공격 중인지
     private float rangedTimer = 0f;             // 원거리 공격 타이머
     private bool hasSpawnedProjectile = false;
+
+    [Header("페이즈 2 관련")]
+    private bool isPhase2 = false; // 2페이즈 최초 진입했는가
+    private float phase2Timer = 0f; // 2페이즈 타이머
+    public float upConfrontSpeed = 4f;  // 공중에서 공전하는 속도
+    public float upDuration = 5f; // 공전 지속 시간 
+    public float restDuration = 3f;  // 착지 후 휴식 시간 
+
     private enum ConfrontAction
     {
         Circling,    // 공전
@@ -69,19 +77,28 @@ public class KerriganAI : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
 
-    public enum BossState
+    public enum Phase1State
     {
         Walk,           
         Confronting,    // 대치 
         Attack,         
     }
+    public Phase1State currentState = Phase1State.Walk;
 
-    public BossState currentState = BossState.Walk;
+    private enum Phase2State
+    {
+        Uping,  // 공중으로 떠오르는 중
+        FlyContront,   // 공중에서 공전하는 중
+        FlyAttack,  // 원거리 공격 중
+        Landing,    // 착지 중
+        Resting     // 휴식 중
+    }
+    private Phase2State currentPhase2State;
 
     void Start()
     {
-        currentHp = maxHp;
-
+        //currentHp = maxHp;
+        currentHp = 40;
         if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -105,24 +122,83 @@ public class KerriganAI : MonoBehaviour
     void Update()
     {
         if (player == null) return;
-
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         if (IsPhase1())
-        {
             HandlePhase1Behavior(distanceToPlayer);
-
-            if (currentState == BossState.Confronting)
-            {
-                HandleConfrontingBehavior();
-            }
-        }
         else
         {
-            //HandlePhase2Behavior();
+            HandlePhase2Behavior();
         }
+        
         LookAtPlayer();
         UpdateAnimatorParameters();
+    }
+
+    void HandlePhase2Behavior()
+    {
+        // 2페이즈에 처음 진입하는 순간 1회만 실행
+        if (!isPhase2)
+        {
+            isPhase2 = true; 
+
+            // 공중 이동 시 비활성화
+            if (agent != null && agent.enabled)
+            {
+                agent.isStopped = true;
+                agent.enabled = false;
+            }
+
+            // 1페이즈 행동 플래그 초기화
+            isPerformingKick = isMovingToKick = isPerformingRanged = isPerformingMelee = isPerformingSwing = false;
+
+            currentPhase2State = Phase2State.Uping;
+            phase2Timer = 0f; // 타이머 초기화
+
+            animator.SetTrigger("FlyUp"); 
+            Debug.Log("보스: 2페이즈 시작! 공중으로 떠오릅니다.");
+        }
+
+        // 2페이즈의 현재 상태에 따라 다른 행동을 실행
+        switch (currentPhase2State)
+        {
+            case Phase2State.Uping:
+                HandleUping();
+                break;
+                // case Phase2State.Orbiting:
+                //     // HandleOrbiting(); // 다음 단계에서 구현
+                //     break;
+                // case Phase2State.Attacking:
+                //     // HandlePhase2Attack(); // 다음 단계에서 구현
+                //     break;
+                // case Phase2State.Landing:
+                //     // HandleLanding(); // 다음 단계에서 구현
+                //     break;
+                // case Phase2State.Resting:
+                //     // HandleResting(); // 다음 단계에서 구현
+                //     break;
+        }
+    }
+
+    void HandleUping()
+    {
+/*        // 목표 높이에 도달할 때까지 위로 이동
+        // 목표 위치: 현재 X, Z 위치는 그대로 두고 Y축(높이)만 phase2Altitude로 변경
+        Vector3 targetPosition = new Vector3(transform.position.x, upDistance, transform.position.z);
+
+        // MoveTowards를 사용해 부드럽게 목표 위치로 이동
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, upMoveSpeed * Time.deltaTime);
+
+        // 목표 높이에 거의 도달했다면
+        if (transform.position.y >= upDistance - 0.1f)
+        {
+            // 다음 상태인 '공전'으로 전환
+            currentPhase2State = Phase2State.FlyContront;
+            phase2Timer = 0f; // 다음 상태를 위해 타이머 초기화
+            Debug.Log("보스: 목표 고도 도달. 플레이어 주위를 공전합니다.");
+        }*/
+
+
     }
 
     bool IsPhase1()
@@ -132,13 +208,18 @@ public class KerriganAI : MonoBehaviour
 
     void HandlePhase1Behavior(float distanceToPlayer)
     {
+        if (currentState == Phase1State.Confronting)
+        {
+            HandleConfrontingBehavior();
+        }
+
         if (distanceToPlayer >= veryFarDistance)
         {
             ApproachPlayer();
         }
         else if (distanceToPlayer >= farDistance && distanceToPlayer < veryFarDistance)
         {
-            if (currentState == BossState.Walk)
+            if (currentState == Phase1State.Walk)
             {
                 EnterConfrontState();
             }
@@ -147,7 +228,7 @@ public class KerriganAI : MonoBehaviour
 
     void ApproachPlayer()
     {
-        currentState = BossState.Walk;
+        currentState = Phase1State.Walk;
 
         if (agent != null && agent.enabled)
         {
@@ -161,7 +242,7 @@ public class KerriganAI : MonoBehaviour
 
     void EnterConfrontState()
     {
-        currentState = BossState.Confronting;
+        currentState = Phase1State.Confronting;
 
         if (agent != null && agent.enabled)
         {
@@ -483,13 +564,13 @@ public class KerriganAI : MonoBehaviour
         animator.SetBool("isMovingRight", false);
         animator.SetBool("isWalkingBack", false);
 
-        if (currentState == BossState.Walk)
+        if (currentState == Phase1State.Walk)
         {
             currentSpeed = agent.velocity.magnitude;
             animator.SetFloat("Speed", currentSpeed);
             animator.SetBool("isWalking", currentSpeed > 0.1f);
         }
-        else if (currentState == BossState.Confronting)
+        else if (currentState == Phase1State.Confronting)
         {
             // 킥 공격 중일 때
             if (currentConfrontAction == ConfrontAction.KickAttack)
