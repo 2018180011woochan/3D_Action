@@ -46,7 +46,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
+        {
+            velocity.y += gravity * Time.deltaTime;
+            controller.Move(new Vector3(0, velocity.y, 0) * Time.deltaTime);
+
+            if (controller.isGrounded && velocity.y < 0)
+            {
+                velocity.y = -2f;
+            }
             return;
+        }
 
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
         if (state.IsTag("Attack"))
@@ -155,5 +164,26 @@ public class PlayerController : MonoBehaviour
         }
 
         isDashing = false;
+    }
+
+    public void ApplyKnockback(Vector3 direction, float force)
+    {
+        StartCoroutine(KnockbackCoroutine(direction, force));
+    }
+
+    IEnumerator KnockbackCoroutine(Vector3 direction, float force)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float strength = Mathf.Lerp(force, 0, elapsed / duration);
+            Vector3 move = direction * strength * Time.deltaTime;
+            controller.Move(move);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
     }
 }

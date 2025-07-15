@@ -4,13 +4,13 @@ using UnityEngine.Events;
 
 public class PlayerState : MonoBehaviour
 {
-    [Header("Ã¼·Â ¼³Á¤")]
+    [Header("Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public float maxHP = 100f;
     public float currentHP { get; private set; }
 
     public UnityEvent<float> onHealthChanged = new UnityEvent<float>();
 
-    [Header("½ºÅÂ¹Ì³Ê ¼³Á¤")]
+    [Header("ï¿½ï¿½ï¿½Â¹Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public float maxStamina = 100f;
     public float currentStamina { get; private set; }
 
@@ -20,15 +20,22 @@ public class PlayerState : MonoBehaviour
 
     public GameObject BlockEffect;
     private ParticleSystem blockParticle;
+
+    private Rigidbody rb;
+    private PlayerController playerController;
+
+    public float knockbackForce = 10f;
     void Awake()
     {
         currentHP = maxHP;
         currentStamina = maxStamina;
         animator = GetComponentInChildren<Animator>();
-
+        rb = GetComponent<Rigidbody>();
+        playerController = GetComponent<PlayerController>();
         if (BlockEffect != null)
             blockParticle = BlockEffect.GetComponent<ParticleSystem>();
     }
+
 
     public bool TakeDamage(float dmg)
     {
@@ -47,6 +54,28 @@ public class PlayerState : MonoBehaviour
         bloodScreen?.Flash();
         return true;
     }
+
+    public bool TakeCriticalDamage(float dmg, Vector3 dir)
+    {
+        currentHP = Mathf.Max(currentHP - dmg, 0f);
+        onHealthChanged.Invoke(currentHP / maxHP);
+
+        animator.SetTrigger("GetCritical");
+        bloodScreen?.Flash();
+
+        StartKnockback(dir);
+        return true;
+    }
+
+    void StartKnockback(Vector3 dir)
+    {
+        if (playerController != null)
+        {
+            playerController.ApplyKnockback(dir.normalized, knockbackForce);
+        }
+
+    }
+
     IEnumerator DisableBlockEffect()
     {
         yield return new WaitForSeconds(1f); 

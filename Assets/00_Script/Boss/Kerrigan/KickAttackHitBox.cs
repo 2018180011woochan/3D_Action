@@ -21,7 +21,8 @@ public class KickAttackHitBox : MonoBehaviour
             var ps = other.GetComponent<PlayerState>();
             if (ps != null)
             {
-                ps.TakeDamage(damage);
+                Vector3 dir = dir = transform.root.forward;
+                ps.TakeCriticalDamage(damage, dir);
 
                 if (AttackEffect != null)
                 {
