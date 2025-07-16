@@ -1,81 +1,96 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class KerriganAI : MonoBehaviour
 {
-    [Header("º¸½º »óÅÂ")]
+    [Header("ë³´ìŠ¤ ìƒíƒœ")]
     public float maxHp = 100f;
     public float currentHp;
 
-    [Header("°Å¸® ¼³Á¤")]
+    [Header("ê±°ë¦¬ ì„¤ì •")]
     public float veryFarDistance = 20f;  
     public float farDistance = 10f; 
     public float closeDistance = 3f;     
 
-    [Header("ÀÌµ¿ ¼³Á¤")]
+    [Header("ì´ë™ ì„¤ì •")]
     public float walkSpeed = 2f;
     public float runSpeed = 5f;
 
-    [Header("´ëÄ¡ °ü·Ã")]
-    public float confrontSpeed = 1.5f;  // °øÀü ¼Óµµ
+    [Header("ëŒ€ì¹˜ ê´€ë ¨")]
+    public float confrontSpeed = 1.5f;  // ê³µì „ ì†ë„
     public float backStepDistance = 5f;  
     public float backStepSpeed = 2f;     
     private bool isBackStep = false;
 
-    private float confrontTimer = 0f;   // ´ëÄ¡ »óÅÂÀÏ¶§ ¾î¶² Çàµ¿À» ÇÒÁö¿¡ ´ëÇÑ Å¸ÀÌ¸Ó
+    private float confrontTimer = 0f;   // ëŒ€ì¹˜ ìƒíƒœì¼ë•Œ ì–´ë–¤ í–‰ë™ì„ í• ì§€ì— ëŒ€í•œ íƒ€ì´ë¨¸
     public float confrontDecisionTime = 3f;
 
-    [Header("Å± °ø°İ °ü·Ã")]
-    public float kickRange = 4f;              // Å± °ø°İ »ç°Å¸®
-    public float kickDuration = 3f;           // Å± ¾Ö´Ï¸ŞÀÌ¼Ç Áö¼Ó ½Ã°£
-    private bool isPerformingKick = false;    // Å± µ¿ÀÛ ÁßÀÎÁö
-    private float kickTimer = 0f;             // Å± Å¸ÀÌ¸Ó
-    private bool isMovingToKick = false;      // Å± À§Ä¡·Î ÀÌµ¿ ÁßÀÎÁö
+    [Header("í‚¥ ê³µê²© ê´€ë ¨")]
+    public float kickRange = 4f;              // í‚¥ ê³µê²© ì‚¬ê±°ë¦¬
+    public float kickDuration = 3f;           // í‚¥ ì• ë‹ˆë©”ì´ì…˜ ì§€ì† ì‹œê°„
+    private bool isPerformingKick = false;    // í‚¥ ë™ì‘ ì¤‘ì¸ì§€
+    private float kickTimer = 0f;             // í‚¥ íƒ€ì´ë¨¸
+    private bool isMovingToKick = false;      // í‚¥ ìœ„ì¹˜ë¡œ ì´ë™ ì¤‘ì¸ì§€
     public float kickApproachTimeout = 5f;
 
-    [Header("±ÙÁ¢ °ø°İ °ü·Ã")]
+    [Header("ê·¼ì ‘ ê³µê²© ê´€ë ¨")]
     private bool isPerformingMelee = false;    
-    private float meleeTimer = 0f;             // °ø°İ ½ÃÀÛÇÑÁö ¸î ÃÊ µÆ³ª?
-    public float leftHookDuration = 1.15f;      // ·¹ÇÁÆ®ÈÅÀº 1.15ÃÊ °É¸²
+    private float meleeTimer = 0f;             // ê³µê²© ì‹œì‘í•œì§€ ëª‡ ì´ˆ ëë‚˜?
+    public float leftHookDuration = 1.15f;      // ë ˆí”„íŠ¸í›…ì€ 1.15ì´ˆ ê±¸ë¦¼
     private bool hasDecidedCloseAction = false;
-    public float leftHookMoveSpeed = 2f;        // Ãß°¡
+    public float leftHookMoveSpeed = 2f;        // ì¶”ê°€
     private Vector3 leftHookDirection;
 
-    [Header("½ºÀ® °ø°İ °ü·Ã")]
-    public float swingForwardDistance = 3f;    // ¾ÕÀ¸·Î ÀÌµ¿ÇÒ °Å¸®
-    public float swingDuration = 0.5f;         // ½ºÀ® ¾Ö´Ï¸ŞÀÌ¼Ç/ÀÌµ¿ Áö¼Ó ½Ã°£
-    private bool isPerformingSwing = false;    // ½ºÀ® ÁßÀÎÁö
-    private float swingTimer = 0f;             // ½ºÀ® Å¸ÀÌ¸Ó
+    [Header("ìŠ¤ìœ™ ê³µê²© ê´€ë ¨")]
+    public float swingForwardDistance = 3f;    // ì•ìœ¼ë¡œ ì´ë™í•  ê±°ë¦¬
+    public float swingDuration = 0.5f;         // ìŠ¤ìœ™ ì• ë‹ˆë©”ì´ì…˜/ì´ë™ ì§€ì† ì‹œê°„
+    private bool isPerformingSwing = false;    // ìŠ¤ìœ™ ì¤‘ì¸ì§€
+    private float swingTimer = 0f;             // ìŠ¤ìœ™ íƒ€ì´ë¨¸
     private Vector3 swingStartPos;
     private Vector3 swingDirection;
 
-    [Header("ÆäÀÌÁî1 Åõ»çÃ¼")]
+    [Header("í˜ì´ì¦ˆ1 íˆ¬ì‚¬ì²´")]
     public GameObject pase1Projectile;
-    public float rangedAttackDuration = 2.08f;  // ¿ø°Å¸® °ø°İ ¾Ö´Ï¸ŞÀÌ¼Ç Áö¼Ó ½Ã°£
-    public float projectileSpawnTime = 1.2f;    // °ø°İÇÏ·Á°í ÆÈÀ» »¸´Â ÇÁ·¹ÀÓ ½Ã°£ 
-    private bool isPerformingRanged = false;    // ¿ø°Å¸® °ø°İ ÁßÀÎÁö
-    private float rangedTimer = 0f;             // ¿ø°Å¸® °ø°İ Å¸ÀÌ¸Ó
+    public float rangedAttackDuration = 2.08f;  // ì›ê±°ë¦¬ ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ì§€ì† ì‹œê°„
+    public float projectileSpawnTime = 1.2f;    // ê³µê²©í•˜ë ¤ê³  íŒ”ì„ ë»—ëŠ” í”„ë ˆì„ ì‹œê°„ 
+    private bool isPerformingRanged = false;    // ì›ê±°ë¦¬ ê³µê²© ì¤‘ì¸ì§€
+    private float rangedTimer = 0f;             // ì›ê±°ë¦¬ ê³µê²© íƒ€ì´ë¨¸
     private bool hasSpawnedProjectile = false;
 
-    [Header("ÆäÀÌÁî 2 °ü·Ã")]
-    private bool isPhase2 = false; // 2ÆäÀÌÁî ÃÖÃÊ ÁøÀÔÇß´Â°¡
-    private float phase2Timer = 0f; // 2ÆäÀÌÁî Å¸ÀÌ¸Ó
+    [Header("í˜ì´ì¦ˆ 2 ê´€ë ¨")]
+    private bool isPhase2 = false; // 2í˜ì´ì¦ˆ ìµœì´ˆ ì§„ì…í–ˆëŠ”ê°€
+    private float phase2Timer = 0f; // 2í˜ì´ì¦ˆ íƒ€ì´ë¨¸
     public float flyAltitude = 8f;
     public float flyUpAnimDuration = 5f;
 
-    public float upConfrontSpeed = 4f;  // °øÁß¿¡¼­ °øÀüÇÏ´Â ¼Óµµ
-    public float upDuration = 5f; // °øÀü Áö¼Ó ½Ã°£ 
-    public float restDuration = 3f;  // ÂøÁö ÈÄ ÈŞ½Ä ½Ã°£ 
+    public float upConfrontSpeed = 4f;  // ê³µì¤‘ì—ì„œ ê³µì „í•˜ëŠ” ì†ë„
+    public float upDuration = 5f; // ê³µì „ ì§€ì† ì‹œê°„ 
+    public float restDuration = 3f;  // ì°©ì§€ í›„ íœ´ì‹ ì‹œê°„ 
+
+    [Header("í˜ì´ì¦ˆ 2 ê³µê²© ê´€ë ¨")]
+    public int projectileCount = 10;                    // ìƒì„±í•  íˆ¬ì‚¬ì²´ ê°œìˆ˜
+    public float projectileSpawnRadius = 8f;            // ë³´ìŠ¤ ì£¼ìœ„ íˆ¬ì‚¬ì²´ ìƒì„± ë°˜ê²½
+    public float projectileSpawnInterval = 0.5f;        // íˆ¬ì‚¬ì²´ ìƒì„± ê°„ê²© (1ì´ˆì— 2ê°œ)
+    public float chargeDuration = 5f;                   // ê¸° ëª¨ìœ¼ëŠ” ì‹œê°„
+    public float projectileLaunchRadius = 3f;           // í”Œë ˆì´ì–´ ì£¼ìœ„ íˆ¬ì‚¬ì²´ ì°©íƒ„ ë°˜ê²½
+    public GameObject phase2Projectile;                 // 2í˜ì´ì¦ˆ íˆ¬ì‚¬ì²´ í”„ë¦¬íŒ¹
+
+    private List<GameObject> spawnedProjectiles = new List<GameObject>();  // ìƒì„±ëœ íˆ¬ì‚¬ì²´ ë¦¬ìŠ¤íŠ¸
+    private float projectileSpawnTimer = 0f;            // íˆ¬ì‚¬ì²´ ìƒì„± íƒ€ì´ë¨¸
+    private int currentProjectileCount = 0;              // í˜„ì¬ ìƒì„±ëœ íˆ¬ì‚¬ì²´ ê°œìˆ˜
+    private bool isCharging = false;                     // ê¸° ëª¨ìœ¼ëŠ” ì¤‘ì¸ì§€
+    private bool hasStartedLaunch = false;               // ë°œì‚¬ ì‹œì‘í–ˆëŠ”ì§€
 
     private enum ConfrontAction
     {
-        Circling,    // °øÀü
-        KickAttack,  // Å± °ø°İ
-        RangedAttack // ¿ø°Å¸® °ø°İ
+        Circling,    // ê³µì „
+        KickAttack,  // í‚¥ ê³µê²©
+        RangedAttack // ì›ê±°ë¦¬ ê³µê²©
     }
     private ConfrontAction currentConfrontAction = ConfrontAction.Circling;
 
-    [Header("ÂüÁ¶")]
+    [Header("ì°¸ì¡°")]
     public Transform player;
     private NavMeshAgent agent;
     private Animator animator;
@@ -83,18 +98,18 @@ public class KerriganAI : MonoBehaviour
     public enum Phase1State
     {
         Walk,           
-        Confronting,    // ´ëÄ¡ 
+        Confronting,    // ëŒ€ì¹˜ 
         Attack,         
     }
     public Phase1State currentState = Phase1State.Walk;
 
     private enum Phase2State
     {
-        Uping,  // °øÁßÀ¸·Î ¶°¿À¸£´Â Áß
-        FlyContront,   // °øÁß¿¡¼­ °øÀüÇÏ´Â Áß
-        FlyAttack,  // ¿ø°Å¸® °ø°İ Áß
-        Landing,    // ÂøÁö Áß
-        Resting     // ÈŞ½Ä Áß
+        Uping,  // ê³µì¤‘ìœ¼ë¡œ ë– ì˜¤ë¥´ëŠ” ì¤‘
+        FlyContront,   // ê³µì¤‘ì—ì„œ ê³µì „í•˜ëŠ” ì¤‘
+        FlyAttack,  // ì›ê±°ë¦¬ ê³µê²© ì¤‘
+        Landing,    // ì°©ì§€ ì¤‘
+        Resting     // íœ´ì‹ ì¤‘
     }
     private Phase2State currentPhase2State;
 
@@ -140,45 +155,45 @@ public class KerriganAI : MonoBehaviour
 
     void HandlePhase2Behavior()
     {
-        // 2ÆäÀÌÁî¿¡ Ã³À½ ÁøÀÔÇÏ´Â ¼ø°£ 1È¸¸¸ ½ÇÇà
+        // 2í˜ì´ì¦ˆì— ì²˜ìŒ ì§„ì…í•˜ëŠ” ìˆœê°„ 1íšŒë§Œ ì‹¤í–‰
         if (!isPhase2)
         {
             isPhase2 = true; 
 
-            // °øÁß ÀÌµ¿ ½Ã ºñÈ°¼ºÈ­
+            // ê³µì¤‘ ì´ë™ ì‹œ ë¹„í™œì„±í™”
             if (agent != null && agent.enabled)
             {
                 agent.isStopped = true;
                 agent.enabled = false;
             }
 
-            // 1ÆäÀÌÁî Çàµ¿ ÇÃ·¡±× ÃÊ±âÈ­
+            // 1í˜ì´ì¦ˆ í–‰ë™ í”Œë˜ê·¸ ì´ˆê¸°í™”
             isPerformingKick = isMovingToKick = isPerformingRanged = isPerformingMelee = isPerformingSwing = false;
 
             currentPhase2State = Phase2State.Uping;
-            phase2Timer = 0f; // Å¸ÀÌ¸Ó ÃÊ±âÈ­
+            phase2Timer = 0f; // íƒ€ì´ë¨¸ ì´ˆê¸°í™”
 
             animator.SetTrigger("FlyUp");
-            Debug.Log("º¸½º: 2ÆäÀÌÁî ½ÃÀÛ! °øÁßÀ¸·Î ¶°¿À¸¨´Ï´Ù.");
+            Debug.Log("ë³´ìŠ¤: 2í˜ì´ì¦ˆ ì‹œì‘! ê³µì¤‘ìœ¼ë¡œ ë– ì˜¤ë¦…ë‹ˆë‹¤.");
         }
 
-        // 2ÆäÀÌÁîÀÇ ÇöÀç »óÅÂ¿¡ µû¶ó ´Ù¸¥ Çàµ¿À» ½ÇÇà
+        // 2í˜ì´ì¦ˆì˜ í˜„ì¬ ìƒíƒœì— ë”°ë¼ ë‹¤ë¥¸ í–‰ë™ì„ ì‹¤í–‰
         switch (currentPhase2State)
         {
             case Phase2State.Uping:
                 HandleUping();
                 break;
             case Phase2State.FlyContront:
-                HandleFlyContront(); // ´ÙÀ½ ´Ü°è¿¡¼­ ±¸Çö
+                HandleFlyContront(); 
                 break;
-                // case Phase2State.Attacking:
-                //     // HandlePhase2Attack(); // ´ÙÀ½ ´Ü°è¿¡¼­ ±¸Çö
-                //     break;
+            case Phase2State.FlyAttack:
+                HandlePhase2FlyAttack(); 
+                break;
                 // case Phase2State.Landing:
-                //     // HandleLanding(); // ´ÙÀ½ ´Ü°è¿¡¼­ ±¸Çö
+                //     // HandleLanding(); // ë‹¤ìŒ ë‹¨ê³„ì—ì„œ êµ¬í˜„
                 //     break;
                 // case Phase2State.Resting:
-                //     // HandleResting(); // ´ÙÀ½ ´Ü°è¿¡¼­ ±¸Çö
+                //     // HandleResting(); // ë‹¤ìŒ ë‹¨ê³„ì—ì„œ êµ¬í˜„
                 //     break;
         }
     }
@@ -204,7 +219,7 @@ public class KerriganAI : MonoBehaviour
         {
             currentPhase2State = Phase2State.FlyAttack;
             phase2Timer = 0f; 
-            Debug.Log("¿ø°Å¸® °ø°İ ½ÃÀÛ");
+            Debug.Log("ì›ê±°ë¦¬ ê³µê²© ì‹œì‘");
             return; 
         }
 
@@ -216,6 +231,116 @@ public class KerriganAI : MonoBehaviour
 
         transform.position += orbitDirection * upConfrontSpeed * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, flyAltitude, transform.position.z);
+    }
+
+    void HandlePhase2FlyAttack()
+    {
+        phase2Timer += Time.deltaTime;
+
+        if (phase2Timer <= chargeDuration)
+        {
+            if (!isCharging)
+            {
+                isCharging = true;
+                animator.SetTrigger("Charge");
+            }
+
+            projectileSpawnTimer += Time.deltaTime;
+            if (projectileSpawnTimer >= projectileSpawnInterval && currentProjectileCount < projectileCount)
+            {
+                SpawnPhase2Projectile();
+                projectileSpawnTimer = 0f;
+                currentProjectileCount++;
+            }
+        }
+        else
+        {
+            if (!hasStartedLaunch)
+            {
+                hasStartedLaunch = true;
+                animator.SetTrigger("FlyAttack"); 
+                LaunchAllProjectiles();
+            }
+
+            if (phase2Timer >= chargeDuration + 1f)
+            {
+                currentPhase2State = Phase2State.FlyContront;
+
+                // ìƒíƒœ ì´ˆê¸°í™”
+                ResetPhase2Attack();
+                phase2Timer = 0f;
+            }
+        }
+
+    }
+
+    void SpawnPhase2Projectile()
+    {
+        // ë³´ìŠ¤ ì£¼ìœ„ ëœë¤ ìœ„ì¹˜ ê³„ì‚°
+        Vector2 randomCircle = Random.insideUnitCircle * projectileSpawnRadius;
+        Vector3 spawnPosition = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+
+        spawnPosition.y = transform.position.y + 2f;
+
+        GameObject projectile = Instantiate(phase2Projectile, spawnPosition, Quaternion.identity);
+
+        if (projectile.GetComponent<Rigidbody>())
+        {
+            projectile.GetComponent<Rigidbody>().isKinematic = true; // ë¬¼ë¦¬ ì˜í–¥ ë°›ì§€ ì•ŠìŒ
+        }
+
+        spawnedProjectiles.Add(projectile);
+    }
+
+    void LaunchAllProjectiles()
+    {
+        Vector3 playerPosition = player.position;
+
+        foreach (GameObject projectile in spawnedProjectiles)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle * projectileLaunchRadius;
+            Vector3 targetPosition = playerPosition + new Vector3(randomOffset.x, 0, randomOffset.y);
+
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+            rb.isKinematic = false;
+            rb.useGravity = true;  
+
+            Vector3 direction = (targetPosition - projectile.transform.position).normalized;
+
+            // ì•½ê°„ì˜ ìœ„ìª½ ê°ë„ ì¶”ê°€ (í¬ë¬¼ì„  ê¶¤ë„)
+            direction.y = 0.3f; // ìœ„ìª½ ê°ë„ ì¡°ì ˆ
+            direction = direction.normalized;
+
+            rb.velocity = direction * 15f; // ì†ë„ ì¦ê°€
+
+            ParticleSystem ps = projectile.GetComponent<ParticleSystem>();
+            if (ps != null && !ps.isPlaying)
+            {
+                ps.Play();
+            }
+            
+        }
+
+        spawnedProjectiles.Clear();
+    }
+
+    void ResetPhase2Attack()
+    {
+        // ëª¨ë“  ìƒíƒœ ì´ˆê¸°í™”
+        isCharging = false;
+        hasStartedLaunch = false;
+        currentProjectileCount = 0;
+        projectileSpawnTimer = 0f;
+
+        // ë‚¨ì€ íˆ¬ì‚¬ì²´ë“¤ ì •ë¦¬ (í˜¹ì‹œ ëª¨ë¥¼ ê²½ìš°ë¥¼ ëŒ€ë¹„)
+        foreach (GameObject projectile in spawnedProjectiles)
+        {
+            if (projectile != null)
+            {
+                Destroy(projectile);
+            }
+        }
+        spawnedProjectiles.Clear();
     }
 
     bool IsPhase1()
@@ -254,7 +379,7 @@ public class KerriganAI : MonoBehaviour
         }
 
         UpdateAnimatorParameters();
-        //Debug.Log("º¸½º: Ãß°İ »óÅÂ ÁøÀÔ!");
+        //Debug.Log("ë³´ìŠ¤: ì¶”ê²© ìƒíƒœ ì§„ì…!");
     }
 
     void EnterConfrontState()
@@ -267,17 +392,17 @@ public class KerriganAI : MonoBehaviour
             agent.velocity = Vector3.zero;
         }
 
-        // ´ëÄ¡ »óÅÂ ÁøÀÔ½Ã Çàµ¿ °áÁ¤ 
+        // ëŒ€ì¹˜ ìƒíƒœ ì§„ì…ì‹œ í–‰ë™ ê²°ì • 
         DecideConfrontAction();
         confrontTimer = 0f;
 
         UpdateAnimatorParameters();
-        //Debug.Log("º¸½º: ´ëÄ¡ »óÅÂ ÁøÀÔ!");
+        //Debug.Log("ë³´ìŠ¤: ëŒ€ì¹˜ ìƒíƒœ ì§„ì…!");
     }
 
     void DecideConfrontAction()
     {
-        if (isPerformingKick || isMovingToKick) return; // Å± °ø°İÁß
+        if (isPerformingKick || isMovingToKick) return; // í‚¥ ê³µê²©ì¤‘
 
         int random = Random.Range(0, 3);
 
@@ -285,17 +410,17 @@ public class KerriganAI : MonoBehaviour
         {
             case 0:
                 currentConfrontAction = ConfrontAction.Circling;
-                //Debug.Log("º¸½º: °øÀüÇÏ¸ç ´ëÄ¡!");
+                //Debug.Log("ë³´ìŠ¤: ê³µì „í•˜ë©° ëŒ€ì¹˜!");
                 break;
             case 1:
                 currentConfrontAction = ConfrontAction.KickAttack;
                 StartKickAttack();
 
-                //Debug.Log("º¸½º: Å± °ø°İ ¼±ÅÃ!");
+                //Debug.Log("ë³´ìŠ¤: í‚¥ ê³µê²© ì„ íƒ!");
                 break;
             case 2:
                 currentConfrontAction = ConfrontAction.RangedAttack;
-                //Debug.Log("º¸½º: ¿ø°Å¸® °ø°İ ¼±ÅÃ! ");
+                //Debug.Log("ë³´ìŠ¤: ì›ê±°ë¦¬ ê³µê²© ì„ íƒ! ");
                 StartRangedAttack();
                 break;
         }
@@ -332,7 +457,7 @@ public class KerriganAI : MonoBehaviour
         bool isAttacking = isPerformingKick || isMovingToKick || isPerformingRanged ||
                            isPerformingMelee || isPerformingSwing;
 
-        // °ø°İ ÁßÀÌ ¾Æ´Ò ¶§¸¸ Å¸ÀÌ¸Ó ¾÷µ¥ÀÌÆ®
+        // ê³µê²© ì¤‘ì´ ì•„ë‹ ë•Œë§Œ íƒ€ì´ë¨¸ ì—…ë°ì´íŠ¸
         if (!isAttacking)
         {
             confrontTimer += Time.deltaTime;
@@ -344,7 +469,7 @@ public class KerriganAI : MonoBehaviour
             }
         }
 
-        // ÇöÀç ¼±ÅÃµÈ Çàµ¿ ½ÇÇà
+        // í˜„ì¬ ì„ íƒëœ í–‰ë™ ì‹¤í–‰
         switch (currentConfrontAction)
         {
             case ConfrontAction.Circling:
@@ -371,48 +496,48 @@ public class KerriganAI : MonoBehaviour
                 hasSpawnedProjectile = true;
             }
 
-            // ¿ø°Å¸® °ø°İ Á¾·á
+            // ì›ê±°ë¦¬ ê³µê²© ì¢…ë£Œ
             if (rangedTimer >= rangedAttackDuration)
             {
                 isPerformingRanged = false;
                 rangedTimer = 0f;
                 confrontTimer = 0f;
 
-                // ´Ù½Ã °øÀü »óÅÂ·Î
+                // ë‹¤ì‹œ ê³µì „ ìƒíƒœë¡œ
                 currentConfrontAction = ConfrontAction.Circling;
-                //Debug.Log("º¸½º: ¿ø°Å¸® °ø°İ Á¾·á, °øÀü »óÅÂ·Î º¹±Í");
+                //Debug.Log("ë³´ìŠ¤: ì›ê±°ë¦¬ ê³µê²© ì¢…ë£Œ, ê³µì „ ìƒíƒœë¡œ ë³µê·€");
             }
         }
     }
 
     void SpawnProjectile()
     {
-        // º¸½º°¡ ¹Ù¶óº¸´Â ¹æÇâÀÇ ¾ÕÂÊ¿¡ ¼ÒÈ¯ À§Ä¡ °è»ê
+        // ë³´ìŠ¤ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ì˜ ì•ìª½ì— ì†Œí™˜ ìœ„ì¹˜ ê³„ì‚°
         Vector3 spawnPosition = transform.position + transform.forward * 1f;
 
         spawnPosition.y = transform.position.y + 3f;
 
-        // ºÒ²É ÆÄÆ¼Å¬ »ı¼º
+        // ë¶ˆê½ƒ íŒŒí‹°í´ ìƒì„±
         GameObject projectile = Instantiate(pase1Projectile, spawnPosition, transform.rotation);
 
-        //Debug.Log("º¸½º: ºÒ²É °ø°İ ¹ßµ¿!");
+        //Debug.Log("ë³´ìŠ¤: ë¶ˆê½ƒ ê³µê²© ë°œë™!");
     }
 
     void HandleKickAttack()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Å± À§Ä¡·Î ÀÌµ¿ Áß
+        // í‚¥ ìœ„ì¹˜ë¡œ ì´ë™ ì¤‘
         if (isMovingToKick && !isPerformingKick)
         {
             kickTimer += Time.deltaTime;
 
             agent.SetDestination(player.position);
 
-            // »ç°Å¸®¿¡ µµ´ŞÇß´ÂÁö È®ÀÎ
+            // ì‚¬ê±°ë¦¬ì— ë„ë‹¬í–ˆëŠ”ì§€ í™•ì¸
             if (distanceToPlayer <= kickRange)
             {
-                // Å± µ¿ÀÛ ½ÃÀÛ
+                // í‚¥ ë™ì‘ ì‹œì‘
                 isMovingToKick = false;
                 isPerformingKick = true;
                 kickTimer = 0f;
@@ -422,24 +547,24 @@ public class KerriganAI : MonoBehaviour
 
                 animator.SetTrigger("Kick");
             }
-            // 5ÃÊ µ¿¾È Á¢±Ù ¸øÇÏ¸é Æ÷±â
+            // 5ì´ˆ ë™ì•ˆ ì ‘ê·¼ ëª»í•˜ë©´ í¬ê¸°
             else if (kickTimer >= kickApproachTimeout)
             {
-                //Debug.Log("º¸½º: Å± °ø°İ Æ÷±â! ÇÃ·¹ÀÌ¾î°¡ ³Ê¹« ¸Ö¾îÁü");
+                //Debug.Log("ë³´ìŠ¤: í‚¥ ê³µê²© í¬ê¸°! í”Œë ˆì´ì–´ê°€ ë„ˆë¬´ ë©€ì–´ì§");
 
-                // Å± °ø°İ Ãë¼Ò
+                // í‚¥ ê³µê²© ì·¨ì†Œ
                 isMovingToKick = false;
                 isPerformingKick = false;
                 kickTimer = 0f;
                 confrontTimer = 0f;
 
-                // agent Á¤Áö
+                // agent ì •ì§€
                 if (agent != null)
                 {
                     agent.isStopped = true;
                 }
 
-                // ´Ù½Ã °øÀü »óÅÂ·Î
+                // ë‹¤ì‹œ ê³µì „ ìƒíƒœë¡œ
                 currentConfrontAction = ConfrontAction.Circling;
             }
         }
@@ -489,13 +614,13 @@ public class KerriganAI : MonoBehaviour
                 if (Random.Range(0, 2) == 0)
                 {
                     isBackStep = true;
-                    //Debug.Log("º¸½º ¹é½ºÅÜ");
+                    //Debug.Log("ë³´ìŠ¤ ë°±ìŠ¤í…");
                 }
                 else
                 {
                     isBackStep = false;
                     StartLeftHookAttack();
-                    //Debug.Log("º¸½º ·¹ÇÁÆ®ÈÅ");
+                    //Debug.Log("ë³´ìŠ¤ ë ˆí”„íŠ¸í›…");
                 }
 
             }
@@ -563,7 +688,7 @@ public class KerriganAI : MonoBehaviour
 
         if (swingTimer >= swingDuration)
         {
-            // ½ºÀ® ³¡³ª¸é »óÅÂ ÃÊ±âÈ­
+            // ìŠ¤ìœ™ ëë‚˜ë©´ ìƒíƒœ ì´ˆê¸°í™”
             isPerformingSwing = false;
             swingTimer = 0f;
             hasDecidedCloseAction = false;
@@ -591,12 +716,12 @@ public class KerriganAI : MonoBehaviour
             }
             else if (currentState == Phase1State.Confronting)
             {
-                // Å± °ø°İ ÁßÀÏ ¶§
+                // í‚¥ ê³µê²© ì¤‘ì¼ ë•Œ
                 if (currentConfrontAction == ConfrontAction.KickAttack)
                 {
                     if (isMovingToKick)
                     {
-                        // Å± À§Ä¡·Î ÀÌµ¿ Áß
+                        // í‚¥ ìœ„ì¹˜ë¡œ ì´ë™ ì¤‘
                         currentSpeed = agent.velocity.magnitude;
                         animator.SetFloat("Speed", currentSpeed);
                         if (currentSpeed > 0.1f)
@@ -607,7 +732,7 @@ public class KerriganAI : MonoBehaviour
                     }
                     else if (isPerformingKick)
                     {
-                        // Å± µ¿ÀÛ Áß
+                        // í‚¥ ë™ì‘ ì¤‘
                         animator.SetFloat("Speed", 0);
                     }
                 }
@@ -615,11 +740,11 @@ public class KerriganAI : MonoBehaviour
                 {
                     if (isPerformingRanged)
                     {
-                        // ¿ø°Å¸® °ø°İ µ¿ÀÛ Áß
+                        // ì›ê±°ë¦¬ ê³µê²© ë™ì‘ ì¤‘
                         animator.SetFloat("Speed", 0);
                     }
                 }
-                // °øÀü ÁßÀÏ ¶§
+                // ê³µì „ ì¤‘ì¼ ë•Œ
                 else
                 {
                     animator.SetFloat("Speed", 0);
@@ -630,7 +755,7 @@ public class KerriganAI : MonoBehaviour
                 }
             }
         }
-        else    // 2ÆäÀÌÁî
+        else    // 2í˜ì´ì¦ˆ
         {
             animator.SetBool("isFlyingLeft", false);
             switch (currentPhase2State)
