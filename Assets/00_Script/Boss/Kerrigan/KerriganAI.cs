@@ -82,6 +82,14 @@ public class KerriganAI : MonoBehaviour
     private bool isCharging = false;                     // 기 모으는 중인지
     private bool hasStartedLaunch = false;               // 발사 시작했는지
 
+    [Header("페이즈 2 착지 관련")]
+    public float flyDownSpeed = 5f;              // 착지 속도
+    public float landingDuration = 2f;           // 착지 애니메이션 지속 시간
+    public float restingDuration = 3f;           // 휴식 시간
+    private bool isLanding = false;              // 착지 중인지
+    private bool isResting = false;              // 휴식 중인지
+    private Vector3 landingTargetPosition;       // 착지 목표 위치
+
     private enum ConfrontAction
     {
         Circling,    // 공전
@@ -189,12 +197,12 @@ public class KerriganAI : MonoBehaviour
             case Phase2State.FlyAttack:
                 HandlePhase2FlyAttack(); 
                 break;
-                // case Phase2State.Landing:
-                //     // HandleLanding(); // 다음 단계에서 구현
-                //     break;
-                // case Phase2State.Resting:
-                //     // HandleResting(); // 다음 단계에서 구현
-                //     break;
+            case Phase2State.Landing:
+                HandleLanding(); 
+                break;
+            case Phase2State.Resting:
+                HandleResting(); 
+                break;
         }
     }
 
@@ -264,7 +272,14 @@ public class KerriganAI : MonoBehaviour
 
             if (phase2Timer >= chargeDuration + 1f)
             {
-                currentPhase2State = Phase2State.FlyContront;
+                //currentPhase2State = Phase2State.FlyContront;
+
+                currentPhase2State = Phase2State.Landing;
+
+                isLanding = true;
+                landingTargetPosition = new Vector3(transform.position.x, 0f, transform.position.z);
+
+                animator.SetTrigger("FlyDown");
 
                 // 상태 초기화
                 ResetPhase2Attack();
@@ -341,6 +356,63 @@ public class KerriganAI : MonoBehaviour
             }
         }
         spawnedProjectiles.Clear();
+    }
+
+    void HandleLanding()
+    {
+        if (isLanding)
+        {
+            // 땅으로 내려가는 움직임
+            transform.position = Vector3.MoveTowards(transform.position, landingTargetPosition, flyDownSpeed * Time.deltaTime);
+
+            // 땅에 도달했는지 확인
+            if (transform.position.y <= 0.1f) // 약간의 여유값
+            {
+                // 정확한 땅 위치로 설정
+                transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+
+                isLanding = false;
+
+                // NavMeshAgent 다시 활성화
+                if (agent != null && !agent.enabled)
+                {
+                    agent.enabled = true;
+                    agent.isStopped = true;
+                }
+
+                // 휴식 상태로 전환
+                currentPhase2State = Phase2State.Resting;
+                isResting = true;
+                phase2Timer = 0f;
+
+            }
+        }
+    }
+
+    void HandleResting()
+    {
+        if (isResting)
+        {
+            phase2Timer += Time.deltaTime;
+
+            if (phase2Timer >= restingDuration)
+            {
+                isResting = false;
+
+                currentPhase2State = Phase2State.Uping;
+
+                if (agent != null && agent.enabled)
+                {
+                    agent.isStopped = true;
+                    agent.enabled = false;
+                }
+
+                phase2Timer = 0f;
+
+                animator.SetTrigger("FlyUp");
+
+            }
+        }
     }
 
     bool IsPhase1()
@@ -758,10 +830,17 @@ public class KerriganAI : MonoBehaviour
         else    // 2페이즈
         {
             animator.SetBool("isFlyingLeft", false);
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+            animator.SetBool("isMovingRight", false);
+            animator.SetBool("isWalkingBack", false);
             switch (currentPhase2State)
             {
                 case Phase2State.FlyContront:
                     animator.SetBool("isFlyingLeft", true);
+                    break;
+                case Phase2State.Resting:
+                    animator.SetFloat("Speed", 0);
                     break;
             }
             return;
