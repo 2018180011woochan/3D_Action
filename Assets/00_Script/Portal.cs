@@ -9,7 +9,7 @@ public class Portal : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("플레이어가 포탈에 접촉했습니다!");
-            SceneManager.LoadScene("BossScene");
+            SceneManager.LoadScene("LoadingScene");
         }
     }
 }
