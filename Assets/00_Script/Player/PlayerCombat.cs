@@ -117,27 +117,6 @@ public class PlayerCombat : MonoBehaviour
         {
             StartSkill2Cutscene();
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            // null 체크 추가
-            if (boss != null)
-            {
-                KerriganAI kerriganAI = boss.GetComponent<KerriganAI>();
-                if (kerriganAI != null)
-                {
-                    kerriganAI.currentHp = 30;
-                }
-                else
-                {
-                    Debug.LogError("KerriganAI 컴포넌트를 찾을 수 없습니다!");
-                }
-            }
-            else
-            {
-                Debug.LogError("Boss 오브젝트가 null입니다!");
-            }
-        }
     }
 
     void StartSkillCutscene()

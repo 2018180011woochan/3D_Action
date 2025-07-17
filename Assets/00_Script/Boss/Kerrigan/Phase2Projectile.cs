@@ -6,7 +6,7 @@ public class Phase2Projectile : MonoBehaviour
     public float damage = 20f;
     public float explosionRadius = 2f;
     public float lifeTime = 5f;
-    public GameObject explosionEffect; // 폭발 효과 프리팹
+    public GameObject explosionEffect; 
 
     private bool hasExploded = false;
 
@@ -37,18 +37,15 @@ public class Phase2Projectile : MonoBehaviour
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
 
-        // 폭발 범위 내 플레이어 데미지 처리
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, explosionRadius);
         foreach (Collider hit in hitColliders)
         {
             if (hit.CompareTag("Player"))
             {
-                // 플레이어 데미지 처리
                 PlayerState playerState = hit.GetComponent<PlayerState>();
                 if (playerState != null)
                 {
                     playerState.TakeDamage(damage);
-                    Debug.Log($"플레이어가 {damage} 데미지를 받았습니다!");
                 }
             }
         }

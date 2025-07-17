@@ -32,10 +32,21 @@ public class MonsterState : MonoBehaviour
         if (currentHP <= 0f)
         {
             isDead = true;
-            var monAI = GetComponent<MonsterAI>();
-            monAI.currentState = MonsterAI.State.Dead;
+            if (monsterName.ToLower() == "kerrigan")
+            {
+                var kerriganAI = GetComponent<KerriganAI>();
+                kerriganAI.currentPhase2State = KerriganAI.Phase2State.Dead;
+            }
+            else
+            {
+                var monAI = GetComponent<MonsterAI>();
+                monAI.currentState = MonsterAI.State.Dead;
+            }
+
             animator.SetTrigger("Dead");
             UIManager.Instance.RemoveTargetMonster(this);
+            NormalSceneGameManager.Instance.GameEndCnt++;
+            Debug.Log("Ä«¿îÆ® " + NormalSceneGameManager.Instance.GameEndCnt);
         }
     }
 

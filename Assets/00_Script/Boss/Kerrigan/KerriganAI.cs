@@ -4,9 +4,9 @@ using UnityEngine.AI;
 
 public class KerriganAI : MonoBehaviour
 {
-    [Header("보스 상태")]
+/*    [Header("보스 상태")]
     public float maxHp = 100f;
-    public float currentHp;
+    public float currentHp;*/
 
     [Header("거리 설정")]
     public float veryFarDistance = 20f;  
@@ -111,19 +111,20 @@ public class KerriganAI : MonoBehaviour
     }
     public Phase1State currentState = Phase1State.Walk;
 
-    private enum Phase2State
+    public enum Phase2State
     {
         Uping,  // 공중으로 떠오르는 중
         FlyContront,   // 공중에서 공전하는 중
         FlyAttack,  // 원거리 공격 중
         Landing,    // 착지 중
-        Resting     // 휴식 중
+        Resting,     // 휴식 중
+        Dead
     }
-    private Phase2State currentPhase2State;
+    public Phase2State currentPhase2State;
 
     void Start()
     {
-        currentHp = maxHp;
+        //currentHp = maxHp;
         //currentHp = 40;
         if (player == null)
         {
@@ -148,6 +149,8 @@ public class KerriganAI : MonoBehaviour
     void Update()
     {
         if (player == null) return;
+        if (currentPhase2State == Phase2State.Dead) return;
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit")) return;
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         if (IsPhase1())
@@ -362,25 +365,20 @@ public class KerriganAI : MonoBehaviour
     {
         if (isLanding)
         {
-            // 땅으로 내려가는 움직임
             transform.position = Vector3.MoveTowards(transform.position, landingTargetPosition, flyDownSpeed * Time.deltaTime);
 
-            // 땅에 도달했는지 확인
             if (transform.position.y <= 0.1f) // 약간의 여유값
             {
-                // 정확한 땅 위치로 설정
                 transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
 
                 isLanding = false;
 
-                // NavMeshAgent 다시 활성화
                 if (agent != null && !agent.enabled)
                 {
                     agent.enabled = true;
                     agent.isStopped = true;
                 }
 
-                // 휴식 상태로 전환
                 currentPhase2State = Phase2State.Resting;
                 isResting = true;
                 phase2Timer = 0f;
@@ -417,7 +415,8 @@ public class KerriganAI : MonoBehaviour
 
     bool IsPhase1()
     {
-        return currentHp >= maxHp * 0.5f;
+        MonsterState monsterState = GetComponent<MonsterState>();
+        return monsterState.currentHP >= monsterState.maxHP * 0.5f;
     }
 
     void HandlePhase1Behavior(float distanceToPlayer)
