@@ -329,7 +329,7 @@ public class KerriganAI : MonoBehaviour
             direction.y = 0.3f; // 위쪽 각도 조절
             direction = direction.normalized;
 
-            rb.velocity = direction * 15f; // 속도 증가
+            rb.linearVelocity = direction * 15f; // 속도 증가
 
             ParticleSystem ps = projectile.GetComponent<ParticleSystem>();
             if (ps != null && !ps.isPlaying)

@@ -74,6 +74,10 @@ public class PlayerCombat : MonoBehaviour
 
 
 
+    public CinemachineCamera battojutsuCamera;
+    public float battoCloseUpFOV = 35f;
+    public float battoNormalFOV = 60f;
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -115,7 +119,7 @@ public class PlayerCombat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            StartSkill2Cutscene();
+            StartBattojutsuCutscene();
         }
     }
 
@@ -148,12 +152,11 @@ public class PlayerCombat : MonoBehaviour
         StartCoroutine(FireSkillCooldown(fireSkillCoolTime));
     }
 
-    void StartSkill2Cutscene()
+    void StartBattojutsuCutscene()
     {
         if (isPlayingCutscene) return;
         if (battoSkillOnCooldown) return;
 
-        // 나중에
         UIManager.Instance.StartBattoSkillCooldown(battoSkillCoolTime);
         isPlayingCutscene = true;
         battoSkillOnCooldown = true;
@@ -168,20 +171,39 @@ public class PlayerCombat : MonoBehaviour
         animator.SetTrigger("Skill2Ready");
         battoSkill = true;
 
-        if (playerCamera != null && skillCutsceneCamera != null)
-        {
-            playerCamera.Priority = 0;
-            skillCutsceneCamera.Priority = 10;
-        }
-
-        if (skillCutsceneDirector != null && battoSkillTimeline != null)
-        {
-            skillCutsceneDirector.playableAsset = battoSkillTimeline;
-            skillCutsceneDirector.Play();
-        }
+        StartCoroutine(PlayBattojutsuCutscene());
 
         StartCoroutine(Skill2(battoSkillDuration));
         StartCoroutine(battoSkillCooldown(battoSkillCoolTime));
+    }
+
+    private IEnumerator PlayBattojutsuCutscene()
+    {
+        if (playerCamera != null && battojutsuCamera != null)
+        {
+            playerCamera.Priority = 0;
+            battojutsuCamera.Priority = 100;
+
+            // 카메라를 플레이어 정면 약간 위쪽에 고정
+            Vector3 cameraPos = transform.position - transform.forward * 3f + Vector3.up * 2f;
+            battojutsuCamera.transform.position = cameraPos;
+            battojutsuCamera.transform.LookAt(transform.position + Vector3.up * 1.5f);
+
+            // FOV 조정으로 확대 효과
+            battojutsuCamera.Lens.FieldOfView = battoCloseUpFOV;
+        }
+
+        yield return new WaitForSeconds(battoSkillDuration);
+
+        // 원래 카메라로 복귀
+        if (playerCamera != null && battojutsuCamera != null)
+        {
+            playerCamera.Priority = 10;
+            battojutsuCamera.Priority = 0;
+            battojutsuCamera.Lens.FieldOfView = battoNormalFOV;
+        }
+
+        isPlayingCutscene = false;
     }
 
     private void OnCutsceneComplete(PlayableDirector director)
