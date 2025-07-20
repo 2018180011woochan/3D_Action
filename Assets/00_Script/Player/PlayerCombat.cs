@@ -184,12 +184,10 @@ public class PlayerCombat : MonoBehaviour
             playerCamera.Priority = 0;
             battojutsuCamera.Priority = 100;
 
-            // 카메라를 플레이어 정면 약간 위쪽에 고정
             Vector3 cameraPos = transform.position - transform.forward * 3f + Vector3.up * 2f;
             battojutsuCamera.transform.position = cameraPos;
             battojutsuCamera.transform.LookAt(transform.position + Vector3.up * 1.5f);
 
-            // FOV 조정으로 확대 효과
             battojutsuCamera.Lens.FieldOfView = battoCloseUpFOV;
         }
 

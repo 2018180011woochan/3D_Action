@@ -38,21 +38,15 @@ public class BossSceneCutscene : MonoBehaviour
     {
         isPlayingCutscene = true;
 
-        Debug.Log("보스 컷씬 시작!");
-
-        // 1단계: 보스 비추기
         SetupBossCamera();
         yield return new WaitForSeconds(bossShowDuration);
 
-        // 2단계: 플레이어 비추기
         SetupPlayerCamera();
         yield return new WaitForSeconds(playerShowDuration);
 
-        // 3단계: 원래 카메라들 비활성화
         RestoreMainCamera();
 
         isPlayingCutscene = false;
-        Debug.Log("보스 컷씬 끝!");
     }
 
     private void SetupBossCamera()
@@ -67,14 +61,16 @@ public class BossSceneCutscene : MonoBehaviour
     {
         while (bossCamera != null && bossCamera.Priority > 0 && bossTransform != null)
         {
-            // 보스 위치에 따라 카메라 위치 업데이트
             Vector3 bossPos = bossTransform.position;
-            Vector3 cameraPos = bossPos + bossTransform.forward * 4f + Vector3.up * 2f;
+
+            Vector3 cameraPos = bossPos + bossTransform.forward * 8f + Vector3.up * 8f;
 
             bossCamera.transform.position = cameraPos;
-            bossCamera.transform.LookAt(bossPos + Vector3.up * 1.5f);
 
-            yield return null; // 매 프레임마다 업데이트
+            Vector3 lookAtPos = bossPos + Vector3.up * 1f;
+            bossCamera.transform.LookAt(lookAtPos);
+
+            yield return null; 
         }
     }
 
@@ -84,7 +80,6 @@ public class BossSceneCutscene : MonoBehaviour
         playerCamera.Priority = 100;
         playerCamera.Lens.FieldOfView = playerCameraFOV;
 
-        // 플레이어 앞쪽에서 플레이어를 바라보도록 설정
         Vector3 playerPos = playerTransform.position;
         Vector3 cameraPos = playerPos + playerTransform.forward * 3f + Vector3.up * 1.5f;
 
