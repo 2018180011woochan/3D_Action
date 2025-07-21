@@ -15,8 +15,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("대시 세팅")]
     public KeyCode dashKey = KeyCode.LeftControl;
-    public float dashDistance = 3f;      
-    public float dashDuration = 0.2f;    
+    public float dashDistance = 3f;
+    public float dashDuration = 0.2f;
     bool isDashing = false;
 
     [Header("점프 세팅")]
@@ -72,8 +72,8 @@ public class PlayerController : MonoBehaviour
         if (controller.isGrounded)
         {
             if (velocity.y < 0f)
-                velocity.y = -2f;      
-            jumpCount = 0;             
+                velocity.y = -2f;
+            jumpCount = 0;
             animator.SetBool("isGrounded", true);
         }
         else
@@ -178,11 +178,23 @@ public class PlayerController : MonoBehaviour
         float duration = 0.5f;
         float elapsed = 0f;
 
+        // direction을 수평 방향으로만 정규화
+        Vector3 horizontalDirection = new Vector3(direction.x, 0, direction.z).normalized;
+
         while (elapsed < duration)
         {
             float strength = Mathf.Lerp(force, 0, elapsed / duration);
-            Vector3 move = direction * strength * Time.deltaTime;
+            Vector3 move = horizontalDirection * strength * Time.deltaTime;
+
             controller.Move(move);
+
+            // CriticalHit일 때 Transform을 직접 조작
+            if (animator.GetCurrentAnimatorStateInfo(0).IsTag("CriticalHit"))
+            {
+                controller.enabled = false;
+                transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+                controller.enabled = true;
+            }
 
             elapsed += Time.deltaTime;
             yield return null;
