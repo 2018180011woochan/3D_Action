@@ -76,6 +76,7 @@ public class KerriganAI : MonoBehaviour
     public float chargeDuration = 5f;                   // 기 모으는 시간
     public float projectileLaunchRadius = 3f;           // 플레이어 주위 투사체 착탄 반경
     public GameObject phase2Projectile;                 // 2페이즈 투사체 프리팹
+    public GameObject groundEffect;                 
 
     private List<GameObject> spawnedProjectiles = new List<GameObject>();  // 생성된 투사체 리스트
     private float projectileSpawnTimer = 0f;            // 투사체 생성 타이머
@@ -125,8 +126,6 @@ public class KerriganAI : MonoBehaviour
 
     void Start()
     {
-        //currentHp = maxHp;
-        //currentHp = 40;
         if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -232,6 +231,7 @@ public class KerriganAI : MonoBehaviour
             currentPhase2State = Phase2State.FlyAttack;
             phase2Timer = 0f; 
             Debug.Log("원거리 공격 시작");
+            Instantiate(groundEffect, new Vector3(transform.position.x, 0, transform.position.z), transform.rotation);
             return; 
         }
 
