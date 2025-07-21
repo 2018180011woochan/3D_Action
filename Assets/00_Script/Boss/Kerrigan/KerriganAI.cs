@@ -33,6 +33,7 @@ public class KerriganAI : MonoBehaviour
     private float kickTimer = 0f;             // 킥 타이머
     private bool isMovingToKick = false;      // 킥 위치로 이동 중인지
     public float kickApproachTimeout = 5f;
+    public GameObject kickStartEffect;
 
     [Header("근접 공격 관련")]
     private bool isPerformingMelee = false;    
@@ -507,7 +508,9 @@ public class KerriganAI : MonoBehaviour
         agent.speed = runSpeed;  
         agent.stoppingDistance = kickRange;
         agent.SetDestination(player.position);
-       
+
+        Instantiate(kickStartEffect, transform.position, transform.rotation);
+
     }
 
     void StartRangedAttack()

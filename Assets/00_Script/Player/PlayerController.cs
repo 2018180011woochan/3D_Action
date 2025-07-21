@@ -178,7 +178,6 @@ public class PlayerController : MonoBehaviour
         float duration = 0.5f;
         float elapsed = 0f;
 
-        // direction을 수평 방향으로만 정규화
         Vector3 horizontalDirection = new Vector3(direction.x, 0, direction.z).normalized;
 
         while (elapsed < duration)
@@ -188,7 +187,6 @@ public class PlayerController : MonoBehaviour
 
             controller.Move(move);
 
-            // CriticalHit일 때 Transform을 직접 조작
             if (animator.GetCurrentAnimatorStateInfo(0).IsTag("CriticalHit"))
             {
                 controller.enabled = false;
