@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,6 +25,8 @@ public class BossAI : MonoBehaviour
     private KerriganPhase2 phase2;
     private bool isPhase2Active = false;
 
+    private bool isTransitioning = false;
+
     void Awake()
     {
         // 컴포넌트 초기화
@@ -36,6 +39,10 @@ public class BossAI : MonoBehaviour
         phase2 = GetComponent<KerriganPhase2>();
         phase1.enabled = true;
         phase2.enabled = false;             // 처음에는 비활성화 
+
+        // 2페이즈 테스트용
+/*        phase1.enabled = false;
+        phase2.enabled = true;             // 처음에는 비활성화*/
     }
 
     void Update()
@@ -50,11 +57,27 @@ public class BossAI : MonoBehaviour
 
     void CheckPhaseTransition()
     {
+        if (isTransitioning) return;
         // 체력 50 미만이면 2페이즈로 전환
         if (!isPhase2Active && MonsterState.currentHP < 50f)
         {
-            TransitionToPhase2();
+            StartCoroutine(TransitionToPhase2AfterHit());
         }
+    }
+
+    IEnumerator TransitionToPhase2AfterHit()
+    {
+        isTransitioning = true;
+
+        // GetHit 애니메이션이 재생 중이면 끝날 때까지 대기
+        while (Animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
+        {
+            yield return null;  // 다음 프레임까지 대기
+        }
+
+        // GetHit 애니메이션이 끝났으면 2페이즈 전환
+        TransitionToPhase2();
+        isTransitioning = false;
     }
 
     void TransitionToPhase2()

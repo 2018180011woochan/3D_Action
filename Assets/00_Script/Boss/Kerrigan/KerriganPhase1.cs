@@ -70,6 +70,11 @@ public class KerriganPhase1 : MonoBehaviour
 
     void Update()
     {
+        if (BossAI.IsHit())
+        {
+            return;
+        }
+
         switch (currentState)
         {
             case State.Chase:

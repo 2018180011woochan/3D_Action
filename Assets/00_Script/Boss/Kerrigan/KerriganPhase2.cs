@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class KerriganPhase2 : MonoBehaviour
 {
@@ -46,6 +47,12 @@ public class KerriganPhase2 : MonoBehaviour
 
     void Update()
     {
+        if (bossAI.IsHit())
+        {
+            Debug.Log("Phase2: GetHit 중이므로 Update 중지");
+            return;
+        }
+
         stateTimer += Time.deltaTime;
 
         switch (currentState)
@@ -70,6 +77,7 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateFlyUp()
     {
+        Debug.Log("상승시작");
         // 상승
         Vector3 targetPos = new Vector3(transform.position.x, flyAltitude, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, flyUpSpeed * Time.deltaTime);
@@ -246,5 +254,24 @@ public class KerriganPhase2 : MonoBehaviour
         }
 
         ChangeState(State.FlyUp);
+    }
+
+    void OnEnable()
+    {
+        Debug.Log("Phase2 컴포넌트 활성화!");
+        StartCoroutine(StartPhase2WhenReady());
+    }
+
+    IEnumerator StartPhase2WhenReady()
+    {
+        // GetHit 중이면 대기
+        while (bossAI != null && bossAI.IsHit())
+        {
+            Debug.Log("Phase2: 활성화되었지만 GetHit 대기 중...");
+            yield return null;
+        }
+
+        Debug.Log("Phase2: 시작!");
+        OnPhaseEnter();
     }
 }

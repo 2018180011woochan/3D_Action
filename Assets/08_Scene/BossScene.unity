@@ -726,11 +726,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 413554, guid: 50294217694c1a145a9a3b86f853c022, type: 3}
   m_PrefabInstance: {fileID: 431398711}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &74418598 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5732369674868818937, guid: e8f193792ce31e54891d12d9d2c7e94c, type: 3}
-  m_PrefabInstance: {fileID: 107247225}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &79298758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 482546, guid: 8a13b3dbbf597744192ac4a84ebb93c6, type: 3}
@@ -4391,6 +4386,11 @@ MonoBehaviour:
   walkSpeed: 2
   runSpeed: 10
   confrontSpeed: 2.5
+--- !u!4 &500087194 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5732369674868818937, guid: e8f193792ce31e54891d12d9d2c7e94c, type: 3}
+  m_PrefabInstance: {fileID: 826159217}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &506060531
 GameObject:
   m_ObjectHideFlags: 0
@@ -10651,7 +10651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bossCamera: {fileID: 1774497887}
   playerCamera: {fileID: 1963485179}
-  bossTransform: {fileID: 74418598}
+  bossTransform: {fileID: 500087194}
   playerTransform: {fileID: 715579631}
   bossShowDuration: 3
   playerShowDuration: 1
