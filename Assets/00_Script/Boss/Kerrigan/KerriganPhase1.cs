@@ -170,15 +170,6 @@ public class KerriganPhase1 : MonoBehaviour
         }
     }
 
-    void PerformBackStep()
-    {
-        Debug.Log("근접공격대신 백스텝!!!!");
-        Vector3 backDirection = (transform.position - BossAI.Player.position).normalized;
-        transform.position += backDirection * backStepSpeed * Time.deltaTime;
-
-        BossAI.Animator.SetBool("isWalkingBack", true);
-    }
-
     void OrbitAroundPlayer()
     {
         Vector3 direction = (BossAI.Player.position - transform.position).normalized;
@@ -322,20 +313,6 @@ public class KerriganPhase1 : MonoBehaviour
         }
     }
 
-    void HandleBackStep()
-    {
-        // 뒤로 물러나기
-        Vector3 backDirection = (transform.position - BossAI.Player.position).normalized;
-        transform.position += backDirection * backStepSpeed * Time.deltaTime;
-
-        if (meleeTimer >= backStepDuration)
-        {
-            // 백스텝 완료, 대치 상태로 복귀
-            BossAI.Animator.SetBool("isWalkingBack", false);
-            ChangeState(State.Confront);
-        }
-    }
-
     void SpawnProjectile()
     {
         if (projectilePrefab != null)
@@ -377,7 +354,6 @@ public class KerriganPhase1 : MonoBehaviour
                 isApproachingForKick = true;
                 isExecutingKick = false;
 
-                // 에이전트 설정 - 빠른 속도로 접근
                 BossAI.Agent.isStopped = false;
                 BossAI.Agent.speed = BossAI.runSpeed;
                 BossAI.Agent.stoppingDistance = kickRange - 0.5f; // 여유 거리
@@ -438,7 +414,6 @@ public class KerriganPhase1 : MonoBehaviour
         }
     }
 
-    // Phase1 종료시 호출
     public void OnPhaseExit()
     {
         ExitState(currentState);

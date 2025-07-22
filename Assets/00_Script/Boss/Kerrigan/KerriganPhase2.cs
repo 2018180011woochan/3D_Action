@@ -224,12 +224,9 @@ public class KerriganPhase2 : MonoBehaviour
                 break;
 
             case State.Rest:
-                // NavMeshAgent 재활성화
-                if (bossAI.Agent != null && !bossAI.Agent.enabled)
-                {
-                    bossAI.Agent.enabled = true;
-                    bossAI.Agent.isStopped = true;
-                }
+                bossAI.Agent.enabled = true;
+                bossAI.Agent.isStopped = true;
+                
                 break;
         }
     }
@@ -244,34 +241,20 @@ public class KerriganPhase2 : MonoBehaviour
         }
     }
 
-    public void OnPhaseEnter()
-    {
-        // Phase2 진입시 NavMeshAgent 비활성화
-        if (bossAI.Agent != null && bossAI.Agent.enabled)
-        {
-            bossAI.Agent.isStopped = true;
-            bossAI.Agent.enabled = false;
-        }
-
-        ChangeState(State.FlyUp);
-    }
-
     void OnEnable()
     {
-        Debug.Log("Phase2 컴포넌트 활성화!");
         StartCoroutine(StartPhase2WhenReady());
     }
 
     IEnumerator StartPhase2WhenReady()
     {
-        // GetHit 중이면 대기
-        while (bossAI != null && bossAI.IsHit())
+        while (bossAI.IsHit())
         {
-            Debug.Log("Phase2: 활성화되었지만 GetHit 대기 중...");
             yield return null;
         }
 
-        Debug.Log("Phase2: 시작!");
-        OnPhaseEnter();
+        bossAI.Agent.isStopped = true;
+        bossAI.Agent.enabled = false;
+        ChangeState(State.FlyUp);
     }
 }

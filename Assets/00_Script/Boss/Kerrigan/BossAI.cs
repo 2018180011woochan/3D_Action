@@ -69,13 +69,11 @@ public class BossAI : MonoBehaviour
     {
         isTransitioning = true;
 
-        // GetHit 애니메이션이 재생 중이면 끝날 때까지 대기
         while (Animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
         {
-            yield return null;  // 다음 프레임까지 대기
+            yield return null; 
         }
 
-        // GetHit 애니메이션이 끝났으면 2페이즈 전환
         TransitionToPhase2();
         isTransitioning = false;
     }
@@ -90,9 +88,6 @@ public class BossAI : MonoBehaviour
         
         // Phase2 시작
         phase2.enabled = true;
-        phase2.OnPhaseEnter();
-        
-        Debug.Log("2페이즈 전환!");
     }
 
     public float GetDistanceToPlayer()
