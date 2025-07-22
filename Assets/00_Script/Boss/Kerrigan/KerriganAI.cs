@@ -765,8 +765,8 @@ public class KerriganAI : MonoBehaviour
             // 스윙 끝나면 상태 초기화
             isPerformingSwing = false;
             swingTimer = 0f;
-            hasDecidedCloseAction = false;
 
+            isBackStep = true;
         }
     }
 

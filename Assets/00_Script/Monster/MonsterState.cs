@@ -18,8 +18,8 @@ public class MonsterState : MonoBehaviour
     private Coroutine battoCoroutine;
     void Awake()
     {
-        //currentHP = maxHP;
-        currentHP = 40;
+        currentHP = maxHP;
+        //currentHP = 40;
         animator = GetComponentInChildren<Animator>();
     }
 

@@ -27,6 +27,7 @@ public class SwingAttackHitBox : MonoBehaviour
                 {
                     // 패링 효과로 기절 
                     animator.SetTrigger("GetHit");
+                    Debug.Log("패링 성공!");
                 }
 
                 if (AttackEffect != null)
