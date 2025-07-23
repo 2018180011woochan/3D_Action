@@ -16,6 +16,8 @@ public class MonsterState : MonoBehaviour
     [Header("발도술 공격을 받았을 때")]
     public GameObject BattoHitEffect;
     private Coroutine battoCoroutine;
+
+    public GameObject Potion;
     void Awake()
     {
         currentHP = maxHP;
@@ -42,6 +44,15 @@ public class MonsterState : MonoBehaviour
             {
                 var monAI = GetComponent<MonsterAI>();
                 monAI.currentState = MonsterAI.State.Dead;
+
+                Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y  + 1f, transform.position.z);
+
+                GameObject potion = Instantiate(
+                    Potion,
+                    spawnPos,
+                    Quaternion.identity
+                    );
+
             }
 
             animator.SetTrigger("Dead");

@@ -2215,6 +2215,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lockon
       objectReference: {fileID: 0}
+    - target: {fileID: 2370258393951016048, guid: 1d4bc01ec61261b4d869950883ff57c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4844620668261969567, guid: 1d4bc01ec61261b4d869950883ff57c4, type: 3}
       propertyPath: looping
       value: 1
@@ -5380,6 +5384,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   BattoHitEffect: {fileID: 2043299881221911332, guid: ffa4d12d8a64f0c4f8319209bafd5f69, type: 3}
+  Potion: {fileID: 7356109540691922653, guid: 115bc52d708583f4c9b353953c963aae, type: 3}
 --- !u!65 &2168068442233452368
 BoxCollider:
   m_ObjectHideFlags: 0
