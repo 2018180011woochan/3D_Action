@@ -5,12 +5,13 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager instance;
 
+
+
     public GameObject slotPrefab;
     public Transform itemSlotsGameObject;
     public int inventorySize = 16;
 
     private List<ItemSlot> slots = new List<ItemSlot>();
-
     void Awake()
     {
         if (instance == null)
@@ -44,10 +45,6 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log(item.ItemName);
                 slot.AddItem(item);
                 return true;
-            }
-            else
-            {
-                Debug.Log("sdf");
             }
         }
 

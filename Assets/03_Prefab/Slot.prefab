@@ -164,6 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48e7446af29e8c445bbe70ff876e06d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curItem: {fileID: 11400000, guid: ba7349db90300534aa9871c5edc3be6b, type: 2}
+  curItem: {fileID: 0}
   standardImage: {fileID: 5959594936226433547}
   curSlotImage: {fileID: 5959594936226433547}

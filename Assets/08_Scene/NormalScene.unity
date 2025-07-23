@@ -5987,7 +5987,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2103794799
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6500,6 +6500,10 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 1589245845}
+    - target: {fileID: 444848336578214852, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
+      propertyPath: inventoryGameObject
+      value: 
+      objectReference: {fileID: 2103794798}
     - target: {fileID: 1056133394771258133, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
       propertyPath: m_IsActive
       value: 1

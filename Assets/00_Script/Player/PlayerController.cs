@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
     float turnSmoothVelocity;
     Vector3 velocity;
     PlayerState playerState;
+
+    // 인벤토리 전체
+    public GameObject inventoryGameObject;
+    private bool isInventoryOpen = false;
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -58,6 +62,30 @@ public class PlayerController : MonoBehaviour
                 velocity.y = -2f;
             }
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            Debug.Log("인벤토리 open");
+
+            isInventoryOpen = !isInventoryOpen;
+            inventoryGameObject.gameObject.SetActive(isInventoryOpen);
+
+            // 인벤토리가 열렸을 때 추가 처리
+            if (isInventoryOpen)
+            {
+                // 마우스 커서 보이기
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+
+            }
+            else
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+
+            }
+
         }
 
         AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
