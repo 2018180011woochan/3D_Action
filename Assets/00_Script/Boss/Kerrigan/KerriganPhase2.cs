@@ -22,9 +22,9 @@ public class KerriganPhase2 : MonoBehaviour
     public float orbitDuration = 5f;
 
     [Header("공격 설정")]
-    public int projectileCount = 10;
+    public int projectileCount = 20;
     public float projectileSpawnRadius = 8f;
-    public float projectileSpawnInterval = 0.5f;
+    public float projectileSpawnInterval = 0.25f;
     public GameObject projectilePrefab;
     public GameObject groundEffectPrefab;
 
@@ -159,6 +159,14 @@ public class KerriganPhase2 : MonoBehaviour
         Vector3 spawnPos = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
 
         GameObject proj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+
+        Rigidbody rb = proj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.useGravity = false;  
+            rb.isKinematic = true;  
+        }
+
         spawnedProjectiles.Add(proj);
         spawnedProjectileCount++;
     }
@@ -179,6 +187,9 @@ public class KerriganPhase2 : MonoBehaviour
             Rigidbody rb = proj.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                rb.isKinematic = false;  
+                rb.useGravity = true;    
+
                 Vector3 direction = (targetPos - proj.transform.position).normalized;
                 direction.y = 0.3f;
                 rb.linearVelocity = direction.normalized * 15f;
