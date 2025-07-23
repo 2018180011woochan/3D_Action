@@ -116,6 +116,13 @@ public class LockOn : MonoBehaviour
             currentTarget = closestTarget;
             isLockedOn = true;
             EnableLockOnCamera();
+
+            Transform lockOnObj = closestTarget.Find("Lockon");
+            if (lockOnObj != null)
+            {
+                lockOnObj.gameObject.SetActive(true);
+            }
+
         }
     }
 
@@ -130,6 +137,12 @@ public class LockOn : MonoBehaviour
 
     void DisableLockOn()
     {
+        Transform lockOnObj = currentTarget.Find("Lockon");
+        if (lockOnObj != null)
+        {
+            lockOnObj.gameObject.SetActive(false);
+        }
+
         currentTarget = null;
         isLockedOn = false;
 

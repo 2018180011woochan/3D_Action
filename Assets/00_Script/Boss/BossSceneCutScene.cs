@@ -19,7 +19,7 @@ public class BossSceneCutscene : MonoBehaviour
 
     [Header("카메라 FOV 설정")]
     public float bossCameraFOV = 40f;
-    public float playerCameraFOV = 50f;
+    public float playerCameraFOV = 100f;
 
     private bool isPlayingCutscene = false;
 

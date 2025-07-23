@@ -81,7 +81,7 @@ public class KerriganPhase2 : MonoBehaviour
         // 상승
         Vector3 targetPos = new Vector3(transform.position.x, flyAltitude, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, flyUpSpeed * Time.deltaTime);
-
+        Debug.Log(transform.position.y);
         // 고도 도달
         if (transform.position.y >= flyAltitude - 0.1f)
         {

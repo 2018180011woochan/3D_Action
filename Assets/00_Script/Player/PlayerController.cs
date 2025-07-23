@@ -47,7 +47,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit") ||
+            animator.GetCurrentAnimatorStateInfo(0).IsTag("CriticalHit"))
         {
             velocity.y += gravity * Time.deltaTime;
             controller.Move(new Vector3(0, velocity.y, 0) * Time.deltaTime);
