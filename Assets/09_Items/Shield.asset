@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b37b10113367404b8c1eddb8acbf2a2, type: 3}
-  m_Name: Potion
+  m_Name: Shield
   m_EditorClassIdentifier: 
-  ItemName: Potion
-  ItemImage: {fileID: 21300000, guid: 4b6390442ddcd3c49b094cb58c1e137c, type: 3}
-  ItemObj: {fileID: 7356109540691922653, guid: 115bc52d708583f4c9b353953c963aae, type: 3}
+  ItemName: Shield
+  ItemImage: {fileID: 21300000, guid: 5bf2627863b7efa4d990e63d6e735f0a, type: 3}
+  ItemObj: {fileID: 0}
+  isEquip: 1

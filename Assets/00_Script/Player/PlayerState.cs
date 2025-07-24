@@ -3,14 +3,12 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class PlayerState : MonoBehaviour
-{
-    [Header("ü�� ����")]
+{ 
     public float maxHP = 100f;
     public float currentHP { get; private set; }
 
     public UnityEvent<float> onHealthChanged = new UnityEvent<float>();
 
-    [Header("���¹̳� ����")]
     public float maxStamina = 100f;
     public float currentStamina { get; private set; }
 
@@ -25,6 +23,10 @@ public class PlayerState : MonoBehaviour
     private PlayerController playerController;
 
     public float knockbackForce = 10f;
+
+    private Coroutine healCoroutine;
+    public GameObject HealEffect;
+
     void Awake()
     {
         currentHP = maxHP;
@@ -92,5 +94,42 @@ public class PlayerState : MonoBehaviour
     {
         currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
         onStaminaChanged.Invoke(currentStamina / maxStamina);
+    }
+
+    public void StartHealOverTime(float healPerSecond, float duration)
+    {
+        if (healCoroutine != null)
+        {
+            StopCoroutine(healCoroutine);
+            Destroy(HealEffect); 
+        }
+
+        healCoroutine = StartCoroutine(HealCoroutine(healPerSecond, duration, HealEffect));
+    }
+
+    IEnumerator HealCoroutine(float healPerSecond, float duration, GameObject healEffectPrefab)
+    {
+        float elapsedTime = 0f;
+
+        HealEffect = Instantiate(healEffectPrefab, transform.position, Quaternion.identity);
+        HealEffect.transform.SetParent(transform);
+        HealEffect.transform.localPosition = new Vector3(0, 0, 0);
+
+        while (elapsedTime < duration)
+        {
+            if (currentHP >= maxHP) break;
+            
+            Heal(healPerSecond);
+
+            yield return new WaitForSeconds(1f);
+            elapsedTime += 1f;
+        }
+
+        if (HealEffect != null)
+        {
+            Destroy(HealEffect);
+        }
+
+        healCoroutine = null;
     }
 }

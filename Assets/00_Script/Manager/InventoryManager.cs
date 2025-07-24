@@ -82,7 +82,6 @@ public class InventoryManager : MonoBehaviour
 
     public void CloseInventory()
     {
-        Debug.Log("CloseInventory ½ÇÇàµÊ");
         isInventoryOpen = false;  
         inventoryGameObject.SetActive(false);
         CloseInventoryState();

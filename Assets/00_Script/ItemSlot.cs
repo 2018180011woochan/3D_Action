@@ -11,10 +11,13 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     private float lastClickTime = 0f;
     private float doubleClickTime = 0.3f;
 
-/*    void Start()
+    private void Start()
     {
-        standardImage.sprite = curSlotImage.sprite;
-    }*/
+        if (curItem != null)
+        {
+            AddItem(curItem);
+        }
+    }
 
     public void AddItem(Item newItem)
     {
@@ -40,7 +43,24 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         {
             if (curItem.ItemName == "Potion")
             {
-                Debug.Log("포션 아이템 사용");
+                // 포션을 먹으면 Heal 
+                Potion potionScript = curItem.ItemObj.GetComponent<Potion>();
+                potionScript.Heal();
+
+                ClearSlot();
+            }
+
+            if (curItem.ItemName == "Armor")
+            {
+                if (curItem.isEquip == true)
+                {
+                    curItem.isEquip = false;
+                    InventoryManager.instance.AddItem(curItem);
+                }
+                else
+                {
+
+                }
                 ClearSlot();
             }
         }

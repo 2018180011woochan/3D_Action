@@ -6,4 +6,6 @@ public class Item : ScriptableObject
 {
     public string ItemName = "item";
     public Sprite ItemImage;
+    public GameObject ItemObj;
+    public bool isEquip = false;
 }
