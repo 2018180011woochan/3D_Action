@@ -132,4 +132,19 @@ public class PlayerState : MonoBehaviour
 
         healCoroutine = null;
     }
+
+    public void SetHP(float hp)
+    {
+        currentHP = hp;
+        onHealthChanged.Invoke(currentHP / maxHP);
+    }
+
+    // 씬 전환전 호출
+    public void SaveData()
+    {
+        if (GameDataManager.instance != null)
+        {
+            GameDataManager.instance.SavePlayerHP(currentHP);
+        }
+    }
 }

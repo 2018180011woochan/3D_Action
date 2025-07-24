@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,9 +22,28 @@ public class InventoryManager : MonoBehaviour
     void Awake()
     {
         if (instance == null)
+        {
             instance = this;
+        }
         else
             Destroy(gameObject);
+    }
+
+    void Start()
+    {
+        InitializeInventory();
+        inventoryGameObject.SetActive(false);
+
+        if (GameDataManager.instance != null)
+        {
+            StartCoroutine(LoadDataAfterInit());
+        }
+    }
+
+    IEnumerator LoadDataAfterInit()
+    {
+        yield return null;  // 한 프레임 대기
+        GameDataManager.instance.LoadInventory(this);
     }
 
     void Update()
@@ -34,11 +54,6 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        InitializeInventory();
-        inventoryGameObject.SetActive(false);
-    }
 
     void InitializeInventory()
     {
@@ -116,5 +131,23 @@ public class InventoryManager : MonoBehaviour
     public bool IsInventoryOpen()
     {
         return isInventoryOpen;
+    }
+
+    // 씬전환 전에 호출
+    public void SaveData()
+    {
+        List<Item> items = new List<Item>();
+        foreach (ItemSlot slot in slots)
+        {
+            if (slot.curItem != null)
+            {
+                items.Add(slot.curItem);
+            }
+        }
+
+        if (GameDataManager.instance != null)
+        {
+            GameDataManager.instance.SaveInventory(items);
+        }
     }
 }
