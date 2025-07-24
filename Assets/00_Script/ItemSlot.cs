@@ -59,7 +59,38 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
                 }
                 else
                 {
+                    curItem.isEquip = true;
+                    InventoryManager.instance.EquipArmor(curItem);
+                }
+                ClearSlot();
+            }
 
+            if (curItem.ItemName == "Sword")
+            {
+                if (curItem.isEquip == true)
+                {
+                    curItem.isEquip = false;
+                    InventoryManager.instance.AddItem(curItem);
+                }
+                else
+                {
+                    curItem.isEquip = true;
+                    InventoryManager.instance.EquipSword(curItem);
+                }
+                ClearSlot();
+            }
+
+            if (curItem.ItemName == "Shield")
+            {
+                if (curItem.isEquip == true)
+                {
+                    curItem.isEquip = false;
+                    InventoryManager.instance.AddItem(curItem);
+                }
+                else
+                {
+                    curItem.isEquip = true;
+                    InventoryManager.instance.EquipShield(curItem);
                 }
                 ClearSlot();
             }

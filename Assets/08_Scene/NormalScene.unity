@@ -2344,6 +2344,9 @@ MonoBehaviour:
   itemSlotsGameObject: {fileID: 1121344328}
   inventorySize: 16
   inventoryGameObject: {fileID: 2103794798}
+  armorSlot: {fileID: 867517417}
+  swordSlot: {fileID: 2094054092}
+  sheildSlot: {fileID: 355669362}
 --- !u!1 &991647320
 GameObject:
   m_ObjectHideFlags: 0

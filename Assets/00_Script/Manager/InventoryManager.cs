@@ -13,6 +13,11 @@ public class InventoryManager : MonoBehaviour
     public GameObject inventoryGameObject;
     private bool isInventoryOpen = false;
 
+    // ¿Â∫Ò ΩΩ∑‘
+    public ItemSlot armorSlot;
+    public ItemSlot swordSlot;
+    public ItemSlot sheildSlot;
+
     void Awake()
     {
         if (instance == null)
@@ -57,6 +62,21 @@ public class InventoryManager : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void EquipArmor(Item armor)
+    {
+        armorSlot.AddItem(armor);
+    }
+
+    public void EquipSword(Item sword)
+    {
+        swordSlot.AddItem(sword);
+    }
+
+    public void EquipShield(Item shield)
+    {
+        sheildSlot.AddItem(shield);
     }
 
     public void ToggleInventory()
