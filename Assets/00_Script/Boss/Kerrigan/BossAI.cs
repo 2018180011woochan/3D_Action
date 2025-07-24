@@ -26,27 +26,59 @@ public class BossAI : MonoBehaviour
     private bool isPhase2Active = false;
 
     private bool isTransitioning = false;
+    private bool isInitialized = false;  // 초기화 완료 체크
 
     void Awake()
+    {
+        InitializeComponents();
+    }
+
+    void Start()
+    {
+        // Start에서 한 번 더 체크
+        if (!isInitialized)
+        {
+            InitializeComponents();
+        }
+    }
+
+    void InitializeComponents()
     {
         // 컴포넌트 초기화
         Agent = GetComponent<NavMeshAgent>();
         Animator = GetComponent<Animator>();
         MonsterState = GetComponent<MonsterState>();
 
+        // null 체크
+        if (Agent == null || Animator == null || MonsterState == null)
+        {
+            Debug.LogError("필수 컴포넌트가 없습니다!");
+            return;
+        }
+
         // 페이즈 컴포넌트 가져오기
         phase1 = GetComponent<KerriganPhase1>();
         phase2 = GetComponent<KerriganPhase2>();
-        phase1.enabled = true;
-        phase2.enabled = false;             // 처음에는 비활성화 
 
-        // 2페이즈 테스트용
-/*        phase1.enabled = false;
-        phase2.enabled = true;             // 처음에는 비활성화*/
+        if (phase1 != null) phase1.enabled = true;
+        if (phase2 != null) phase2.enabled = false;
+
+        // 플레이어 찾기
+        if (Player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                Player = playerObj.transform;
+            }
+        }
+
+        isInitialized = true;
     }
 
     void Update()
     {
+        if (!isInitialized) return;
         if (IsDead()) return;
         if (IsHit()) return;
 

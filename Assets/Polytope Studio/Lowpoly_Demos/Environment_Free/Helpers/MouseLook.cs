@@ -26,12 +26,12 @@ public class MouseLook : MonoBehaviour
             }
         }
 
-        if (InventoryManager.instance.IsInventoryOpen())
+        if (InventoryManager.instance != null && InventoryManager.instance.IsInventoryOpen())
         {
             return;
         }
 
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }

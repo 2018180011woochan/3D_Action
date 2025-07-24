@@ -24,6 +24,7 @@ public class InventoryManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            Debug.Log("InventoryManager 인스턴스 생성됨");
         }
         else
             Destroy(gameObject);
@@ -34,10 +35,11 @@ public class InventoryManager : MonoBehaviour
         InitializeInventory();
         inventoryGameObject.SetActive(false);
 
-        if (GameDataManager.instance != null)
+        // 내일해보자
+/*        if (GameDataManager.instance != null)
         {
             StartCoroutine(LoadDataAfterInit());
-        }
+        }*/
     }
 
     IEnumerator LoadDataAfterInit()
