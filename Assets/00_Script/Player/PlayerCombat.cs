@@ -99,7 +99,12 @@ public class PlayerCombat : MonoBehaviour
         if (comboTimer > 0f)
             comboTimer -= Time.deltaTime;
         else
-            comboStep = 0;  
+            comboStep = 0;
+
+        if (InventoryManager.instance.IsInventoryOpen())
+        {
+            return;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {

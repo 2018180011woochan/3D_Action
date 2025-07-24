@@ -4,14 +4,15 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager instance;
-
-
-
     public GameObject slotPrefab;
     public Transform itemSlotsGameObject;
     public int inventorySize = 16;
-
     private List<ItemSlot> slots = new List<ItemSlot>();
+
+    // 인벤토리 전체
+    public GameObject inventoryGameObject;
+    private bool isInventoryOpen = false;
+
     void Awake()
     {
         if (instance == null)
@@ -20,12 +21,20 @@ public class InventoryManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            ToggleInventory();
+        }
+    }
+
     void Start()
     {
         InitializeInventory();
+        inventoryGameObject.SetActive(false);
     }
 
-    // 인벤토리 초기화
     void InitializeInventory()
     {
         for (int i = 0; i < inventorySize; i++)
@@ -47,8 +56,46 @@ public class InventoryManager : MonoBehaviour
                 return true;
             }
         }
-
-        // 인벤토리가 가득 참 
         return false;
+    }
+
+    public void ToggleInventory()
+    {
+        isInventoryOpen = !isInventoryOpen;
+        inventoryGameObject.SetActive(isInventoryOpen);
+
+        if (isInventoryOpen)
+        {
+            ActiveInventory();
+        }
+        else
+        {
+            CloseInventoryState();
+        }
+    }
+
+    public void ActiveInventory()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void CloseInventory()
+    {
+        Debug.Log("CloseInventory 실행됨");
+        isInventoryOpen = false;  
+        inventoryGameObject.SetActive(false);
+        CloseInventoryState();
+    }
+
+    private void CloseInventoryState()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public bool IsInventoryOpen()
+    {
+        return isInventoryOpen;
     }
 }

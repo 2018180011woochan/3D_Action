@@ -9,8 +9,6 @@ public class ItemSlot : MonoBehaviour
 
     void Start()
     {
-        if (curSlotImage != null)
-            curSlotImage = GetComponentInChildren<Image>();
         standardImage = curSlotImage;
     }
 
