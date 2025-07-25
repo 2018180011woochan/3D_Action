@@ -8,6 +8,7 @@ public class EquipManager : MonoBehaviour
     public GameObject Armor2;
     public GameObject Sword;
     public GameObject Shield;
+    public GameObject Bow;
 
     void Awake()
     {
@@ -32,6 +33,7 @@ public class EquipManager : MonoBehaviour
     public void EquipSword()
     {
         Sword.SetActive(true);
+        Bow.SetActive(false);
     }
 
     public void UnEquipSword()
@@ -47,5 +49,17 @@ public class EquipManager : MonoBehaviour
     public void UnEquipShield()
     {
         Shield.SetActive(false);
+    }
+
+    public void EquipBow()
+    {
+        Bow.SetActive(true);
+        Sword.SetActive(false);
+        Shield.SetActive(false);
+    }
+
+    public void UnEquipBow() 
+    {
+        Bow.SetActive(false);
     }
 }

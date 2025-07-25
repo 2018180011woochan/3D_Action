@@ -16,7 +16,7 @@ public class InventoryManager : MonoBehaviour
 
     // 장비 슬롯
     public ItemSlot armorSlot;
-    public ItemSlot swordSlot;
+    public ItemSlot weaponSlot;
     public ItemSlot sheildSlot;
 
     void Awake()
@@ -34,7 +34,7 @@ public class InventoryManager : MonoBehaviour
     {
         InitializeInventory();
         inventoryGameObject.SetActive(false);
-
+        AddItem(GameDataManager.instance.itemDatabase.GetItem("Bow"));
         // 내일해보자
         if (GameDataManager.instance != null)
         {
@@ -88,7 +88,12 @@ public class InventoryManager : MonoBehaviour
 
     public void EquipSword(Item sword)
     {
-        swordSlot.AddItem(sword);
+        weaponSlot.AddItem(sword);
+    }
+
+    public void EquipBow(Item bow)
+    {
+        weaponSlot.AddItem(bow);
     }
 
     public void EquipShield(Item shield)

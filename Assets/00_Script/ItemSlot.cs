@@ -75,6 +75,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
             case "Armor":
             case "Sword":
             case "Shield":
+            case "Bow":
                 ToggleEquipment();
                 break;
         }
@@ -85,45 +86,129 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         if (curItem.isEquip)
         {
             // 장비 해제
-            curItem.isEquip = false;
-
-            switch (curItem.ItemName)
-            {
-                case "Armor":
-                    EquipManager.instance.UnEquipArmor();
-                    break;
-                case "Sword":
-                    EquipManager.instance.UnEquipSword();
-                    break;
-                case "Shield":
-                    EquipManager.instance.UnEquipShield();
-                    break;
-            }
-
-            InventoryManager.instance.AddItem(curItem);
+            UnequipItem();
         }
         else
         {
             // 장비 착용
-            curItem.isEquip = true;
-
-            switch (curItem.ItemName)
-            {
-                case "Armor":
-                    EquipManager.instance.EquipArmor();
-                    InventoryManager.instance.EquipArmor(curItem);
-                    break;
-                case "Sword":
-                    EquipManager.instance.EquipSword();
-                    InventoryManager.instance.EquipSword(curItem);
-                    break;
-                case "Shield":
-                    EquipManager.instance.EquipShield();
-                    InventoryManager.instance.EquipShield(curItem);
-                    break;
-            }
+            EquipItem();
         }
 
         ClearSlot();
+    }
+
+    private void UnequipItem()
+    {
+        curItem.isEquip = false;
+
+        switch (curItem.ItemName)
+        {
+            case "Armor":
+                EquipManager.instance.UnEquipArmor();
+                break;
+            case "Sword":
+                EquipManager.instance.UnEquipSword();
+                break;
+            case "Shield":
+                EquipManager.instance.UnEquipShield();
+                break;
+            case "Bow":
+                EquipManager.instance.UnEquipBow();
+                break;
+        }
+
+        InventoryManager.instance.AddItem(curItem);
+    }
+
+    private void EquipItem()
+    {
+        curItem.isEquip = true;
+
+        switch (curItem.ItemName)
+        {
+            case "Armor":
+                EquipManager.instance.EquipArmor();
+                InventoryManager.instance.EquipArmor(curItem);
+                break;
+
+            case "Sword":
+                // 활이 장착되어 있으면 해제
+                if (IsItemEquipped("Bow"))
+                {
+                    UnequipAndReturnToInventory("Bow");
+                }
+                EquipManager.instance.EquipSword();
+                InventoryManager.instance.EquipSword(curItem);
+                break;
+
+            case "Shield":
+                // 활이 장착되어 있으면 해제
+                if (IsItemEquipped("Bow"))
+                {
+                    UnequipAndReturnToInventory("Bow");
+                }
+                EquipManager.instance.EquipShield();
+                InventoryManager.instance.EquipShield(curItem);
+                break;
+
+            case "Bow":
+                // 검과 방패가 장착되어 있으면 해제
+                if (IsItemEquipped("Sword"))
+                {
+                    UnequipAndReturnToInventory("Sword");
+                }
+                if (IsItemEquipped("Shield"))
+                {
+                    UnequipAndReturnToInventory("Shield");
+                }
+                EquipManager.instance.EquipBow();
+                InventoryManager.instance.EquipBow(curItem);
+                break;
+        }
+    }
+
+    private bool IsItemEquipped(string itemName)
+    {
+        // 장비 슬롯을 확인하여 해당 아이템이 장착되어 있는지 체크
+        switch (itemName)
+        {
+            case "Armor":
+                return InventoryManager.instance.armorSlot?.curItem?.ItemName == itemName;
+            case "Sword":
+            case "Bow":
+                return InventoryManager.instance.weaponSlot?.curItem?.ItemName == itemName;
+            case "Shield":
+                return InventoryManager.instance.sheildSlot?.curItem?.ItemName == itemName;
+        }
+        return false;
+    }
+
+    private void UnequipAndReturnToInventory(string itemName)
+    {
+        Item item = GameDataManager.instance.itemDatabase.GetItem(itemName);
+        if (item != null)
+        {
+            item.isEquip = false;
+
+            // 장비 매니저에서 해제
+            switch (itemName)
+            {
+                case "Sword":
+                    EquipManager.instance.UnEquipSword();
+                    InventoryManager.instance.weaponSlot?.ClearSlot();
+                    break;
+                case "Shield":
+                    EquipManager.instance.UnEquipShield();
+                    InventoryManager.instance.sheildSlot?.ClearSlot();
+                    break;
+                case "Bow":
+                    EquipManager.instance.UnEquipBow();
+                    InventoryManager.instance.weaponSlot?.ClearSlot();
+                    break;
+            }
+
+            // 인벤토리에 추가
+            InventoryManager.instance.AddItem(item);
+        }
     }
 }
