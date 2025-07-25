@@ -17,7 +17,7 @@ public class GameDataManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -67,10 +67,6 @@ public class GameDataManager : MonoBehaviour
             {
                 inventory.AddItem(item);
                 Debug.Log($"{itemName} 로드 완료");
-            }
-            else
-            {
-                Debug.LogWarning($"{itemName}을(를) 데이터베이스에서 찾을 수 없습니다!");
             }
         }
 

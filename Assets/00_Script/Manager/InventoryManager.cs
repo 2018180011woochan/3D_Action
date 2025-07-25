@@ -36,10 +36,10 @@ public class InventoryManager : MonoBehaviour
         inventoryGameObject.SetActive(false);
 
         // 내일해보자
-/*        if (GameDataManager.instance != null)
+        if (GameDataManager.instance != null)
         {
             StartCoroutine(LoadDataAfterInit());
-        }*/
+        }
     }
 
     IEnumerator LoadDataAfterInit()
@@ -139,17 +139,25 @@ public class InventoryManager : MonoBehaviour
     public void SaveData()
     {
         List<Item> items = new List<Item>();
+
+        Debug.Log($"저장할 슬롯 수: {slots.Count}");
+
         foreach (ItemSlot slot in slots)
         {
             if (slot.curItem != null)
             {
                 items.Add(slot.curItem);
+                Debug.Log($"저장: {slot.curItem.ItemName}");
             }
         }
 
         if (GameDataManager.instance != null)
         {
             GameDataManager.instance.SaveInventory(items);
+        }
+        else
+        {
+            Debug.LogError("GameDataManager.instance가 null입니다!");
         }
     }
 }
