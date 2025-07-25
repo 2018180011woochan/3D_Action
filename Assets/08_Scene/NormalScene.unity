@@ -3428,6 +3428,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 42470734159947260, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
   m_PrefabInstance: {fileID: 1778665498439573561}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &902634356 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 854894775202250566, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
+  m_PrefabInstance: {fileID: 1778665498439573561}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &902634359 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3256272257557615009, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
+  m_PrefabInstance: {fileID: 1778665498439573561}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902634355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3351d65a5e49c64d9002bba88ce89a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &924309905
 GameObject:
   m_ObjectHideFlags: 0
@@ -9088,7 +9104,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7187662184600042699, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 445591023}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7808428809600126760, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2151704491682020615}
+    - targetCorrespondingSourceObject: {fileID: 7808428809600126760, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2151704491682020614}
   m_SourcePrefab: {fileID: 100100000, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
 --- !u!137 &1797532892365268363
 SkinnedMeshRenderer:
@@ -9435,6 +9457,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5394632178097196584, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
   m_PrefabInstance: {fileID: 1778665498439573561}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2151704491682020614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627967124114892357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc8f709fbf35374a9adba34f037c369, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2151704491682020615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627967124114892357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9420aae883ac6f4e8f9940822bc2b3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxCombo: 3
+  comboResetTime: 1
+  attack1MoveDuration: 0.3
+  attack1MoveDistance: 0.5
+  attack2SpinDuration: 0.6
+  attack2ForwardDistance: 3
+  attack3Duration: 0.8
+  attack3JumpHeight: 1.5
+  attack3ForwardDistance: 4
+  slashEffectPrefab: {fileID: 5634270508458958113, guid: 2da6e1f01130751428449fde93a6ac71, type: 3}
+  FinalAttackEffectPrefab: {fileID: 158938507390237682, guid: f577584c4b6f1734b9c1d011cdd1e8cb, type: 3}
+  swordTransform: {fileID: 902634356}
+  swordTrail: {fileID: 902634359}
+  FireSkillEfecctPrefab: {fileID: 0}
+  fireSkill: 0
+  battoSkill: 0
+  BattoEffect1: {fileID: 7938996159871676162, guid: efa945522e0b5b64cbd82f045ed172ee, type: 3}
+  BattoEffect2: {fileID: 6023828359440960330, guid: cee8f93d79b899b41a14cde94ba4acd5, type: 3}
+  BattoEffect3: {fileID: 7493244502594454474, guid: 6d1bc8dc52ae7dc46918036a8976c2dd, type: 3}
+  BattoAttackEffect: {fileID: 9089291930476553685, guid: 827f62a2fc34b4642b26694228b093cb, type: 3}
+  BattoSwordEffect: {fileID: 6436177712251960022, guid: b7995021b00754445afcfe130b78d7ae, type: 3}
+  fireSkillTimeline: {fileID: 11400000, guid: 80fb91fbd8baa784dbed28b48730fc6a, type: 2}
+  battoSkillTimeline: {fileID: 11400000, guid: 458d01c9952f442438a71e7afbf40211, type: 2}
+  battojutsuCamera: {fileID: 1136414743}
+  battoCloseUpFOV: 50
+  battoNormalFOV: 60
 --- !u!1 &2168068442233452362
 GameObject:
   m_ObjectHideFlags: 0

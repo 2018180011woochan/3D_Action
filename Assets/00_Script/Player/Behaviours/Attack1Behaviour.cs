@@ -2,22 +2,22 @@ using UnityEngine;
 
 public class Attack1Behaviour : StateMachineBehaviour
 {
-    private PlayerCombat pc;
+    private SwordCombat sc;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (pc == null)
-            pc = animator.GetComponentInParent<PlayerCombat>();
+        if (sc == null)
+            sc = animator.GetComponentInParent<SwordCombat>();
 
-        pc.StartAttack1Effect();
-        pc.swordTrail.Begin();
+        sc.StartAttack1Effect();
+        sc.swordTrail.Begin();
 
-        if (pc.fireSkill)
-            pc.Attack1Effect();
+        if (sc.fireSkill)
+            sc.Attack1Effect();
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        pc.StopAttackEffect();
-        pc.swordTrail.End();
+        sc.StopAttackEffect();
+        sc.swordTrail.End();
     }
 }

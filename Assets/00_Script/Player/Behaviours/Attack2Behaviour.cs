@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class Attack2Behaviour : StateMachineBehaviour
 {
-    private PlayerCombat pc;
+    private SwordCombat sc;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (pc == null)
-            pc = animator.GetComponentInParent<PlayerCombat>();
-        pc.swordTrail.Begin();
-        pc.StartAttack2Effect();
-        if (pc.fireSkill)
-            pc.Attack2Effect();
+        if (sc == null)
+            sc = animator.GetComponentInParent<SwordCombat>();
+        sc.swordTrail.Begin();
+        sc.StartAttack2Effect();
+        if (sc.fireSkill)
+            sc.Attack2Effect();
     }
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        pc.swordTrail.End();
-        pc.StopAttackEffect();
+        sc.swordTrail.End();
+        sc.StopAttackEffect();
     }
 }
