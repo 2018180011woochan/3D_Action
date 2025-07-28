@@ -22,11 +22,9 @@ public class PlayerCombat : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
 
-        // 자식 컴포넌트에서 전투 스크립트들 찾기
         swordCombat = GetComponent<SwordCombat>();
         bowCombat = GetComponent<BowCombat>();
 
-        // 초기에는 모두 비활성화
         if (swordCombat != null) swordCombat.enabled = true;
         if (bowCombat != null) bowCombat.enabled = false;
 

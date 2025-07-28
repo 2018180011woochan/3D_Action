@@ -10,6 +10,8 @@ public class EquipManager : MonoBehaviour
     public GameObject Shield;
     public GameObject Bow;
 
+    public PlayerCombat PlayerCombat;
+
     void Awake()
     {
         if (instance == null)
@@ -34,11 +36,14 @@ public class EquipManager : MonoBehaviour
     {
         Sword.SetActive(true);
         Bow.SetActive(false);
+
+        PlayerCombat.EquipSword();
     }
 
     public void UnEquipSword()
     {
         Sword.SetActive(false);
+        PlayerCombat.UnequipWeapon();
     }
 
     public void EquipShield()
@@ -56,10 +61,14 @@ public class EquipManager : MonoBehaviour
         Bow.SetActive(true);
         Sword.SetActive(false);
         Shield.SetActive(false);
+
+        PlayerCombat.EquipBow();
     }
 
     public void UnEquipBow() 
     {
         Bow.SetActive(false);
+
+        PlayerCombat.UnequipWeapon();
     }
 }
