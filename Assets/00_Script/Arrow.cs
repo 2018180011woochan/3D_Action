@@ -12,7 +12,6 @@ public class Arrow : MonoBehaviour
         velocity = direction * force;
         isFlying = true;
 
-        // 화살이 속도 방향을 바라보도록
         transform.rotation = Quaternion.LookRotation(velocity) * Quaternion.Euler(90, 0, 0);
     }
 
@@ -20,10 +19,8 @@ public class Arrow : MonoBehaviour
     {
         if (!isFlying) return;
 
-        // 중력 적용
         velocity.y -= gravity * Time.deltaTime;
 
-        // 위치 업데이트
         transform.position += velocity * Time.deltaTime;
 
         // 화살이 항상 날아가는 방향을 바라보도록

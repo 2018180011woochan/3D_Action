@@ -17,7 +17,7 @@ public class LockOn : MonoBehaviour
     public Transform cameraLookTarget;
 
     private Transform currentTarget;
-    private bool isLockedOn = false;
+    public bool isLockedOn = false;
 
     void Start()
     {
