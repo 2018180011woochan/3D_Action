@@ -2388,6 +2388,7 @@ MonoBehaviour:
   Sword: {fileID: 902634355}
   Shield: {fileID: 208435870}
   Bow: {fileID: 445591022}
+  PlayerCombat: {fileID: 2151704491682020618}
 --- !u!1 &532840222
 GameObject:
   m_ObjectHideFlags: 0
@@ -2706,7 +2707,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2392586694947863105, guid: 05c622288e6ffb242b70922faa4ff5d9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1715034855}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05c622288e6ffb242b70922faa4ff5d9, type: 3}
 --- !u!320 &623092398 stripped
@@ -4203,6 +4207,52 @@ Transform:
   - {fileID: 55348643}
   m_Father: {fileID: 927830510}
   m_LocalEulerAnglesHint: {x: 68.39326, y: 50.920967, z: -44.08937}
+--- !u!1 &1108469149
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1108469150}
+  - component: {fileID: 1108469151}
+  m_Layer: 0
+  m_Name: '##PoolManager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1108469150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108469149}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1424456698}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1108469151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108469149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6d368bf1e84714791d8692bd1f8cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 7654218547762401773, guid: 061cdf538c7a8954890aeb4646c4c071, type: 3}
+  poolSize: 20
 --- !u!1 &1121344327
 GameObject:
   m_ObjectHideFlags: 0
@@ -5364,6 +5414,7 @@ Transform:
   - {fileID: 248526681}
   - {fileID: 939303079}
   - {fileID: 512062456}
+  - {fileID: 1108469150}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1425863663 stripped
@@ -6800,6 +6851,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701017578}
   m_CullTransparentMesh: 1
+--- !u!1 &1715034854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1715034855}
+  m_Layer: 0
+  m_Name: ArrowSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1715034855
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715034854}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 445591023}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1715183558
 GameObject:
   m_ObjectHideFlags: 0
@@ -9469,6 +9551,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc8f709fbf35374a9adba34f037c369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arrowSpawnPoint: {fileID: 1715034855}
+  minForce: 10
+  maxForce: 30
+  maxChargeTime: 2
 --- !u!114 &2151704491682020615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9507,6 +9593,17 @@ MonoBehaviour:
   battojutsuCamera: {fileID: 1136414743}
   battoCloseUpFOV: 50
   battoNormalFOV: 60
+--- !u!114 &2151704491682020618 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2811142789805741463, guid: abf42ab91957f5041b59dc269ebb0ff6, type: 3}
+  m_PrefabInstance: {fileID: 1778665498439573561}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627967124114892357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef8a1a6d060c46d478ed128872a4bf26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2168068442233452362
 GameObject:
   m_ObjectHideFlags: 0

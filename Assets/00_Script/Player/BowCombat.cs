@@ -2,13 +2,10 @@ using UnityEngine;
 
 public class BowCombat : MonoBehaviour
 {
-    [Header("화살 설정")]
-    public GameObject arrowPrefab;      // 화살 프리팹
-    public Transform arrowSpawnPoint;   // 화살 생성 위치
+    public Transform arrowSpawnPoint;   
 
-    [Header("발사 힘")]
-    public float minForce = 10f;        // 최소 발사 힘
-    public float maxForce = 30f;        // 최대 발사 힘
+    public float minForce = 10f;        
+    public float maxForce = 30f;        
 
     private bool isCharging = false;
     private float chargeTime = 0f;
@@ -18,7 +15,6 @@ public class BowCombat : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            Debug.Log("활 당기기 시작!");
             isCharging = true;
             chargeTime = 0f;
         }
@@ -44,22 +40,28 @@ public class BowCombat : MonoBehaviour
 
     void FireArrow()
     {
-        // 차징 비율 계산
         float chargePercent = chargeTime / maxChargeTime;
 
-        // 발사 힘 계산
         float fireForce = Mathf.Lerp(minForce, maxForce, chargePercent);
 
-        Debug.Log($"발사 힘: {fireForce}");
+        GameObject arrow = PoolManager.Instance.GetArrow();
+
+        arrow.transform.position = arrowSpawnPoint.position;
+        Vector3 fireDirection = transform.forward;
+
+        // 화살이 발사 방향을 바라보도록 회전
+        arrow.transform.rotation = Quaternion.LookRotation(fireDirection) * Quaternion.Euler(90, 0, 0);
+
+        Rigidbody rb = arrow.GetComponent<Rigidbody>();
+        rb.linearVelocity = transform.forward * fireForce;
+
     }
 
     public void OnWeaponEquipped()
     {
-        // 활 장착 시 처리
     }
 
     public void OnWeaponUnequipped()
     {
-        // 활 해제 시 처리
     }
 }

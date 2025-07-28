@@ -15,4 +15,4 @@ MonoBehaviour:
   ItemName: Bow
   ItemImage: {fileID: 21300000, guid: 2de138e96af863c42be8fe6a7946f29c, type: 3}
   ItemObj: {fileID: 0}
-  isEquip: 0
+  isEquip: 1
