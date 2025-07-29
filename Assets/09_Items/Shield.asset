@@ -15,4 +15,4 @@ MonoBehaviour:
   ItemName: Shield
   ItemImage: {fileID: 21300000, guid: 5bf2627863b7efa4d990e63d6e735f0a, type: 3}
   ItemObj: {fileID: 0}
-  isEquip: 1
+  isEquip: 0

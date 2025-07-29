@@ -2,21 +2,31 @@ using UnityEngine;
 
 public class BowCombat : MonoBehaviour
 {
-    public Transform arrowSpawnPoint;   
+    public Transform arrowSpawnPoint;
 
-    public float minForce = 10f;        
-    public float maxForce = 300f;        
+    public float minForce = 10f;
+    public float maxForce = 300f;
 
     private bool isCharging = false;
     private float chargeTime = 0f;
     public float maxChargeTime = 1f;
 
     private LockOn lockOn;
+    private PlayerCombat playerCombat;
+    private Animator animator;
+    private PlayerController playerController;
+
+    // 움직임 감지를 위한 변수
+    private bool isMoving = false;
 
     private void Start()
     {
         lockOn = GetComponent<LockOn>();
+        playerCombat = GetComponent<PlayerCombat>();
+        animator = playerCombat.GetAnimator();
+        playerController = GetComponent<PlayerController>();
     }
+
     void Update()
     {
         if (lockOn.isLockedOn == false)
@@ -24,10 +34,17 @@ public class BowCombat : MonoBehaviour
         else
             CrosshairManager.Instance.ShowCrosshair(true);
 
+        // 움직임 상태 확인
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        isMoving = (Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f);
+
         if (Input.GetMouseButtonDown(1))
         {
             isCharging = true;
             chargeTime = 0f;
+
+            UpdateChargingAnimation();
         }
 
         if (isCharging)
@@ -37,6 +54,9 @@ public class BowCombat : MonoBehaviour
             {
                 chargeTime = maxChargeTime;
             }
+
+            UpdateChargingAnimation();
+
             RotateTowardsCrosshair();
         }
 
@@ -49,6 +69,38 @@ public class BowCombat : MonoBehaviour
 
             isCharging = false;
             chargeTime = 0f;
+
+            // 차징 종료 시 애니메이션 초기화
+            animator.SetBool("isStandCharging", false);
+            animator.SetBool("isMoveCharging", false);
+        }
+    }
+
+    void UpdateChargingAnimation()
+    {
+        if (!isCharging) return;
+
+        if (isMoving)
+        {
+            // 움직이면서 차징
+            animator.SetBool("isStandCharging", false);
+            animator.SetBool("isMoveCharging", true);
+        }
+        else
+        {
+            // 서서 차징
+            animator.SetBool("isStandCharging", true);
+            animator.SetBool("isMoveCharging", false);
+        }
+    }
+
+    // 차징 중 회전 보정을 위한 메서드
+    void ApplyChargingRotationOffset()
+    {
+        if (isCharging)
+        {
+            // 현재 회전값에 90도 추가 회전 적용
+            transform.rotation = transform.rotation * Quaternion.Euler(0, 90f, 0);
         }
     }
 
@@ -138,6 +190,13 @@ public class BowCombat : MonoBehaviour
         if (lookDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+
+            // 차징 중일 때 90도 추가 회전 적용
+            if (isCharging)
+            {
+                targetRotation *= Quaternion.Euler(0, 90f, 0);
+            }
+
             // 부드럽게 회전
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
@@ -147,7 +206,10 @@ public class BowCombat : MonoBehaviour
     {
         isCharging = false;
         chargeTime = 0f;
-        //CrosshairManager.Instance.ShowCrosshair(true);
+
+        //animator.SetBool("isStandCharging", false);
+        //animator.SetBool("isMoveCharging", false);
+
     }
 
     public void OnWeaponUnequipped()
@@ -156,6 +218,10 @@ public class BowCombat : MonoBehaviour
         {
             isCharging = false;
             chargeTime = 0f;
+
+            // 애니메이션 상태 초기화
+            animator.SetBool("isStandCharging", false);
+            animator.SetBool("isMoveCharging", false);
         }
         CrosshairManager.Instance.ShowCrosshair(false);
     }
