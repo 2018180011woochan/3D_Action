@@ -5042,7 +5042,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 516, y: -329}
+  m_AnchoredPosition: {x: 758, y: -329}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1244110110
@@ -7597,7 +7597,9 @@ MonoBehaviour:
   damageDuration: 0.3
   stamFillImage: {fileID: 1776401399}
   stamDamageImage: {fileID: 2064203239}
+  FireSkill: {fileID: 1244110108}
   FireSkillTimer: {fileID: 316576619}
+  BattoSkill: {fileID: 147847388}
   battoSkillTimer: {fileID: 1355766044}
   monsterHPBarPrefab: {fileID: -153740726128067773, guid: 1cb77f3586aa869448addaa043b16523, type: 3}
   monsterHPParent: {fileID: 142653003}
@@ -10081,6 +10083,8 @@ MonoBehaviour:
   minForce: 10
   maxForce: 30
   maxChargeTime: 2
+  fireSkill: 0
+  fireSkillTimeline: {fileID: 11400000, guid: 80fb91fbd8baa784dbed28b48730fc6a, type: 2}
 --- !u!114 &2151704491682020615
 MonoBehaviour:
   m_ObjectHideFlags: 0

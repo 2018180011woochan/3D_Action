@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class BowCombat : MonoBehaviour
 {
@@ -15,6 +17,12 @@ public class BowCombat : MonoBehaviour
     private PlayerCombat playerCombat;
     private Animator animator;
     private PlayerController playerController;
+
+    public GameObject fireSkillStartEffect;
+    public bool fireSkill = false;
+    private bool fireSkillOnCooldown = false;
+    private float fireSkillCoolTime = 20f;
+    public TimelineAsset fireSkillTimeline;
 
     // 움직임 감지를 위한 변수
     private bool isMoving = false;
@@ -74,6 +82,45 @@ public class BowCombat : MonoBehaviour
             animator.SetBool("isStandCharging", false);
             animator.SetBool("isMoveCharging", false);
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartFireSkillCutscene();
+        }
+    }
+
+    void StartFireSkillCutscene()
+    {
+        if (playerCombat.IsPlayingCutscene) return;
+        if (fireSkillOnCooldown) return;
+
+        UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
+        playerCombat.IsPlayingCutscene = true;
+        fireSkillOnCooldown = true;
+
+        animator.SetTrigger("Skill1");
+        ApplyChargingRotationOffset();
+        fireSkill = true;
+
+        if (playerCombat.playerCamera != null && playerCombat.skillCutsceneCamera != null)
+        {
+            playerCombat.playerCamera.Priority = 0;
+            playerCombat.skillCutsceneCamera.Priority = 10;
+        }
+
+        if (playerCombat.skillCutsceneDirector != null && fireSkillTimeline != null)
+        {
+            playerCombat.skillCutsceneDirector.playableAsset = fireSkillTimeline;
+            playerCombat.skillCutsceneDirector.Play();
+        }
+
+        StartCoroutine(FireSkillCooldown(fireSkillCoolTime));
+    }
+
+    IEnumerator FireSkillCooldown(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+        fireSkillOnCooldown = false;
     }
 
     void UpdateChargingAnimation()
@@ -97,11 +144,8 @@ public class BowCombat : MonoBehaviour
     // 차징 중 회전 보정을 위한 메서드
     void ApplyChargingRotationOffset()
     {
-        if (isCharging)
-        {
-            // 현재 회전값에 90도 추가 회전 적용
-            transform.rotation = transform.rotation * Quaternion.Euler(0, 90f, 0);
-        }
+        // 현재 회전값에 90도 추가 회전 적용
+        transform.rotation = transform.rotation * Quaternion.Euler(0, 90f, 0);
     }
 
     void FireArrow()

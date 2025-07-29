@@ -5,7 +5,8 @@ public class Arrow : MonoBehaviour
     private Vector3 velocity;
     private float gravity = 9.81f;
     private bool isFlying = true;
-
+    public float damage = 10f;
+    public GameObject AttackEffect;
     // 화살 초기화
     public void Initialize(Vector3 direction, float force)
     {
@@ -40,6 +41,28 @@ public class Arrow : MonoBehaviour
     void OnEnable()
     {
         Invoke("ReturnToPool", 5f);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Monster"))
+        {
+            Debug.Log("화살히트");
+            var ms = other.GetComponent<MonsterState>();
+            if (ms.isDead) return;
+            if (ms != null)
+            {
+                UIManager.Instance.AddTargetMonster(ms);
+                ms.TakeDamage(damage);
+
+                if (AttackEffect != null)
+                {
+                    Vector3 hitPoint = other.ClosestPoint(transform.position);
+                    GameObject effect = Instantiate(AttackEffect, hitPoint, Quaternion.identity);
+
+                }
+            }
+        }
     }
 
     void ReturnToPool()

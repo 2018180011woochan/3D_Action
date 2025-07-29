@@ -193,7 +193,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Skill1
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -4909494125975891064}
@@ -206,7 +206,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 0620211e629ba564a95d8ff06a0fd799, type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: a734e20db2e4a304499ad0df4a50a902, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -462,7 +462,7 @@ AnimatorStateMachine:
     m_Position: {x: -220, y: 70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5809795537114938972}
-    m_Position: {x: -220, y: 130, z: 0}
+    m_Position: {x: -460, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3916668340563159528}
     m_Position: {x: -220, y: 200, z: 0}

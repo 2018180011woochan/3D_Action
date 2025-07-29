@@ -49,6 +49,7 @@ public class PlayerCombat : MonoBehaviour
     // 무기 전환 시 호출할 메서드들
     public void EquipSword()
     {
+        UIManager.Instance.SwordSkillOn();
         if (bowCombat != null && bowCombat.enabled)
         {
             bowCombat.OnWeaponUnequipped();
@@ -64,6 +65,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void EquipBow()
     {
+        UIManager.Instance.BowSkillOn();
         if (swordCombat != null && swordCombat.enabled)
         {
             swordCombat.OnWeaponUnequipped();

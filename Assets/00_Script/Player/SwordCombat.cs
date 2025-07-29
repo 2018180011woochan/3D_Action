@@ -120,7 +120,7 @@ public class SwordCombat : MonoBehaviour
             StartSkillCutscene();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             StartBattojutsuCutscene();
         }

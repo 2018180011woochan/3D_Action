@@ -21,10 +21,12 @@ public class UIManager : MonoBehaviour
     private Coroutine stamCoroutine;
 
     [Header("FireSkill")]
+    public GameObject FireSkill;
     [SerializeField] private Image FireSkillTimer;
     private Coroutine fireCooldownCoroutine;
 
     [Header("BattoSkill")]
+    public GameObject BattoSkill;
     [SerializeField] private Image battoSkillTimer;
     private Coroutine battoCooldownCoroutine;
 
@@ -48,6 +50,20 @@ public class UIManager : MonoBehaviour
             playerState.onHealthChanged.AddListener(OnHealthChanged);
             playerState.onStaminaChanged.AddListener(OnStaminaChanged);
         }
+        FireSkill.SetActive(false);
+        BattoSkill.SetActive(false);
+    }
+
+    public void SwordSkillOn()
+    {
+        FireSkill.SetActive(false);
+        BattoSkill.SetActive(true);
+    }
+
+    public void BowSkillOn()
+    {
+        FireSkill.SetActive(true);
+        BattoSkill.SetActive(false);
     }
 
     void OnDisable()
