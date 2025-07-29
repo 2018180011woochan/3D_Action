@@ -51,7 +51,7 @@ public class UIManager : MonoBehaviour
             playerState.onStaminaChanged.AddListener(OnStaminaChanged);
         }
         FireSkill.SetActive(false);
-        BattoSkill.SetActive(false);
+        BattoSkill.SetActive(true);
     }
 
     public void SwordSkillOn()

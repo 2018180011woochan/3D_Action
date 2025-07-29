@@ -31,7 +31,7 @@ public class MonsterState : MonoBehaviour
         onHealthChanged.Invoke(currentHP / maxHP);
 
         animator.SetTrigger("GetHit");
-
+        Debug.Log("여기까지옴");
         if (currentHP <= 0f)
         {
             isDead = true;

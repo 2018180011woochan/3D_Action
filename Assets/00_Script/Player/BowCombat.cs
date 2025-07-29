@@ -19,6 +19,7 @@ public class BowCombat : MonoBehaviour
     private PlayerController playerController;
 
     public GameObject fireSkillStartEffect;
+    public GameObject fireSkillProjectile;
     public bool fireSkill = false;
     private bool fireSkillOnCooldown = false;
     private float fireSkillCoolTime = 20f;
@@ -102,6 +103,10 @@ public class BowCombat : MonoBehaviour
         ApplyChargingRotationOffset();
         fireSkill = true;
 
+        Quaternion rot = Quaternion.LookRotation(transform.forward, Vector3.up);
+
+        Instantiate(fireSkillStartEffect, transform.position, rot);
+
         if (playerCombat.playerCamera != null && playerCombat.skillCutsceneCamera != null)
         {
             playerCombat.playerCamera.Priority = 0;
@@ -114,7 +119,20 @@ public class BowCombat : MonoBehaviour
             playerCombat.skillCutsceneDirector.Play();
         }
 
+        StartCoroutine(ShotFireSkill(2f));
         StartCoroutine(FireSkillCooldown(fireSkillCoolTime));
+    }
+
+    IEnumerator ShotFireSkill(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        // 스킬 발사
+        Quaternion rot = Quaternion.LookRotation(transform.forward, Vector3.up);
+        rot *= Quaternion.Euler(0, 270f, 0);
+
+        //Vector3 spawnPosition = transform.position + Vector3.up * 2f;
+        Instantiate(fireSkillProjectile, transform.position, rot);
     }
 
     IEnumerator FireSkillCooldown(float cooldownTime)

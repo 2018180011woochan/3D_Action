@@ -10083,6 +10083,7 @@ MonoBehaviour:
   minForce: 10
   maxForce: 30
   maxChargeTime: 2
+  fireSkillStartEffect: {fileID: 0}
   fireSkill: 0
   fireSkillTimeline: {fileID: 11400000, guid: 80fb91fbd8baa784dbed28b48730fc6a, type: 2}
 --- !u!114 &2151704491682020615
