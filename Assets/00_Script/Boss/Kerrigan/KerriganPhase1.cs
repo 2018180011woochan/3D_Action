@@ -72,6 +72,10 @@ public class KerriganPhase1 : MonoBehaviour
     {
         if (BossAI.IsHit())
         {
+            if (currentState != State.Confront)
+            {
+                ChangeState(State.Confront);
+            }
             return;
         }
 

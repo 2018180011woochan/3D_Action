@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 public class MonsterState : MonoBehaviour
@@ -31,6 +32,13 @@ public class MonsterState : MonoBehaviour
         onHealthChanged.Invoke(currentHP / maxHP);
 
         animator.SetTrigger("GetHit");
+
+        var agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+        }
 
         if (currentHP <= 0f)
         {

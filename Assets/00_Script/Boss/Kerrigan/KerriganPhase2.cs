@@ -4,14 +4,13 @@ using System.Collections;
 
 public class KerriganPhase2 : MonoBehaviour
 {
-    // »óÅÂ Á¤ÀÇ
     public enum State
     {
         FlyUp,
         FlyOrbit,
-        ProjectileRain,    // °ø ´øÁö±â
-        FireBreath,        // ºÒ »Õ±â
-        GroundSlam,        // ÀÚ¸® Ã£±â
+        ProjectileRain,    
+        FireBreath,        
+        GroundSlam,       
         Landing,
         Rest
     }
@@ -19,20 +18,31 @@ public class KerriganPhase2 : MonoBehaviour
     private List<State> attackPatterns = new List<State>();
     private int currentAttackIndex = 0;
 
-    [Header("ºñÇà ¼³Á¤")]
+    [Header("ê³µì „ ê´€ë ¨")]
     public float flyAltitude = 8f;
     public float flyUpSpeed = 3f;
     public float orbitSpeed = 4f;
-    public float orbitDuration = 5f;
+    public float orbitDuration = 2f;
 
-    [Header("°ø ´øÁö±â ¼³Á¤")]
+    [Header("ê³µ ë˜ì§€ê¸° ê´€ë ¨")]
     public int projectileCount = 20;
     public float projectileSpawnRadius = 8f;
     public float projectileSpawnInterval = 0.25f;
     public GameObject projectilePrefab;
     public GameObject groundEffectPrefab;
 
-    [Header("ÂøÁö ¼³Á¤")]
+    [Header("ë¶ˆ ë¿œê¸° ê´€ë ¨")]
+    public GameObject FireBreathProjectile;
+    private GameObject activeFireBreath;
+    private List<GameObject> fireBreathList = new List<GameObject>();
+    private bool fireBreathCreated = false;
+    private float fireBreathExtendTimer = 0f;
+    private int currentFireIndex = 0;
+
+    private float fireBreathShootTimer = 0f;
+    private float fireBreathShootInterval = 0.1f;
+
+    [Header("ëœë”©")]
     public float landingSpeed = 5f;
     public float restDuration = 3f;
 
@@ -41,7 +51,6 @@ public class KerriganPhase2 : MonoBehaviour
     private int spawnedProjectileCount = 0;
     private List<GameObject> spawnedProjectiles = new List<GameObject>();
 
-    // ¸ŞÀÎ AI ÂüÁ¶
     private BossAI bossAI;
 
     void Awake()
@@ -52,7 +61,6 @@ public class KerriganPhase2 : MonoBehaviour
 
     void InitializeAttackPatterns()
     {
-        // °ø°İ ÆĞÅÏ ¸®½ºÆ® ÃÊ±âÈ­
         attackPatterns.Add(State.ProjectileRain);
         attackPatterns.Add(State.FireBreath);
         attackPatterns.Add(State.GroundSlam);
@@ -95,11 +103,9 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateFlyUp()
     {
-        // »ó½Â
         Vector3 targetPos = new Vector3(transform.position.x, flyAltitude, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, flyUpSpeed * Time.deltaTime);
 
-        // °íµµ µµ´Ş
         if (transform.position.y >= flyAltitude - 0.1f)
         {
             ChangeState(State.FlyOrbit);
@@ -108,7 +114,6 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateFlyOrbit()
     {
-        // °øÁß¿¡¼­ °øÀü
         Vector3 direction = (bossAI.Player.position - transform.position).normalized;
         direction.y = 0;
         Vector3 orbitDir = Vector3.Cross(direction, Vector3.up);
@@ -118,7 +123,6 @@ public class KerriganPhase2 : MonoBehaviour
 
         bossAI.Animator.SetBool("isFlyingLeft", true);
 
-        // ÀÏÁ¤ ½Ã°£ ÈÄ °ø°İ
         if (stateTimer >= orbitDuration)
         {
             ChangeState(SelectNextAttack());
@@ -132,13 +136,13 @@ public class KerriganPhase2 : MonoBehaviour
         selectedAttack = attackPatterns[currentAttackIndex];
         currentAttackIndex = (currentAttackIndex + 1) % attackPatterns.Count;
         
-        Debug.Log($"¼±ÅÃµÈ °ø°İ ÆĞÅÏ: {selectedAttack}");
-        return selectedAttack;
+        Debug.Log($"ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {selectedAttack}");
+        //return selectedAttack;
+        return State.FireBreath;    // test
     }
 
     void UpdateProjectileRain()
     {
-        // Åõ»çÃ¼ »ı¼º ´Ü°è
         if (spawnedProjectileCount < projectileCount)
         {
             projectileSpawnTimer += Time.deltaTime;
@@ -149,8 +153,7 @@ public class KerriganPhase2 : MonoBehaviour
                 projectileSpawnTimer = 0f;
             }
         }
-        // ¹ß»ç ´Ü°è
-        else if (stateTimer >= 5f) // 5ÃÊ ÈÄ ¹ß»ç
+        else if (stateTimer >= 5f) 
         {
             LaunchAllProjectiles();
             ChangeState(State.Landing);
@@ -159,17 +162,46 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateFireBreath()
     {
-        Debug.Log("ºÒ»Õ±â!!");
+        Vector3 playerPosition = bossAI.Player.position;
+        Vector3 bossPosition = transform.position;
+        Vector3 directionToPlayer = playerPosition - bossPosition;
+
+        if (directionToPlayer != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(directionToPlayer);
+        }
+
+        fireBreathShootTimer += Time.deltaTime;
+
+        if (fireBreathShootTimer >= fireBreathShootInterval)
+        {
+            Vector3 spawnPosition = bossPosition + transform.forward * 2f; 
+            GameObject newFire = Instantiate(FireBreathProjectile, spawnPosition, transform.rotation);
+
+            Rigidbody rb = newFire.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = directionToPlayer.normalized * 20f; 
+            }
+
+            Destroy(newFire, 3f);
+
+            fireBreathShootTimer = 0f; 
+        }
+
+        if (stateTimer >= 5f)
+        {
+            ChangeState(State.Landing);
+        }
     }
 
     void UpdateGroundSlam()
     {
-        Debug.Log("ÀÚ¸®Ã£±â!!");
+       
     }
 
     void UpdateLanding()
     {
-        // ÂøÁö
         Vector3 landingPos = new Vector3(transform.position.x, 0f, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, landingPos, landingSpeed * Time.deltaTime);
 
@@ -182,7 +214,6 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateRest()
     {
-        // ÈŞ½Ä
         if (stateTimer >= restDuration)
         {
             ChangeState(State.FlyUp);
@@ -217,11 +248,9 @@ public class KerriganPhase2 : MonoBehaviour
         {
             if (proj == null) continue;
 
-            // ÇÃ·¹ÀÌ¾î ÁÖº¯À¸·Î ¹ß»ç
             Vector2 randomOffset = Random.insideUnitCircle * 3f;
             Vector3 targetPos = playerPos + new Vector3(randomOffset.x, 0, randomOffset.y);
 
-            // Åõ»çÃ¼ ¹ß»ç ·ÎÁ÷
             Rigidbody rb = proj.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -266,6 +295,10 @@ public class KerriganPhase2 : MonoBehaviour
                     Instantiate(groundEffectPrefab, groundPos, Quaternion.identity);
                 }
                 break;
+            case State.FireBreath:
+                Debug.Log("ï¿½Ò»ï¿½ï¿½ï¿½");
+                activeFireBreath = Instantiate(FireBreathProjectile, transform);
+                break;
 
             case State.Landing:
                 bossAI.Animator.SetTrigger("FlyDown");
@@ -285,6 +318,9 @@ public class KerriganPhase2 : MonoBehaviour
         {
             case State.FlyOrbit:
                 bossAI.Animator.SetBool("isFlyingLeft", false);
+                break;
+            case State.FireBreath:
+                fireBreathShootTimer = 0f;  
                 break;
         }
     }
