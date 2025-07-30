@@ -9,11 +9,15 @@ public class KerriganPhase2 : MonoBehaviour
     {
         FlyUp,
         FlyOrbit,
-        FlyAttack,
+        ProjectileRain,    // 공 던지기
+        FireBreath,        // 불 뿜기
+        GroundSlam,        // 자리 찾기
         Landing,
         Rest
     }
     private State currentState = State.FlyUp;
+    private List<State> attackPatterns = new List<State>();
+    private int currentAttackIndex = 0;
 
     [Header("비행 설정")]
     public float flyAltitude = 8f;
@@ -21,7 +25,7 @@ public class KerriganPhase2 : MonoBehaviour
     public float orbitSpeed = 4f;
     public float orbitDuration = 5f;
 
-    [Header("공격 설정")]
+    [Header("공 던지기 설정")]
     public int projectileCount = 20;
     public float projectileSpawnRadius = 8f;
     public float projectileSpawnInterval = 0.25f;
@@ -43,13 +47,21 @@ public class KerriganPhase2 : MonoBehaviour
     void Awake()
     {
         bossAI = GetComponent<BossAI>();
+        InitializeAttackPatterns();
+    }
+
+    void InitializeAttackPatterns()
+    {
+        // 공격 패턴 리스트 초기화
+        attackPatterns.Add(State.ProjectileRain);
+        attackPatterns.Add(State.FireBreath);
+        attackPatterns.Add(State.GroundSlam);
     }
 
     void Update()
     {
         if (bossAI.IsHit())
         {
-            Debug.Log("Phase2: GetHit 중이므로 Update 중지");
             return;
         }
 
@@ -63,8 +75,14 @@ public class KerriganPhase2 : MonoBehaviour
             case State.FlyOrbit:
                 UpdateFlyOrbit();
                 break;
-            case State.FlyAttack:
-                UpdateFlyAttack();
+            case State.ProjectileRain:
+                UpdateProjectileRain();
+                break;
+            case State.FireBreath:
+                UpdateFireBreath();
+                break;
+            case State.GroundSlam:
+                UpdateGroundSlam();
                 break;
             case State.Landing:
                 UpdateLanding();
@@ -77,11 +95,10 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateFlyUp()
     {
-        Debug.Log("상승시작");
         // 상승
         Vector3 targetPos = new Vector3(transform.position.x, flyAltitude, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, flyUpSpeed * Time.deltaTime);
-        Debug.Log(transform.position.y);
+
         // 고도 도달
         if (transform.position.y >= flyAltitude - 0.1f)
         {
@@ -104,11 +121,22 @@ public class KerriganPhase2 : MonoBehaviour
         // 일정 시간 후 공격
         if (stateTimer >= orbitDuration)
         {
-            ChangeState(State.FlyAttack);
+            ChangeState(SelectNextAttack());
         }
     }
 
-    void UpdateFlyAttack()
+    State SelectNextAttack()
+    {
+        State selectedAttack;
+
+        selectedAttack = attackPatterns[currentAttackIndex];
+        currentAttackIndex = (currentAttackIndex + 1) % attackPatterns.Count;
+        
+        Debug.Log($"선택된 공격 패턴: {selectedAttack}");
+        return selectedAttack;
+    }
+
+    void UpdateProjectileRain()
     {
         // 투사체 생성 단계
         if (spawnedProjectileCount < projectileCount)
@@ -127,6 +155,16 @@ public class KerriganPhase2 : MonoBehaviour
             LaunchAllProjectiles();
             ChangeState(State.Landing);
         }
+    }
+
+    void UpdateFireBreath()
+    {
+        Debug.Log("불뿜기!!");
+    }
+
+    void UpdateGroundSlam()
+    {
+        Debug.Log("자리찾기!!");
     }
 
     void UpdateLanding()
@@ -204,7 +242,6 @@ public class KerriganPhase2 : MonoBehaviour
         ExitState(currentState);
         currentState = newState;
         stateTimer = 0f;
-        Debug.Log($"Phase2 상태 변경: {newState}");
         EnterState(newState);
     }
 
@@ -219,7 +256,7 @@ public class KerriganPhase2 : MonoBehaviour
             case State.FlyOrbit:
                 break;
 
-            case State.FlyAttack:
+            case State.ProjectileRain:
                 spawnedProjectileCount = 0;
                 projectileSpawnTimer = 0f;
                 bossAI.Animator.SetTrigger("Charge");

@@ -187,7 +187,6 @@ public class KerriganPhase1 : MonoBehaviour
         {
             case 0:
                 // 계속 공전
-                Debug.Log("Phase1: 계속 공전");
                 break;
             case 1:
                 ChangeState(State.KickAttack);
@@ -230,12 +229,10 @@ public class KerriganPhase1 : MonoBehaviour
                 BossAI.Animator.SetTrigger("Kick");
                 BossAI.Animator.SetBool("isRunning", false);
 
-                Debug.Log("Phase1: 킥 실행!");
             }
             // 시간 초과 체크
             else if (kickTimer >= kickApproachTimeout)
             {
-                Debug.Log("Phase1: 킥 공격 포기 - 플레이어가 너무 멀어짐");
                 ChangeState(State.Confront);
             }
         }
@@ -296,7 +293,6 @@ public class KerriganPhase1 : MonoBehaviour
             meleeDirection = (BossAI.Player.position - transform.position).normalized;
             meleeDirection.y = 0;
             BossAI.Animator.SetTrigger("Swing");
-            Debug.Log("Phase1: Swing 시작");
         }
     }
 
@@ -330,7 +326,6 @@ public class KerriganPhase1 : MonoBehaviour
 
         // 새 상태로 변경
         currentState = newState;
-        Debug.Log($"Phase1 상태 변경: {newState}");
 
         // 새 상태 시작
         EnterState(newState);
@@ -362,7 +357,6 @@ public class KerriganPhase1 : MonoBehaviour
                 if (kickEffectPrefab != null)
                     Instantiate(kickEffectPrefab, transform.position, transform.rotation);
 
-                Debug.Log("Phase1: 킥 공격 시작 - 접근 중");
                 break;
 
             case State.RangedAttack:
@@ -378,13 +372,11 @@ public class KerriganPhase1 : MonoBehaviour
                 meleeDirection = (BossAI.Player.position - transform.position).normalized;
                 meleeDirection.y = 0;
                 BossAI.Animator.SetTrigger("LeftHook");
-                Debug.Log("Phase1: 근접 콤보 시작 - LeftHook");
                 break;
             case State.BackStep:
                 backStepTimer = 0f;
                 BossAI.Agent.isStopped = true;
                 BossAI.Animator.SetBool("isWalkingBack", true);
-                Debug.Log($"백스텝 시작! (이전 상태: {stateBeforeBackStep})");
                 break;
         }
     }
