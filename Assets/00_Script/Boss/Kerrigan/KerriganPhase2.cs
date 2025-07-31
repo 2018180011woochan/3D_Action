@@ -176,6 +176,7 @@ public class KerriganPhase2 : MonoBehaviour
         }
         else if (stateTimer >= 5f) 
         {
+            Debug.Log($"Launching projectiles. Count: {spawnedProjectiles.Count}");
             LaunchAllProjectiles();
             ChangeState(State.Landing);
         }
@@ -269,6 +270,11 @@ public class KerriganPhase2 : MonoBehaviour
         {
             CreateSafeZoneFires();
             firesCreated = true;
+        }
+
+        if (stateTimer >= 6f)  
+        {
+            ChangeState(State.Landing);
         }
     }
 
@@ -367,6 +373,13 @@ public class KerriganPhase2 : MonoBehaviour
 
     void LaunchAllProjectiles()
     {
+        if (spawnedProjectiles.Count == 0)
+        {
+            Debug.LogWarning("No projectiles to launch!");
+            return;
+        }
+
+
         Vector3 playerPos = bossAI.Player.position;
 
         foreach (GameObject proj in spawnedProjectiles)
@@ -448,6 +461,11 @@ public class KerriganPhase2 : MonoBehaviour
         {
             case State.FlyOrbit:
                 bossAI.Animator.SetBool("isFlyingLeft", false);
+                break;
+            case State.ProjectileRain:
+                spawnedProjectileCount = 0;
+                projectileSpawnTimer = 0f;
+                spawnedProjectiles.Clear();
                 break;
             case State.FireBreath:
                 fireBreathShootTimer = 0f;
