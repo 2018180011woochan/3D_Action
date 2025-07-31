@@ -39,8 +39,13 @@ public class KerriganPhase2 : MonoBehaviour
     private float fireBreathExtendTimer = 0f;
     private int currentFireIndex = 0;
 
+    public GameObject FireAreaPrefab;  // 추가
+    public float fireAreaRadius = 10f;  // 추가
+    public int fireAreaCount = 24;     // 원 둘레에 생성할 개수 (추가)
+    private int currentFireAreaIndex = 0;  // 추가
+    private float fireAreaSpawnTimer = 0f;  // 추가
+
     private float fireBreathShootTimer = 0f;
-    private float fireBreathShootInterval = 0.1f;
 
     [Header("랜딩")]
     public float landingSpeed = 5f;
@@ -52,6 +57,9 @@ public class KerriganPhase2 : MonoBehaviour
     private List<GameObject> spawnedProjectiles = new List<GameObject>();
 
     private BossAI bossAI;
+
+    // 무적 state
+    private List<State> invincibleStates = new List<State> { State.FlyUp };
 
     void Awake()
     {
@@ -129,6 +137,11 @@ public class KerriganPhase2 : MonoBehaviour
         }
     }
 
+    public bool IsInvincible()
+    {
+        return invincibleStates.Contains(currentState);
+    }
+
     State SelectNextAttack()
     {
         State selectedAttack;
@@ -173,26 +186,70 @@ public class KerriganPhase2 : MonoBehaviour
 
         fireBreathShootTimer += Time.deltaTime;
 
-        if (fireBreathShootTimer >= fireBreathShootInterval)
+        if (fireBreathShootTimer >= 0.1f)
         {
             Vector3 spawnPosition = bossPosition + transform.forward * 2f; 
-            GameObject newFire = Instantiate(FireBreathProjectile, spawnPosition, transform.rotation);
+            GameObject newFire = PoolManager.Instance.GetFireBreathProjectile();
 
-            Rigidbody rb = newFire.GetComponent<Rigidbody>();
-            if (rb != null)
+            if (newFire != null)
             {
-                rb.linearVelocity = directionToPlayer.normalized * 20f; 
+                newFire.transform.position = spawnPosition;
+                newFire.transform.rotation = transform.rotation;
+
+                Rigidbody rb = newFire.GetComponent<Rigidbody>();
+                rb.linearVelocity = directionToPlayer.normalized * 20f;
+
+                // 3초 후 자동 반환
+                StartCoroutine(ReturnFireProjectileAfterDelay(newFire, 3f));
             }
 
-            Destroy(newFire, 3f);
-
             fireBreathShootTimer = 0f; 
+        }
+
+        // fireArea
+        fireAreaSpawnTimer += Time.deltaTime;
+        if (fireAreaSpawnTimer >= 0.1f && currentFireAreaIndex < fireAreaCount)
+        {
+            // 원형으로 배치할 각도 계산
+            float angle = (360f / fireAreaCount) * currentFireAreaIndex;
+            float radian = angle * Mathf.Deg2Rad;
+
+            // 보스 주위 원형 위치 계산
+            Vector3 fireAreaPosition = new Vector3(
+                bossPosition.x + Mathf.Cos(radian) * fireAreaRadius,
+                0f,  // 바닥에 생성
+                bossPosition.z + Mathf.Sin(radian) * fireAreaRadius
+            );
+
+            GameObject fireArea = PoolManager.Instance.GetFireArea();
+            if (fireArea != null)
+            {
+                fireArea.transform.position = fireAreaPosition;
+                fireArea.transform.rotation = Quaternion.identity;
+
+                // 5초 후 자동 반환
+                StartCoroutine(ReturnFireAreaAfterDelay(fireArea, 5f));
+            }
+
+            currentFireAreaIndex++;
+            fireAreaSpawnTimer = 0f;
         }
 
         if (stateTimer >= 5f)
         {
             ChangeState(State.Landing);
         }
+    }
+    IEnumerator ReturnFireProjectileAfterDelay(GameObject projectile, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PoolManager.Instance.ReturnFireBreathProjectile(projectile);
+    }
+
+    IEnumerator ReturnFireAreaAfterDelay(GameObject fireArea, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PoolManager.Instance.ReturnFireArea(fireArea);
     }
 
     void UpdateGroundSlam()
@@ -296,7 +353,6 @@ public class KerriganPhase2 : MonoBehaviour
                 }
                 break;
             case State.FireBreath:
-                Debug.Log("�һ���");
                 activeFireBreath = Instantiate(FireBreathProjectile, transform);
                 break;
 
@@ -320,7 +376,9 @@ public class KerriganPhase2 : MonoBehaviour
                 bossAI.Animator.SetBool("isFlyingLeft", false);
                 break;
             case State.FireBreath:
-                fireBreathShootTimer = 0f;  
+                fireBreathShootTimer = 0f;
+                fireAreaSpawnTimer = 0f;    // 추가
+                currentFireAreaIndex = 0;    // 추가
                 break;
         }
     }

@@ -28,6 +28,13 @@ public class MonsterState : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
+        KerriganPhase2 phase2 = GetComponent<KerriganPhase2>();
+        if (phase2.enabled && phase2.IsInvincible())
+        {
+            Debug.Log("무적 상태");
+            return;
+        }
+
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
 

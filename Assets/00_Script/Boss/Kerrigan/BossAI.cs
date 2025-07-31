@@ -25,7 +25,7 @@ public class BossAI : MonoBehaviour
     private KerriganPhase2 phase2;
     private bool isPhase2Active = false;
 
-    private bool isTransitioning = false;
+    public bool isTransitioning = false;
     private bool isInitialized = false;  // 초기화 완료 체크
 
     void Awake()

@@ -2917,6 +2917,9 @@ MonoBehaviour:
   projectilePrefab: {fileID: 3473235153217995067, guid: 5248a80d5ae31634497f602e8f5886c1, type: 3}
   groundEffectPrefab: {fileID: 182211583388782593, guid: b87ff136b76b0f74e8521696dd6f2a66, type: 3}
   FireBreathProjectile: {fileID: 7429447221036927882, guid: 09d2d81fda63d1e4b8f9c5254c36c74b, type: 3}
+  FireAreaPrefab: {fileID: 7634479539008337860, guid: bf83012d4787ca64aa5e0f7406ec173e, type: 3}
+  fireAreaRadius: 15
+  fireAreaCount: 36
   landingSpeed: 5
   restDuration: 3
 --- !u!114 &500087188
@@ -2965,6 +2968,7 @@ MonoBehaviour:
   walkSpeed: 2
   runSpeed: 10
   confrontSpeed: 2.5
+  isTransitioning: 0
 --- !u!4 &500087194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5732369674868818937, guid: e8f193792ce31e54891d12d9d2c7e94c, type: 3}
@@ -8348,8 +8352,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff6d368bf1e84714791d8692bd1f8cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 7654218547762401773, guid: 061cdf538c7a8954890aeb4646c4c071, type: 3}
-  poolSize: 20
+  poolInfos:
+  - poolName: Arrow
+    prefab: {fileID: 7654218547762401773, guid: 061cdf538c7a8954890aeb4646c4c071, type: 3}
+    poolSize: 20
+  - poolName: FireBreathProjectile
+    prefab: {fileID: 7429447221036927882, guid: 09d2d81fda63d1e4b8f9c5254c36c74b, type: 3}
+    poolSize: 20
+  - poolName: FireArea
+    prefab: {fileID: 7634479539008337860, guid: bf83012d4787ca64aa5e0f7406ec173e, type: 3}
+    poolSize: 40
 --- !u!1001 &1060751455
 PrefabInstance:
   m_ObjectHideFlags: 0
