@@ -35,7 +35,7 @@ public class InventoryManager : MonoBehaviour
         InitializeInventory();
         inventoryGameObject.SetActive(false);
         AddItem(GameDataManager.instance.itemDatabase.GetItem("Bow"));
-        // 내일해보자
+
         if (GameDataManager.instance != null)
         {
             StartCoroutine(LoadDataAfterInit());

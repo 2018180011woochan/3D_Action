@@ -115,11 +115,6 @@ public class SwordCombat : MonoBehaviour
                 HandleBlock();
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            StartSkillCutscene();
-        }
-
         if (Input.GetKeyDown(KeyCode.R))
         {
             StartBattojutsuCutscene();
@@ -152,35 +147,6 @@ public class SwordCombat : MonoBehaviour
     void HandleBlock()
     {
         animator.SetTrigger("Block");
-    }
-
-    void StartSkillCutscene()
-    {
-        if (playerCombat.IsPlayingCutscene) return;
-        if (fireSkillOnCooldown) return;
-
-        UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
-        playerCombat.IsPlayingCutscene = true;
-        fireSkillOnCooldown = true;
-
-        animator.SetTrigger("Skill1");
-        fireSkill = true;
-        FireSkillEfecctPrefab.SetActive(true);
-
-        if (playerCombat.playerCamera != null && playerCombat.skillCutsceneCamera != null)
-        {
-            playerCombat.playerCamera.Priority = 0;
-            playerCombat.skillCutsceneCamera.Priority = 10;
-        }
-
-        if (playerCombat.skillCutsceneDirector != null && fireSkillTimeline != null)
-        {
-            playerCombat.skillCutsceneDirector.playableAsset = fireSkillTimeline;
-            playerCombat.skillCutsceneDirector.Play();
-        }
-
-        StartCoroutine(Skill1(fireSkillDuration));
-        StartCoroutine(FireSkillCooldown(fireSkillCoolTime));
     }
 
     void StartBattojutsuCutscene()
