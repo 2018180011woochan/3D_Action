@@ -404,6 +404,8 @@ public class KerriganPhase2 : MonoBehaviour
         switch (state)
         {
             case State.FlyUp:
+                bossAI.Agent.isStopped = true;
+                bossAI.Agent.enabled = false;
                 bossAI.Animator.SetTrigger("FlyUp");
                 break;
 
