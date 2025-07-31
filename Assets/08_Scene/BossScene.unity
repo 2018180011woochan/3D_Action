@@ -2920,6 +2920,11 @@ MonoBehaviour:
   FireAreaPrefab: {fileID: 7634479539008337860, guid: bf83012d4787ca64aa5e0f7406ec173e, type: 3}
   fireAreaRadius: 15
   fireAreaCount: 36
+  safeZonePrefab: {fileID: 8758640914893789326, guid: e66c3e259cd4680478b93c19247a9a45, type: 3}
+  safeZoneFirePrefab: {fileID: 202555112974702374, guid: 2a6f4c8ef1806ba4e8692ecefa57580d, type: 3}
+  safeZoneCreateRadius: 10
+  fireCreateRadius: 20
+  safeZoneRadius: 3.9
   landingSpeed: 5
   restDuration: 3
 --- !u!114 &500087188
@@ -8362,6 +8367,9 @@ MonoBehaviour:
   - poolName: FireArea
     prefab: {fileID: 7634479539008337860, guid: bf83012d4787ca64aa5e0f7406ec173e, type: 3}
     poolSize: 40
+  - poolName: SafeZoneFire
+    prefab: {fileID: 202555112974702374, guid: 2a6f4c8ef1806ba4e8692ecefa57580d, type: 3}
+    poolSize: 100
 --- !u!1001 &1060751455
 PrefabInstance:
   m_ObjectHideFlags: 0
