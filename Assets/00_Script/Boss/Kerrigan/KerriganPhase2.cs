@@ -47,6 +47,13 @@ public class KerriganPhase2 : MonoBehaviour
 
     private float fireBreathShootTimer = 0f;
 
+    [Header("자리 찾기 관련")]
+    public GameObject safeZonePrefab;
+    public GameObject safeZoneFirePrefab;
+    public float groundSlamRadius = 20f;
+    private bool safeZonesCreated = false;
+    private Vector3 safeZonePosition;
+
     [Header("랜딩")]
     public float landingSpeed = 5f;
     public float restDuration = 3f;
@@ -149,9 +156,8 @@ public class KerriganPhase2 : MonoBehaviour
         selectedAttack = attackPatterns[currentAttackIndex];
         currentAttackIndex = (currentAttackIndex + 1) % attackPatterns.Count;
         
-        Debug.Log($"���õ� ���� ����: {selectedAttack}");
         //return selectedAttack;
-        return State.FireBreath;    // test
+        return State.GroundSlam;    // test
     }
 
     void UpdateProjectileRain()
@@ -210,14 +216,12 @@ public class KerriganPhase2 : MonoBehaviour
         fireAreaSpawnTimer += Time.deltaTime;
         if (fireAreaSpawnTimer >= 0.1f && currentFireAreaIndex < fireAreaCount)
         {
-            // 원형으로 배치할 각도 계산
             float angle = (360f / fireAreaCount) * currentFireAreaIndex;
             float radian = angle * Mathf.Deg2Rad;
 
-            // 보스 주위 원형 위치 계산
             Vector3 fireAreaPosition = new Vector3(
                 bossPosition.x + Mathf.Cos(radian) * fireAreaRadius,
-                0f,  // 바닥에 생성
+                0f,  
                 bossPosition.z + Mathf.Sin(radian) * fireAreaRadius
             );
 
@@ -227,7 +231,6 @@ public class KerriganPhase2 : MonoBehaviour
                 fireArea.transform.position = fireAreaPosition;
                 fireArea.transform.rotation = Quaternion.identity;
 
-                // 5초 후 자동 반환
                 StartCoroutine(ReturnFireAreaAfterDelay(fireArea, 5f));
             }
 
@@ -254,7 +257,27 @@ public class KerriganPhase2 : MonoBehaviour
 
     void UpdateGroundSlam()
     {
-       
+        if (!safeZonesCreated)
+        {
+            CreateSafeZones();
+            safeZonesCreated = true;
+        }
+
+        if (stateTimer >= 3f)
+        {
+            Debug.Log("3초 지났음! 이제 Fire를 만들 차례");
+        }
+    }
+
+    void CreateSafeZones()
+    {
+        Vector3 bossGroundPosition = new Vector3(transform.position.x, 0f, transform.position.z);
+
+        Vector2 randomCircle = Random.insideUnitCircle * groundSlamRadius;
+        safeZonePosition = bossGroundPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+        GameObject safeZone = Instantiate(safeZonePrefab, safeZonePosition, Quaternion.identity);
+
     }
 
     void UpdateLanding()
@@ -377,8 +400,11 @@ public class KerriganPhase2 : MonoBehaviour
                 break;
             case State.FireBreath:
                 fireBreathShootTimer = 0f;
-                fireAreaSpawnTimer = 0f;    // 추가
-                currentFireAreaIndex = 0;    // 추가
+                fireAreaSpawnTimer = 0f;   
+                currentFireAreaIndex = 0;    
+                break;
+            case State.GroundSlam:
+                safeZonesCreated = false;  
                 break;
         }
     }
