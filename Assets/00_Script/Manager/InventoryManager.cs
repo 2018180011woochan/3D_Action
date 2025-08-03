@@ -165,4 +165,22 @@ public class InventoryManager : MonoBehaviour
             Debug.LogError("GameDataManager.instance가 null입니다!");
         }
     }
+
+    public List<ItemSlot> GetInventorySlots()
+    {
+        return slots;
+    }
+
+    // 특정 아이템이 인벤토리에 있는지 확인하는 메서드 (선택사항)
+    public bool HasItem(string itemName)
+    {
+        foreach (ItemSlot slot in slots)
+        {
+            if (slot.curItem != null && slot.curItem.ItemName == itemName)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

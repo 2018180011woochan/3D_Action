@@ -12,7 +12,7 @@ public class EquipManager : MonoBehaviour
 
     public PlayerCombat PlayerCombat;
 
-    private enum WeaponType { None, Sword, Bow }
+    private enum WeaponType { None, SwordAndShield, Bow }
     private WeaponType currentWeapon = WeaponType.None;
 
     void Awake()
@@ -21,7 +21,6 @@ public class EquipManager : MonoBehaviour
             instance = this;
         else
             Destroy(gameObject);
-        currentWeapon = WeaponType.Sword;
     }
 
     void Update()
@@ -29,116 +28,129 @@ public class EquipManager : MonoBehaviour
         // 숫자 키 입력 처리
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            QuickEquipSword();
+            QuickEquipSwordAndShield();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             QuickEquipBow();
         }
-
-        // UI 업데이트
-        //UpdateWeaponUI();
     }
 
-    private void QuickEquipSword()
+    private void QuickEquipSwordAndShield()
     {
-        if (currentWeapon == WeaponType.Sword) return;
+        if (currentWeapon == WeaponType.SwordAndShield) return;
 
-        Item swordItem = GameDataManager.instance.itemDatabase.GetItem("Sword");
-
-        if (swordItem != null)
+        if (currentWeapon == WeaponType.Bow)
         {
-            if (swordItem.isEquip)
-            {
-                swordItem.isEquip = false;
-            }
-
-            // 인벤토리에 있거나 아이템 데이터베이스에 있으면 장착 가능
-            if (swordItem != null)
-            {
-                // 활이 장착되어 있으면 해제
-                if (currentWeapon == WeaponType.Bow)
-                {
-                    UnEquipBow();
-
-                    // 활 아이템 상태 업데이트
-                    Item bowItem = GameDataManager.instance.itemDatabase.GetItem("Bow");
-                    if (bowItem != null)
-                    {
-                        bowItem.isEquip = false;
-                        InventoryManager.instance.AddItem(bowItem);
-                        InventoryManager.instance.weaponSlot?.ClearSlot();
-                    }
-                }
-
-                // 검 장착
-                EquipSword();
-                swordItem.isEquip = true;
-                currentWeapon = WeaponType.Sword;
-
-                InventoryManager.instance.EquipSword(swordItem);
-            }
-            else
-            {
-                Debug.Log("인벤토리에 검이 없습니다!");
-            }
+            UnequipBow();
         }
-        else
-        {
-            Debug.Log("검 아이템을 찾을 수 없습니다!");
-        }
+
+        EquipSwordAndShield();
     }
 
     private void QuickEquipBow()
     {
         if (currentWeapon == WeaponType.Bow) return;
 
-        // 인벤토리에서 활 아이템 찾기
+        if (currentWeapon == WeaponType.SwordAndShield)
+        {
+            UnequipSwordAndShield();
+        }
+
+        EquipBowWeapon();
+    }
+
+    private void UnequipBow()
+    {
         Item bowItem = GameDataManager.instance.itemDatabase.GetItem("Bow");
         if (bowItem != null)
         {
-            if (bowItem.isEquip)
-            {
-                Debug.Log("활이 이미 장착 상태로 되어있음. 상태 초기화 후 재장착");
-                bowItem.isEquip = false;
-            }
+            bowItem.isEquip = false;
+            InventoryManager.instance.AddItem(bowItem);
+            InventoryManager.instance.weaponSlot?.ClearSlot();
+            Bow.SetActive(false);
+            PlayerCombat.UnequipWeapon();
+        }
+    }
 
+    private void UnequipSwordAndShield()
+    {
+        // 검 처리
+        Item swordItem = GameDataManager.instance.itemDatabase.GetItem("Sword");
+        if (swordItem != null)
+        {
+            swordItem.isEquip = false;
+            InventoryManager.instance.AddItem(swordItem);
+            InventoryManager.instance.weaponSlot?.ClearSlot();
+            Sword.SetActive(false);
         }
 
+        // 방패 처리
+        Item shieldItem = GameDataManager.instance.itemDatabase.GetItem("Shield");
+        if (shieldItem != null)
+        {
+            shieldItem.isEquip = false;
+            InventoryManager.instance.AddItem(shieldItem);
+            InventoryManager.instance.sheildSlot?.ClearSlot();
+            Shield.SetActive(false);
+        }
+
+        // PlayerCombat에 무기 해제 알림
+        PlayerCombat.UnequipWeapon();
+    }
+
+    private void EquipSwordAndShield()
+    {
+        // 검 장착
+        Item swordItem = GameDataManager.instance.itemDatabase.GetItem("Sword");
+        if (swordItem != null)
+        {
+            RemoveItemFromInventory(swordItem);
+            swordItem.isEquip = true;
+            InventoryManager.instance.EquipSword(swordItem);
+            Sword.SetActive(true);
+            PlayerCombat.EquipSword();
+        }
+
+
+        // 방패 장착
+        Item shieldItem = GameDataManager.instance.itemDatabase.GetItem("Shield");
+        if (shieldItem != null)
+        {
+            RemoveItemFromInventory(shieldItem);
+            shieldItem.isEquip = true;
+            InventoryManager.instance.EquipShield(shieldItem);
+            Shield.SetActive(true);
+        }
+
+        // 현재 무기 상태 업데이트
+        currentWeapon = WeaponType.SwordAndShield;
+    }
+
+    private void EquipBowWeapon()
+    {
+        Item bowItem = GameDataManager.instance.itemDatabase.GetItem("Bow");
         if (bowItem != null)
         {
-            // 검이나 방패가 장착되어 있으면 해제
-            if (currentWeapon == WeaponType.Sword)
-            {
-                Debug.Log("현재 검장착중");
-                UnEquipSword();
-
-                Item swordItem = GameDataManager.instance.itemDatabase.GetItem("Sword");
-                if (swordItem != null)
-                {
-                    swordItem.isEquip = false;
-                    InventoryManager.instance.AddItem(swordItem);
-                    InventoryManager.instance.weaponSlot?.ClearSlot();
-                }
-
-                // 방패도 확인하고 해제
-                Item shieldItem = GameDataManager.instance.itemDatabase.GetItem("Shield");
-                if (shieldItem != null && shieldItem.isEquip)
-                {
-                    UnEquipShield();
-                    shieldItem.isEquip = false;
-                    InventoryManager.instance.AddItem(shieldItem);
-                    InventoryManager.instance.sheildSlot?.ClearSlot();
-                }
-            }
-
-            // 활 장착
-            EquipBow();
+            RemoveItemFromInventory(bowItem);
             bowItem.isEquip = true;
-            currentWeapon = WeaponType.Bow;
-
-            // 인벤토리에서 제거하는 코드 필요
             InventoryManager.instance.EquipBow(bowItem);
+            Bow.SetActive(true);
+            PlayerCombat.EquipBow();
+            currentWeapon = WeaponType.Bow;
+        }
+    }
+
+    private void RemoveItemFromInventory(Item item)
+    {
+        var slots = InventoryManager.instance.GetInventorySlots();
+        foreach (var slot in slots)
+        {
+            if (slot.curItem != null && slot.curItem.ItemName == item.ItemName)
+            {
+                slot.ClearSlot();
+                break;
+            }
         }
     }
 
@@ -157,8 +169,6 @@ public class EquipManager : MonoBehaviour
     public void EquipSword()
     {
         Sword.SetActive(true);
-        Bow.SetActive(false);
-
         PlayerCombat.EquipSword();
     }
 
@@ -181,16 +191,12 @@ public class EquipManager : MonoBehaviour
     public void EquipBow()
     {
         Bow.SetActive(true);
-        Sword.SetActive(false);
-        Shield.SetActive(false);
-
         PlayerCombat.EquipBow();
     }
 
-    public void UnEquipBow() 
+    public void UnEquipBow()
     {
         Bow.SetActive(false);
-
         PlayerCombat.UnequipWeapon();
     }
 }
