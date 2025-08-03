@@ -42,7 +42,51 @@ public class EquipManager : MonoBehaviour
 
     private void QuickEquipSword()
     {
+        if (currentWeapon == WeaponType.Sword) return;
 
+        Item swordItem = GameDataManager.instance.itemDatabase.GetItem("Sword");
+
+        if (swordItem != null)
+        {
+            if (swordItem.isEquip)
+            {
+                swordItem.isEquip = false;
+            }
+
+            // 인벤토리에 있거나 아이템 데이터베이스에 있으면 장착 가능
+            if (swordItem != null)
+            {
+                // 활이 장착되어 있으면 해제
+                if (currentWeapon == WeaponType.Bow)
+                {
+                    UnEquipBow();
+
+                    // 활 아이템 상태 업데이트
+                    Item bowItem = GameDataManager.instance.itemDatabase.GetItem("Bow");
+                    if (bowItem != null)
+                    {
+                        bowItem.isEquip = false;
+                        InventoryManager.instance.AddItem(bowItem);
+                        InventoryManager.instance.weaponSlot?.ClearSlot();
+                    }
+                }
+
+                // 검 장착
+                EquipSword();
+                swordItem.isEquip = true;
+                currentWeapon = WeaponType.Sword;
+
+                InventoryManager.instance.EquipSword(swordItem);
+            }
+            else
+            {
+                Debug.Log("인벤토리에 검이 없습니다!");
+            }
+        }
+        else
+        {
+            Debug.Log("검 아이템을 찾을 수 없습니다!");
+        }
     }
 
     private void QuickEquipBow()
