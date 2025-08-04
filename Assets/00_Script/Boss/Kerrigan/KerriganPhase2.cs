@@ -431,6 +431,7 @@ public class KerriganPhase2 : MonoBehaviour
                 break;
             case State.FireBreath:
                 activeFireBreath = Instantiate(FireBreathProjectile, transform);
+                bossAI.Animator.SetTrigger("BreathAttack"); 
                 break;
             case State.GroundSlam:
                 safeZonesCreated = false;
