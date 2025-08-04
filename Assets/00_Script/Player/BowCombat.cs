@@ -163,7 +163,7 @@ public class BowCombat : MonoBehaviour
     void ApplyChargingRotationOffset()
     {
         // 현재 회전값에 90도 추가 회전 적용
-        transform.rotation = transform.rotation * Quaternion.Euler(0, 90f, 0);
+        //transform.rotation = transform.rotation * Quaternion.Euler(0, -90f, 0);
     }
 
     void FireArrow()
@@ -231,7 +231,6 @@ public class BowCombat : MonoBehaviour
 
     void RotateTowardsCrosshair()
     {
-        // 크로스헤어 위치에서 Ray 발사
         Ray ray = Camera.main.ScreenPointToRay(CrosshairManager.Instance.crosshair.transform.position);
         RaycastHit hit;
         Vector3 targetPoint;
@@ -245,7 +244,6 @@ public class BowCombat : MonoBehaviour
             targetPoint = ray.GetPoint(50f);
         }
 
-        // 플레이어가 바라볼 방향 (Y축 회전만)
         Vector3 lookDirection = targetPoint - transform.position;
         lookDirection.y = 0; // 수평 회전만
 
@@ -253,13 +251,23 @@ public class BowCombat : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
 
-            // 차징 중일 때 90도 추가 회전 적용
             if (isCharging)
             {
-                targetRotation *= Quaternion.Euler(0, 90f, 0);
+                if (lockOn.isLockedOn)
+                {
+                    if (isMoving)
+                        targetRotation *= Quaternion.Euler(0, 90f, 0);
+                    else
+                        targetRotation *= Quaternion.Euler(0, 150f, 0);
+                }
+                else
+                {
+                    if (isMoving)
+                        targetRotation *= Quaternion.Euler(0, 90f, 0);
+                    else
+                        targetRotation *= Quaternion.Euler(0, 90f, 0);
+                }
             }
-
-            // 부드럽게 회전
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
     }
