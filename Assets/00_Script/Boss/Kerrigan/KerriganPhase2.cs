@@ -328,6 +328,7 @@ public class KerriganPhase2 : MonoBehaviour
     IEnumerator ReturnFireAfterDelay(GameObject fire, float delay)
     {
         yield return new WaitForSeconds(delay);
+
         PoolManager.Instance.ReturnObject("SafeZoneFire", fire);
     }
 
@@ -373,31 +374,24 @@ public class KerriganPhase2 : MonoBehaviour
 
     void LaunchAllProjectiles()
     {
-        if (spawnedProjectiles.Count == 0)
-        {
-            Debug.LogWarning("No projectiles to launch!");
-            return;
-        }
-
-
         Vector3 playerPos = bossAI.Player.position;
-
+        bossAI.Animator.SetTrigger("FlyAttack");
         foreach (GameObject proj in spawnedProjectiles)
         {
             if (proj == null) continue;
 
-            Vector2 randomOffset = Random.insideUnitCircle * 3f;
+            Vector2 randomOffset = Random.insideUnitCircle * 2f;
             Vector3 targetPos = playerPos + new Vector3(randomOffset.x, 0, randomOffset.y);
 
             Rigidbody rb = proj.GetComponent<Rigidbody>();
             if (rb != null)
             {
                 rb.isKinematic = false;  
-                rb.useGravity = true;    
+                rb.useGravity = false;
 
                 Vector3 direction = (targetPos - proj.transform.position).normalized;
-                direction.y = 0.3f;
-                rb.linearVelocity = direction.normalized * 15f;
+
+                rb.linearVelocity = direction * 40f;  
             }
         }
 
