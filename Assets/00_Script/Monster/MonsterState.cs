@@ -28,16 +28,18 @@ public class MonsterState : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
-        KerriganPhase2 phase2 = GetComponent<KerriganPhase2>();
-        if (phase2.enabled && phase2.IsInvincible())
+        if (monsterName.ToLower() == "kerrigan")
         {
-            Debug.Log("公利 惑怕");
-            return;
+            KerriganPhase2 phase2 = GetComponent<KerriganPhase2>();
+            if (phase2.enabled && phase2.IsInvincible())
+            {
+                Debug.Log("公利 惑怕");
+                return;
+            }
         }
 
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
-
         animator.SetTrigger("GetHit");
 
         var agent = GetComponent<NavMeshAgent>();
