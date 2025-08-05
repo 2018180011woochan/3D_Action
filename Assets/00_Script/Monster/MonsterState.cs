@@ -54,8 +54,7 @@ public class MonsterState : MonoBehaviour
             isDead = true;
             if (monsterName.ToLower() == "kerrigan")
             {
-                var kerriganAI = GetComponent<KerriganAI>();
-                kerriganAI.currentPhase2State = KerriganAI.Phase2State.Dead;
+                // º¸½º »ç¸Á 
             }
             else
             {

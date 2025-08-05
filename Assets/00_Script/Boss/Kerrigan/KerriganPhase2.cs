@@ -69,7 +69,8 @@ public class KerriganPhase2 : MonoBehaviour
     private BossAI bossAI;
 
     // 무적 state
-    private List<State> invincibleStates = new List<State> { State.FlyUp };
+    private List<State> invincibleStates = new List<State> { State.FlyUp, State.FlyOrbit, State.ProjectileRain,
+        State.FireBreath, State.GroundSlam, State.Landing };
 
     void Awake()
     {
