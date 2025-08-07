@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerAttackHitBox : MonoBehaviour
 {
-    public float damage = 10f;
+    private float damage = 5f;
     Animator animator;
     public GameObject AttackEffect;
 

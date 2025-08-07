@@ -5,7 +5,7 @@ public class Arrow : MonoBehaviour
     private Vector3 velocity;
     private float gravity = 9.81f;
     private bool isFlying = true;
-    public float damage = 10f;
+    private float damage = 2f;
     public GameObject AttackEffect;
     // 화살 초기화
     public void Initialize(Vector3 direction, float force)

@@ -15,14 +15,14 @@ public class PlayerCombat : MonoBehaviour
     public CinemachineCamera skillCutsceneCamera;
 
     // 현재 활성화된 전투 스크립트
-    private SwordCombat swordCombat;
+    private SwordCombat2 swordCombat;
     private BowCombat bowCombat;
 
     protected virtual void Awake()
     {
         animator = GetComponentInChildren<Animator>();
 
-        swordCombat = GetComponent<SwordCombat>();
+        swordCombat = GetComponent<SwordCombat2>();
         bowCombat = GetComponent<BowCombat>();
 
         if (swordCombat != null) swordCombat.enabled = true;
@@ -59,7 +59,7 @@ public class PlayerCombat : MonoBehaviour
         if (swordCombat != null)
         {
             swordCombat.enabled = true;
-            swordCombat.OnWeaponEquipped();
+            //swordCombat.OnWeaponEquipped();
         }
     }
 
@@ -68,7 +68,7 @@ public class PlayerCombat : MonoBehaviour
         UIManager.Instance.BowSkillOn();
         if (swordCombat != null && swordCombat.enabled)
         {
-            swordCombat.OnWeaponUnequipped();
+            //swordCombat.OnWeaponUnequipped();
             swordCombat.enabled = false;
         }
 
@@ -83,7 +83,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (swordCombat != null && swordCombat.enabled)
         {
-            swordCombat.OnWeaponUnequipped();
+            //swordCombat.OnWeaponUnequipped();
             swordCombat.enabled = false;
         }
 

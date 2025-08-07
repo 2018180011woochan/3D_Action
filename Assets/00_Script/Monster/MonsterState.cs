@@ -28,6 +28,7 @@ public class MonsterState : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
+        Debug.Log(dmg);
         if (monsterName.ToLower() == "kerrigan")
         {
             KerriganPhase2 phase2 = GetComponent<KerriganPhase2>();

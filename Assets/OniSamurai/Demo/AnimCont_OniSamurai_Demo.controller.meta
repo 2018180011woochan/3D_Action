@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 78a3db80822518245abe49e54ac0143b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 184994
+  packageName: Oni Samurai
+  packageVersion: 1.011
+  assetPath: Assets/OniSamurai/Demo/AnimCont_OniSamurai_Demo.controller
+  uploadId: 477747

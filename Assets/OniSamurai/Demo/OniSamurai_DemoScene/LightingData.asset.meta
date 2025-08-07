@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d5000170d1b91b74eb5b0e269f48d845
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 184994
+  packageName: Oni Samurai
+  packageVersion: 1.011
+  assetPath: Assets/OniSamurai/Demo/OniSamurai_DemoScene/LightingData.asset
+  uploadId: 477747
