@@ -7406,6 +7406,7 @@ MonoBehaviour:
   combatMoveSpeed: 1
   rotationSpeed: 10
   gravity: -9.81
+  runSpeed: 4
   cameraTransform: {fileID: 1015940012}
 --- !u!143 &1699123559
 CharacterController:

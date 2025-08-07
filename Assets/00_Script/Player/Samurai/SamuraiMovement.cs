@@ -4,7 +4,7 @@ public class SamuraiMovement : MonoBehaviour
 {
     [Header("상태 변수")]
     public bool Stance = false;
-    private bool isBusy = false;    // 현재 플레이어가 다른 작업 중인지
+    public bool isBusy = false;    // 현재 플레이어가 다른 작업 중인지
 
     [Header("상태 변수")]
     public float moveSpeed = 2.0f;
@@ -14,6 +14,8 @@ public class SamuraiMovement : MonoBehaviour
     private Vector3 playerVelocity;
     private bool isGrounded;
     private float gravityValue = -9.81f;
+    public float runSpeed = 3.0f;
+    private bool isRunning = false;
 
     [Header("컴포넌트")]
     private Animator animator;
@@ -29,9 +31,10 @@ public class SamuraiMovement : MonoBehaviour
     void Update()
     {
         ApplyGravity();
-
+        animator.SetBool("IsStance", Stance);
         if (isBusy) return;
 
+        isRunning = Input.GetKey(KeyCode.LeftShift);
         if (Stance == false)
         {
             HandleMove();
@@ -64,8 +67,11 @@ public class SamuraiMovement : MonoBehaviour
 
         Vector3 moveDirection = (cameraForward.normalized * vertical + cameraRight.normalized * horizontal).normalized;
 
+        float currentSpeed = isRunning ? runSpeed : moveSpeed;
+
         animator.SetFloat("Speed", moveDirection.magnitude);
-        controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+        animator.SetBool("Run", isRunning);
+        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
         if (moveDirection != Vector3.zero)
         {
@@ -86,7 +92,10 @@ public class SamuraiMovement : MonoBehaviour
         cameraRight.y = 0;
         Vector3 moveDirection = (cameraForward.normalized * vertical + cameraRight.normalized * horizontal).normalized;
 
+        float currentSpeed = isRunning ? runSpeed : moveSpeed;
+
         animator.SetFloat("Speed", moveDirection.magnitude);
+        animator.SetBool("Run", isRunning);
 
         Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
@@ -96,7 +105,7 @@ public class SamuraiMovement : MonoBehaviour
         animator.SetFloat("MoveX", localMoveDirection.x);
         animator.SetFloat("MoveY", localMoveDirection.z);
 
-        controller.Move(moveDirection * combatMoveSpeed * Time.deltaTime);
+        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
     }
 
     private void HandleDraw()
