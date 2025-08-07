@@ -7,7 +7,8 @@ public class SamuraiMovement : MonoBehaviour
     private bool isBusy = false;    // 현재 플레이어가 다른 작업 중인지
 
     [Header("상태 변수")]
-    public float moveSpeed = 1.0f; 
+    public float moveSpeed = 2.0f;
+    public float combatMoveSpeed = 2.0f;
     public float rotationSpeed = 10.0f;
     public float gravity = -9.81f;
     private Vector3 playerVelocity;
@@ -27,11 +28,7 @@ public class SamuraiMovement : MonoBehaviour
 
     void Update()
     {
-        isGrounded = controller.isGrounded;
-        if (isGrounded && playerVelocity.y < 0)
-        {
-            playerVelocity.y = -2f;
-        }
+        ApplyGravity();
 
         if (isBusy) return;
 
@@ -40,11 +37,21 @@ public class SamuraiMovement : MonoBehaviour
             HandleMove();
             HandleDraw();
         }
-
+        else 
+        {
+            HandleCombatMove(); 
+        }
+    }
+    private void ApplyGravity()
+    {
+        isGrounded = controller.isGrounded;
+        if (isGrounded && playerVelocity.y < 0)
+        {
+            playerVelocity.y = -2f;
+        }
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
     }
-
     private void HandleMove()
     {
         float horizontal = Input.GetAxis("Horizontal");
@@ -66,6 +73,30 @@ public class SamuraiMovement : MonoBehaviour
 
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
+
+    private void HandleCombatMove()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        Vector3 cameraForward = cameraTransform.forward;
+        Vector3 cameraRight = cameraTransform.right;
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+        Vector3 moveDirection = (cameraForward.normalized * vertical + cameraRight.normalized * horizontal).normalized;
+
+        animator.SetFloat("Speed", moveDirection.magnitude);
+
+        Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        Vector3 localMoveDirection = transform.InverseTransformDirection(moveDirection);
+
+        animator.SetFloat("MoveX", localMoveDirection.x);
+        animator.SetFloat("MoveY", localMoveDirection.z);
+
+        controller.Move(moveDirection * combatMoveSpeed * Time.deltaTime);
     }
 
     private void HandleDraw()
