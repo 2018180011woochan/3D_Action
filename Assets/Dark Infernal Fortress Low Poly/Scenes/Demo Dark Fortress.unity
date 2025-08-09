@@ -1940,9 +1940,13 @@ MonoBehaviour:
   moveSpeed: 2
   combatMoveSpeed: 1
   rotationSpeed: 10
-  gravity: -18
-  runSpeed: 4
+  gravity: -9.81
+  runSpeed: 4.5
   jumpHeight: 1.5
+  dashKey: 306
+  dashSpeed: 8
+  dashDuration: 0.2
+  dashCooldown: 0.3
   cameraTransform: {fileID: 1612586901}
 --- !u!1001 &114990384
 PrefabInstance:
