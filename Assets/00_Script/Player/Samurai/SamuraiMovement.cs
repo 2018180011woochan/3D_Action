@@ -16,6 +16,7 @@ public class SamuraiMovement : MonoBehaviour
     private float gravityValue = -9.81f;
     public float runSpeed = 3.0f;
     private bool isRunning = false;
+    public float jumpHeight = 1.5f;
 
     [Header("ÄÄÆ÷³ÍÆ®")]
     private Animator animator;
@@ -35,14 +36,15 @@ public class SamuraiMovement : MonoBehaviour
         if (isBusy) return;
 
         isRunning = Input.GetKey(KeyCode.LeftShift);
+        HandleJump();
         if (Stance == false)
         {
             HandleMove();
             HandleDraw();
         }
-        else 
+        else
         {
-            HandleCombatMove(); 
+            HandleCombatMove();
         }
     }
     private void ApplyGravity()
@@ -53,7 +55,6 @@ public class SamuraiMovement : MonoBehaviour
             playerVelocity.y = -2f;
         }
         playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
     }
     private void HandleMove()
     {
@@ -71,7 +72,10 @@ public class SamuraiMovement : MonoBehaviour
 
         animator.SetFloat("Speed", moveDirection.magnitude);
         animator.SetBool("Run", isRunning);
-        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
+        //controller.Move(moveDirection * currentSpeed * Time.deltaTime);
+        Vector3 finalVelocity = moveDirection * currentSpeed;
+        finalVelocity.y = playerVelocity.y;
+        controller.Move(finalVelocity * Time.deltaTime);
 
         if (moveDirection != Vector3.zero)
         {
@@ -92,10 +96,11 @@ public class SamuraiMovement : MonoBehaviour
         cameraRight.y = 0;
         Vector3 moveDirection = (cameraForward.normalized * vertical + cameraRight.normalized * horizontal).normalized;
 
-        float currentSpeed = isRunning ? runSpeed : moveSpeed;
+        bool canRun = isRunning && vertical > 0;
+        float currentSpeed = canRun ? runSpeed : moveSpeed;
 
         animator.SetFloat("Speed", moveDirection.magnitude);
-        animator.SetBool("Run", isRunning);
+        animator.SetBool("Run", canRun);
 
         Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
@@ -105,21 +110,35 @@ public class SamuraiMovement : MonoBehaviour
         animator.SetFloat("MoveX", localMoveDirection.x);
         animator.SetFloat("MoveY", localMoveDirection.z);
 
-        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
+        //controller.Move(moveDirection * currentSpeed * Time.deltaTime);
+
+        Vector3 finalVelocity = moveDirection * currentSpeed;
+        finalVelocity.y = playerVelocity.y;
+
+        controller.Move(finalVelocity * Time.deltaTime);
     }
 
     private void HandleDraw()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            isBusy = true; 
-            animator.SetTrigger("Draw"); 
+            isBusy = true;
+            animator.SetTrigger("Draw");
         }
     }
+    private void HandleJump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            animator.SetTrigger("Jump");
 
+            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+        }
+    }
     public void OnDrawEnd()
     {
-        Stance = true;  
-        isBusy = false; 
+        Stance = true;
+        isBusy = false;
     }
 }
+
