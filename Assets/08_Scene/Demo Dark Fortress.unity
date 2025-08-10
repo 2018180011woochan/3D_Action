@@ -24373,6 +24373,45 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5268821672464070676, guid: 2dc270729dd148b449f530e3e2d550b1, type: 3}
   m_PrefabInstance: {fileID: 1444228892}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1447327624 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3027529118582626968, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
+  m_PrefabInstance: {fileID: 1828480402}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1447327626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447327624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64790daa43b554d468489e3c5acd326e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackEffect: {fileID: 0}
+--- !u!65 &1447327627
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447327624}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.15, y: 0.7, z: 0.22}
+  m_Center: {x: 0, y: -0.55, z: 0}
 --- !u!1 &1452372311
 GameObject:
   m_ObjectHideFlags: 0
@@ -31829,6 +31868,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 108405871}
+    - targetCorrespondingSourceObject: {fileID: 3027529118582626968, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1447327627}
+    - targetCorrespondingSourceObject: {fileID: 3027529118582626968, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1447327626}
   m_SourcePrefab: {fileID: 100100000, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
 --- !u!1001 &1833102868
 PrefabInstance:

@@ -46,14 +46,19 @@ public class SamuraiMovement : MonoBehaviour
         HandleDash();
 
         animator.SetBool("IsStance", Stance);
-        if (isBusy) return;
+        if (isBusy)
+        {
+            animator.SetBool("Run", false);
+            animator.SetFloat("Speed", 0f);
+            return;
+        }
 
         isRunning = Input.GetKey(KeyCode.LeftShift);
         HandleJump();
+        HandleDraw();
         if (Stance == false)
         {
             HandleMove();
-            HandleDraw();
         }
         else
         {
@@ -133,10 +138,18 @@ public class SamuraiMovement : MonoBehaviour
 
     private void HandleDraw()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            isBusy = true;
-            animator.SetTrigger("Draw");
+            if (Stance == false)
+            {
+                isBusy = true;
+                animator.SetTrigger("Draw");
+            }
+            else
+            {
+                Stance = false;
+                animator.SetBool("IsStance", false);
+            }
         }
     }
     private void HandleJump()
