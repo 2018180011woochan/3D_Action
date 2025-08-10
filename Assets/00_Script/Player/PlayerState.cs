@@ -41,14 +41,8 @@ public class PlayerState : MonoBehaviour
 
     public bool TakeDamage(float dmg)
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block"))
-        {
-            BlockEffect.SetActive(true);
-            blockParticle?.Play();
-
-            StartCoroutine(DisableBlockEffect());
-            return false;
-        }
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block")) return false;
+        
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
 
@@ -70,12 +64,6 @@ public class PlayerState : MonoBehaviour
             playerController.ApplyKnockback(dir.normalized, knockbackForce);
         }
         return true;
-    }
-
-    IEnumerator DisableBlockEffect()
-    {
-        yield return new WaitForSeconds(1f); 
-        BlockEffect.SetActive(false);
     }
 
     public void Heal(float amount)
