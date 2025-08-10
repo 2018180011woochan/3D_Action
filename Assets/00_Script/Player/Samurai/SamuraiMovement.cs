@@ -33,6 +33,8 @@ public class SamuraiMovement : MonoBehaviour
     private CharacterController controller;
     public Transform cameraTransform;
 
+    bool isFirstDraw = true;
+
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -142,8 +144,14 @@ public class SamuraiMovement : MonoBehaviour
         {
             if (Stance == false)
             {
-                isBusy = true;
-                animator.SetTrigger("Draw");
+                if (isFirstDraw)
+                {
+                    animator.SetTrigger("Draw");
+                    isBusy = true;
+                    isFirstDraw = false;
+                }
+                else
+                    Stance = true;
             }
             else
             {
