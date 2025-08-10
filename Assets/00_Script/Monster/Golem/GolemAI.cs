@@ -95,7 +95,6 @@ public class GolemAI : MonoBehaviour
             case State.Attack:
                 if (!player) { ExitToChase(); break; }
 
-                // 공격 중엔 완전 정지 + 플레이어 바라봄
                 agent.isStopped = true;
                 agent.ResetPath();
                 agent.velocity = Vector3.zero;
@@ -107,13 +106,11 @@ public class GolemAI : MonoBehaviour
                     break;
                 }
 
-                // 1타가 끝났으면 2타 트리거
                 if (attackPhase == 1 && !IsAttackPlaying())
                 {
                     TriggerAttack2();
                     attackPhase = 2;
                 }
-                // 2타까지 끝났으면 쿨다운 주고 추격 복귀
                 else if (attackPhase == 2 && !IsAttackPlaying())
                 {
                     attackTimer = attackCooldown;
@@ -158,7 +155,7 @@ public class GolemAI : MonoBehaviour
     {
         var st = animator.GetCurrentAnimatorStateInfo(0);
         if (animator.IsInTransition(0)) return true;
-        return st.IsTag("Attack") && st.normalizedTime < 0.98f; // Attack 태그 필수
+        return st.IsTag("Attack") && st.normalizedTime < 0.98f; 
     }
 
     void FacePlayer()
@@ -183,8 +180,6 @@ public class GolemAI : MonoBehaviour
         {
             if (NavMesh.SamplePosition(transform.position, out var hit, 5f, NavMesh.AllAreas))
                 agent.Warp(hit.position);
-            else
-                Debug.LogWarning($"{name}: No NavMesh near spawn!");
         }
     }
 }
