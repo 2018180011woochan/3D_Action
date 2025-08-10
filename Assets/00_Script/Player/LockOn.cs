@@ -45,6 +45,13 @@ public class LockOn : MonoBehaviour
 
         if (isLockedOn && currentTarget != null)
         {
+            var ms = currentTarget.GetComponentInParent<MonsterState>();
+            if (currentTarget == null || ms == null || ms.isDead)
+            {
+                DisableLockOn();
+                return;
+            }
+
             float distance = Vector3.Distance(transform.position, currentTarget.position);
             if (distance > lockOnRange)
             {

@@ -117,7 +117,7 @@ public class SamuraiMovement : MonoBehaviour
         Vector3 moveDirection = (cameraForward.normalized * vertical + cameraRight.normalized * horizontal).normalized;
 
         bool canRun = isRunning && vertical > 0;
-        float currentSpeed = canRun ? runSpeed : moveSpeed;
+        float currentSpeed = canRun ? runSpeed : combatMoveSpeed;
 
         animator.SetFloat("Speed", moveDirection.magnitude);
         animator.SetBool("Run", canRun);
