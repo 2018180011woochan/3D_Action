@@ -383,7 +383,7 @@ public class SwordCombat : MonoBehaviour
                 MonsterState monster = hit.GetComponent<MonsterState>();
                 if (monster != null)
                 {
-                    monster.TakeBatto(attackDamage);
+                    //monster.TakeBatto(attackDamage);
                 }
             }
         }
