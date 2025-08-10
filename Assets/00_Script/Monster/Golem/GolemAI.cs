@@ -15,15 +15,21 @@ public class GolemAI : MonoBehaviour
     public float wanderSpeed = 2f;
 
 
+    [Header("공격")]
+    public float attackRange = 3.5f;      // 이 거리 안에 들어오면 공격 시작
+    public float attackCooldown = 1.0f;   // 1,2타 끝난 뒤 다음 공격까지 대기
+    public string attackTrigger1 = "Attack1";
+    public string attackTrigger2 = "Attack2";
+
     private NavMeshAgent agent;
     private Transform player;
     private Animator animator;      
     private float moveThreshold = 0.05f; 
     private float wanderTimer;
-
-    private enum State { Wander, Chase }
+    private float attackTimer;
+    private enum State { Wander, Chase, Attack }
     private State state = State.Wander;
-
+    private int attackPhase = 0;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -42,11 +48,13 @@ public class GolemAI : MonoBehaviour
 
         agent.stoppingDistance = stoppingDistance;
         state = State.Wander;
-        wanderTimer = wanderInterval; 
+        wanderTimer = wanderInterval;
+        attackTimer = 0f;
     }
 
     void Update()
     {
+        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
         float dist = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;
 
         switch (state)
@@ -73,8 +81,44 @@ public class GolemAI : MonoBehaviour
                 agent.isStopped = false;
                 agent.SetDestination(player.position);
 
+                if (dist <= attackRange && attackTimer <= 0f && !IsAttackPlaying())
+                {
+                    state = State.Attack;
+                    EnterAttack();     // 정지/회전
+                    TriggerAttack1();  // 1타부터
+                    attackPhase = 1;
+                }
+
                 if (dist > detectionRange * loseSightMultiplier)
                     state = State.Wander;
+                break;
+            case State.Attack:
+                if (!player) { ExitToChase(); break; }
+
+                // 공격 중엔 완전 정지 + 플레이어 바라봄
+                agent.isStopped = true;
+                agent.ResetPath();
+                agent.velocity = Vector3.zero;
+                FacePlayer();
+
+                if (!IsAttackPlaying() && dist > attackRange * 1.15f)
+                {
+                    ExitToChase();
+                    break;
+                }
+
+                // 1타가 끝났으면 2타 트리거
+                if (attackPhase == 1 && !IsAttackPlaying())
+                {
+                    TriggerAttack2();
+                    attackPhase = 2;
+                }
+                // 2타까지 끝났으면 쿨다운 주고 추격 복귀
+                else if (attackPhase == 2 && !IsAttackPlaying())
+                {
+                    attackTimer = attackCooldown;
+                    ExitToChase();
+                }
                 break;
         }
 
@@ -82,6 +126,47 @@ public class GolemAI : MonoBehaviour
         bool isMoving = agent.hasPath && agent.remainingDistance > agent.stoppingDistance && speed > moveThreshold;
 
         animator.SetBool("IsMoving", isMoving);
+    }
+    void EnterAttack()
+    {
+        agent.isStopped = true;
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
+        FacePlayer();
+    }
+
+    void ExitToChase()
+    {
+        state = State.Chase;
+        agent.isStopped = false;
+        attackPhase = 0;
+    }
+
+    void TriggerAttack1()
+    {
+        animator.ResetTrigger(attackTrigger2);
+        animator.SetTrigger(attackTrigger1);
+    }
+
+    void TriggerAttack2()
+    {
+        animator.ResetTrigger(attackTrigger1);
+        animator.SetTrigger(attackTrigger2);
+    }
+
+    bool IsAttackPlaying()
+    {
+        var st = animator.GetCurrentAnimatorStateInfo(0);
+        if (animator.IsInTransition(0)) return true;
+        return st.IsTag("Attack") && st.normalizedTime < 0.98f; // Attack 태그 필수
+    }
+
+    void FacePlayer()
+    {
+        if (!player) return;
+        Vector3 dir = player.position - transform.position; dir.y = 0;
+        if (dir.sqrMagnitude > 0.0001f)
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 6f);
     }
 
     void SetRandomWanderDestination()
@@ -101,11 +186,5 @@ public class GolemAI : MonoBehaviour
             else
                 Debug.LogWarning($"{name}: No NavMesh near spawn!");
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(transform.position, detectionRange);
-        Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(transform.position, wanderRadius);
     }
 }
