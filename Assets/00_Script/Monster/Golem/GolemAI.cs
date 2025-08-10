@@ -27,8 +27,8 @@ public class GolemAI : MonoBehaviour
     private float moveThreshold = 0.05f; 
     private float wanderTimer;
     private float attackTimer;
-    private enum State { Wander, Chase, Attack }
-    private State state = State.Wander;
+    public enum State { Wander, Chase, Attack, Dead }
+    public State state = State.Wander;
     private int attackPhase = 0;
     void Awake()
     {
@@ -54,6 +54,7 @@ public class GolemAI : MonoBehaviour
 
     void Update()
     {
+        if (state == State.Dead) return;
         if (attackTimer > 0f) attackTimer -= Time.deltaTime;
         float dist = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;
 

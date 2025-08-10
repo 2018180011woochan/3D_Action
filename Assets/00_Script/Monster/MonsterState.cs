@@ -49,9 +49,18 @@ public class MonsterState : MonoBehaviour
         if (currentHP <= 0f)
         {
             isDead = true;
-            if (monsterName.ToLower() == "kerrigan")
+            if (monsterName == "Golem")
             {
-                // 보스 사망 
+                var monAI = GetComponent<GolemAI>();
+                monAI.state = GolemAI.State.Dead;
+
+                Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+
+                GameObject potion = Instantiate(
+                    Potion,
+                    spawnPos,
+                    Quaternion.identity
+                    );
             }
             else
             {
@@ -70,8 +79,6 @@ public class MonsterState : MonoBehaviour
 
             animator.SetTrigger("Dead");
             UIManager.Instance.RemoveTargetMonster(this);
-            NormalSceneGameManager.Instance.GameEndCnt++;
-            Debug.Log("카운트 " + NormalSceneGameManager.Instance.GameEndCnt);
         }
     }
 }

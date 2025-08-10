@@ -4,17 +4,33 @@ public class NormalSceneGameManager : MonoBehaviour
 {
     public static NormalSceneGameManager Instance;
     public GameObject PortalPrefab;
-    public int GameEndCnt = 0;
+    public GameObject NormalBoss;
+    private MonsterState bossState;
+    private bool portalOpened = false;
     void Awake()
     {
         Instance = this;
     }
 
+    void Start()
+    {
+        if (NormalBoss)
+            bossState = NormalBoss.GetComponentInChildren<MonsterState>();
+
+        if (PortalPrefab) PortalPrefab.SetActive(false);
+    }
+
     private void Update()
     {
-        if (GameEndCnt >= 2)
+        if (!portalOpened && bossState.isDead)
         {
-            PortalPrefab.SetActive(true);
+            OpenPortal();
         }
+    }
+
+    private void OpenPortal()
+    {
+        PortalPrefab.SetActive(true);
+        portalOpened = true;
     }
 }
