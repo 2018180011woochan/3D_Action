@@ -10,9 +10,5 @@ public class Attack2State : StateMachineBehaviour
         {
             combatScript.OnAttackEnd();
         }
-        else
-        {
-            Debug.LogError("SamuraiMovement 스크립트를 찾을 수 없습니다!");
-        }
     }
 }

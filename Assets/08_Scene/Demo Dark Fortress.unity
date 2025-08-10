@@ -13836,7 +13836,7 @@ Transform:
   m_GameObject: {fileID: 868042313}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.67474306, z: -0, w: 0.73805285}
-  m_LocalPosition: {x: 55.67, y: 0, z: 11.92}
+  m_LocalPosition: {x: 58.98, y: 0, z: -5.61}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -24652,8 +24652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64790daa43b554d468489e3c5acd326e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
-  secondSwingAt: 0.4
+  damage: 10
   AttackEffect: {fileID: 5832840239959127486, guid: c94ea34c4b3d413489b1723be1a2e41e, type: 3}
 --- !u!65 &1447327627
 BoxCollider:
@@ -25698,7 +25697,7 @@ Transform:
   m_GameObject: {fileID: 1493628450}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 9.87, y: 0.596, z: 1.444}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31015,7 +31014,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4408297863206454, guid: 6bbfea6690ef7724ba495c866081f855, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60.5
+      value: 58.41
       objectReference: {fileID: 0}
     - target: {fileID: 4408297863206454, guid: 6bbfea6690ef7724ba495c866081f855, type: 3}
       propertyPath: m_LocalPosition.y
@@ -31023,7 +31022,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4408297863206454, guid: 6bbfea6690ef7724ba495c866081f855, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.84
+      value: 25.09
       objectReference: {fileID: 0}
     - target: {fileID: 4408297863206454, guid: 6bbfea6690ef7724ba495c866081f855, type: 3}
       propertyPath: m_LocalRotation.w

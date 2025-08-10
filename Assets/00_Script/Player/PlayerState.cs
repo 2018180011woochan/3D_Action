@@ -27,6 +27,7 @@ public class PlayerState : MonoBehaviour
     private Coroutine healCoroutine;
     public GameObject HealEffect;
 
+    private SamuraiMovement movement;
     void Awake()
     {
         currentHP = maxHP;
@@ -36,6 +37,7 @@ public class PlayerState : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         if (BlockEffect != null)
             blockParticle = BlockEffect.GetComponent<ParticleSystem>();
+        movement = GetComponent<SamuraiMovement>();
     }
 
 
@@ -48,6 +50,9 @@ public class PlayerState : MonoBehaviour
 
         animator.SetTrigger("GetHit");
         bloodScreen?.Flash();
+
+        if (movement) movement.Stance = false;
+
         return true;
     }
 

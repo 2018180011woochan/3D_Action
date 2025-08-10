@@ -10,9 +10,5 @@ public class DrawStatement : StateMachineBehaviour
         {
             movementScript.OnDrawEnd();
         }
-        else
-        {
-            Debug.LogError("SamuraiMovement 스크립트를 찾을 수 없습니다!");
-        }
     }
 }
