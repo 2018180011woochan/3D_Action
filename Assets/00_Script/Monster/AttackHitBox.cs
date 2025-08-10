@@ -6,37 +6,41 @@ public class AttackHitBox : MonoBehaviour
     Animator animator;
     public GameObject AttackEffect;
 
+    bool hasSwing = false;
+
     void Awake()
     {
         animator = GetComponentInParent<Animator>();
     }
 
+    void OnEnable()
+    {
+        hasSwing = false;
+    }
+
     void OnTriggerEnter(Collider other)
     {
+        if (hasSwing) return;
+
         if (!animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             return;
 
-        if (other.CompareTag("Player"))
+        var ps = other.GetComponentInParent<PlayerState>();
+        if (ps == null) return;
+
+        hasSwing = true; 
+
+        bool isAttackSucces = ps.TakeDamage(damage);
+
+        if (!isAttackSucces)
         {
-            var ps = other.GetComponent<PlayerState>();
-            if (ps != null)
-            {
-                bool isAttackSucces = ps.TakeDamage(damage);
+            animator.SetTrigger("GetHit"); // 패링
+        }
 
-                if (false == isAttackSucces)
-                {
-                    // 패링 효과로 기절 
-                    animator.SetTrigger("GetHit");
-                }
-
-                if (AttackEffect != null)
-                {
-                    // 충돌 지점에 이펙트 생성
-                    Vector3 hitPoint = other.ClosestPoint(transform.position);
-                    GameObject effect = Instantiate(AttackEffect, hitPoint, Quaternion.identity);
-
-                }
-            }
+        if (AttackEffect != null)
+        {
+            Vector3 hitPoint = other.ClosestPoint(transform.position);
+            Instantiate(AttackEffect, hitPoint, Quaternion.identity);
         }
     }
 }
