@@ -2005,7 +2005,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Stance: 0
   isBusy: 0
-  moveSpeed: 2
+  moveSpeed: 1.5
   combatMoveSpeed: 1
   rotationSpeed: 10
   gravity: -9.81
