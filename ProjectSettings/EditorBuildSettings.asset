@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/08_Scene/LoadingScene.unity
     guid: 4a164c25f5757c44089adbd27b6f89f6
   - enabled: 1
-    path: Assets/08_Scene/BossScene.unity
+    path: Assets/08_Scene/BossScene1.unity
     guid: 3ac9c9d0e34e67740a613d003ac810dd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
