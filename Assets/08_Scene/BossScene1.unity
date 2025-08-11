@@ -43643,6 +43643,9 @@ MonoBehaviour:
   wanderRadius: 10
   wanderInterval: 3
   wanderSpeed: 2
+  attackInterval: 3
+  attackTrigger: Attack
+  projectilePrefab: {fileID: 7091348086917609160, guid: 6f0d0a8d176bfe442b259377a5d91851, type: 3}
 --- !u!195 &1604654432
 NavMeshAgent:
   m_ObjectHideFlags: 0

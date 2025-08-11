@@ -4,15 +4,20 @@ using UnityEngine.AI;
 public class GhostAI : MonoBehaviour
 {
     [Header("탐지/추격")]
-    public float detectionRange = 12f;         
-    public float loseSightMultiplier = 1.25f;   
-    public float chaseSpeed = 3.5f;             
-    public float keepDistance = 6f;             
+    public float detectionRange = 12f;
+    public float loseSightMultiplier = 1.25f;
+    public float chaseSpeed = 3.5f;
+    public float keepDistance = 6f;           // 멈추는 거리(원거리 몬스터)
 
     [Header("배회")]
     public float wanderRadius = 10f;
     public float wanderInterval = 3f;
     public float wanderSpeed = 2f;
+
+    [Header("공격")]
+    public float attackInterval = 3f;
+    public string attackTrigger = "Attack";
+    public GameObject projectilePrefab;     
 
     private enum State { Wander, Chase, Dead }
     private State state = State.Wander;
@@ -23,6 +28,10 @@ public class GhostAI : MonoBehaviour
 
     private float wanderTimer;
     private float moveThreshold = 0.05f;
+
+    // 공격 타이머 & 캐시된 타겟 위치(애니 이벤트용)
+    private float attackTimer = 0f;
+    private Vector3 cachedTargetPos;
 
     void Awake()
     {
@@ -45,6 +54,7 @@ public class GhostAI : MonoBehaviour
     void Update()
     {
         if (state == State.Dead) return;
+        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
 
         float dist = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;
 
@@ -69,27 +79,49 @@ public class GhostAI : MonoBehaviour
                 if (!player) { state = State.Wander; break; }
 
                 agent.speed = chaseSpeed;
-                agent.stoppingDistance = keepDistance;     // 고스트는 멈추는 거리를 길게
+                agent.stoppingDistance = keepDistance;
                 agent.isStopped = false;
                 agent.SetDestination(player.position);
 
-                // 시야 이탈
+                // 시야 이탈하면 배회 복귀
                 if (dist > detectionRange * loseSightMultiplier)
                     state = State.Wander;
 
-                // 원하는 거리 안에 들어오면 서서 플레이어만 바라봄
+                // 원하는 거리 안에 들어오면 멈춰서 바라보고, 쿨타임 끝나면 공격
                 if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
                 {
                     agent.velocity = Vector3.zero;
                     FacePlayer();
+                    TryAttack();
                 }
                 break;
         }
+    }
 
-        // 이동 애니메이션(옵션)
-        float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
-        bool isMoving = agent.hasPath && agent.remainingDistance > agent.stoppingDistance && speed > moveThreshold;
-        if (animator) animator.SetBool("IsMoving", isMoving);
+    void TryAttack()
+    {
+        if (attackTimer > 0f || IsAttackPlaying()) return;
+
+        if (animator) animator.SetTrigger(attackTrigger);
+        attackTimer = attackInterval;
+
+
+        SpawnProjectile(player.position);
+    }
+
+    void SpawnProjectile(Vector3 targetPos)
+    {
+        if (!projectilePrefab) return;
+
+        Instantiate(projectilePrefab, targetPos, Quaternion.identity);
+    }
+
+    bool IsAttackPlaying()
+    {
+        if (!animator) return false;
+        var st = animator.GetCurrentAnimatorStateInfo(0);
+        if (animator.IsInTransition(0)) return true;
+        return st.IsTag("Attack") && st.normalizedTime < 0.98f;
     }
 
     void FacePlayer()
@@ -115,4 +147,5 @@ public class GhostAI : MonoBehaviour
                 agent.Warp(hit.position);
         }
     }
+
 }
