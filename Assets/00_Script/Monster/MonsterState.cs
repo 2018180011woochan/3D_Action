@@ -41,7 +41,15 @@ public class MonsterState : MonoBehaviour
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         OnDamaged?.Invoke(dmg);
         onHealthChanged.Invoke(currentHP / maxHP);
-        animator.SetTrigger("GetHit");
+
+        if (monsterName == "Mutant")
+        {
+            string[] hits = { "GetHit1", "GetHit2", "GetHit3", "GetHit4" };
+            int idx = UnityEngine.Random.Range(0, hits.Length);
+            animator.SetTrigger(hits[idx]);
+        }
+        else
+            animator.SetTrigger("GetHit");
 
         var agent = GetComponent<NavMeshAgent>();
         if (agent != null)
