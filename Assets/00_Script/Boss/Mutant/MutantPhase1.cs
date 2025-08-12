@@ -5,19 +5,23 @@ using UnityEngine.AI;
 public class MutantPhase1 : MonoBehaviour
 {
     public float detectionRange = 30f;
-    public float stopDistance = 6f;
+    public float stopDistance = 6f;       // 슬로우 걷기 시작 거리
+    public float closeStopDistance = 2f;  // 근접(공격 거리)
     public float walkSpeed = 2.5f;
-    public float closeStopDistance = 2f; 
     public float slowWalkSpeed = 1.2f;
 
-    enum State { Idle, Approach, SlowApproach, Stop }
-    State state = State.Idle;
+    public string[] attackTriggers = { "Attack1", "Attack2", "Attack3", "Attack4" };
+    public float attackCooldown = 2.5f;
+
+    enum State { Approach, Attack }
+    State state = State.Approach;
 
     NavMeshAgent agent;
     Animator animator;
     Transform player;
     bool started = false;
-    bool playedSlowAnim = false;
+    float attackTimer = 0f;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -27,94 +31,102 @@ public class MutantPhase1 : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-
-
-        agent.stoppingDistance = stopDistance;
         agent.updateRotation = true;
         agent.isStopped = true;
-
         StartCoroutine(BeginAfterDelay());
     }
 
-    IEnumerator BeginAfterDelay()
-    {
-        yield return new WaitForSeconds(2f);
-        started = true;
-    }
+    IEnumerator BeginAfterDelay() { yield return new WaitForSeconds(2f); started = true; }
 
     void Update()
     {
         if (!started || !player) return;
+        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
 
         float dist = Vector3.Distance(transform.position, player.position);
 
         switch (state)
         {
-            case State.Idle:
-                animator.SetBool("IsWalking", false);
-                if (dist <= detectionRange) state = State.Approach;
-                break;
-
             case State.Approach:
-                agent.speed = walkSpeed;
-                agent.isStopped = false;
-                agent.SetDestination(player.position);
-                animator.SetBool("IsWalking", true);
+                // 탐지 범위 밖이면 대기
+                if (dist > detectionRange) { agent.isStopped = true; animator.SetBool("IsWalking", false); animator.SetBool("SlowWalk", false); return; }
 
-                if (dist <= stopDistance)
+                // 공격 사정권이면 공격 시도
+                if (dist <= closeStopDistance && attackTimer <= 0f && !IsAttackPlaying())
                 {
-                    state = State.SlowApproach;
-                    playedSlowAnim = false;
+                    StartAttack();
+                    return;
                 }
-                break;
 
-            case State.SlowApproach:
-                agent.speed = slowWalkSpeed;
+                // 이동
                 agent.isStopped = false;
-                agent.updateRotation = true;
-                agent.stoppingDistance = closeStopDistance;
                 agent.SetDestination(player.position);
 
-                if (!playedSlowAnim)
+                if (dist > stopDistance)
                 {
+                    agent.speed = walkSpeed;
+                    agent.stoppingDistance = stopDistance;
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("SlowWalk", false);
+                }
+                else if (dist > closeStopDistance)
+                {
+                    agent.speed = slowWalkSpeed;
+                    agent.stoppingDistance = closeStopDistance;
                     animator.SetBool("IsWalking", false);
                     animator.SetBool("SlowWalk", true);
                 }
-
-                if (dist <= closeStopDistance)
+                else
                 {
+                    // 사정권인데 쿨타임 중이면 제자리 유지
                     agent.isStopped = true;
-                    agent.ResetPath();
+                    animator.SetBool("IsWalking", false);
                     animator.SetBool("SlowWalk", false);
-                    playedSlowAnim = false;
-                    state = State.Stop;
-                }
-
-                if (dist >= stopDistance)
-                {
-                    animator.SetBool("SlowWalk", false);
-                    animator.SetBool("IsWalking", true);
-
-                    agent.speed = walkSpeed;
-                    agent.stoppingDistance = stopDistance;
-                    state = State.Approach;
-                    playedSlowAnim = false;                 
-                    break;
+                    FacePlayer();
                 }
                 break;
-            case State.Stop:
+
+            case State.Attack:
                 FacePlayer();
-                if (dist > stopDistance + 0.5f)
-                    state = State.Approach;
+                if (!IsAttackPlaying())
+                {
+                    // 연속공격 조건
+                    if (dist <= closeStopDistance && attackTimer <= 0f)
+                        StartAttack();
+                    else
+                        state = State.Approach; // 다시 추격(또는 대치)
+                }
                 break;
         }
+    }
+
+    void StartAttack()
+    {
+        if (attackTriggers == null || attackTriggers.Length == 0) return;
+
+        agent.isStopped = true;
+        agent.ResetPath();
+        animator.SetBool("IsWalking", false);
+        animator.SetBool("SlowWalk", false);
+
+        int i = Random.Range(0, attackTriggers.Length);
+        animator.SetTrigger(attackTriggers[i]);
+
+        attackTimer = attackCooldown;
+        state = State.Attack;
+    }
+
+    bool IsAttackPlaying()
+    {
+        var st = animator.GetCurrentAnimatorStateInfo(0);
+        if (animator.IsInTransition(0)) return true;
+        return st.IsTag("Attack") && st.normalizedTime < 0.98f;
     }
 
     void FacePlayer()
     {
         Vector3 dir = player.position - transform.position; dir.y = 0;
         if (dir.sqrMagnitude > 0.0001f)
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 7f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 7f);
     }
 }
