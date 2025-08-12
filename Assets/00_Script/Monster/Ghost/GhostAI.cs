@@ -30,8 +30,8 @@ public class GhostAI : MonoBehaviour
     private float lastTeleportTime = -999f;
     private Coroutine teleportCo;                 
     private bool teleportPending = false;         
-    private enum State { Wander, Chase, Dead }
-    private State state = State.Wander;
+    public enum State { Wander, Chase, Dead }
+    public State state = State.Wander;
 
     private NavMeshAgent agent;
     private Transform player;

@@ -68,7 +68,19 @@ public class MonsterState : MonoBehaviour
             }
             else if (monsterName == "Ghost")
             {
+                var monAI = GetComponent<GhostAI>();
+                monAI.state = GhostAI.State.Dead;
 
+                Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+
+                GameObject potion = Instantiate(
+                    Potion,
+                    spawnPos,
+                    Quaternion.identity
+                    );
+                var dissolve = GetComponent<GhostDissolve>();
+                if (dissolve) dissolve.Play();
+                BossScene1Manager.Instance.ReportGhostDeath();
             }
             else
             {
