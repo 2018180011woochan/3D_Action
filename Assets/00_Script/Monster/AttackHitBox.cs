@@ -18,6 +18,11 @@ public class AttackHitBox : MonoBehaviour
         hasSwing = false;
     }
 
+    void OnTriggerStay(Collider other)
+    {
+        OnTriggerEnter(other);   // 겹쳐있는 프레임에서도 판정
+    }
+    public void ResetSwing() => hasSwing = false;
     void OnTriggerEnter(Collider other)
     {
         if (hasSwing) return;
