@@ -15,6 +15,11 @@ public class BossScene1Manager : MonoBehaviour
     public CinemachineCamera bossCam;        
     public float showSeconds = 4.0f;
     bool playing;
+
+    [Header("보스 스폰")]
+    public GameObject bossPrefab;
+    public Transform bossSpawnPoint;
+    GameObject bossInstance;
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -39,7 +44,10 @@ public class BossScene1Manager : MonoBehaviour
         int oldPlayerPrio = playerCamera ? playerCamera.Priority : 0;
         int oldBossPrio = bossCam ? bossCam.Priority : 0;
 
-        if (bossCam) bossCam.Priority = 100; 
+        if (bossCam) bossCam.Priority = 100;
+
+        SpawnBoss();
+
         yield return new WaitForSeconds(showSeconds);
 
         // 다시 플레이어로 복귀
@@ -48,7 +56,11 @@ public class BossScene1Manager : MonoBehaviour
 
         cleared = true;
         playing = false;
-        Debug.Log("[BossScene1] 보스 위치를 보여줬습니다.");
     }
+    void SpawnBoss()
+    {
+        if (bossInstance != null) return;
 
+        bossInstance = Instantiate(bossPrefab, bossSpawnPoint.position, bossSpawnPoint.rotation);
+    }
 }
