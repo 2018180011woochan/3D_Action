@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class MutantSpawnDissolve : MonoBehaviour
 {
-    [Header("Materials")]
-    [Tooltip("현재 적용된 디졸브용 머티리얼(예: Mutant_Dissolve)")]
     public Material dissolveMaterial;
 
-    [Tooltip("디졸브가 끝난 뒤 교체할 원래 머티리얼(예: Mat_MonsterMutant7_Skin1)")]
     public Material finalMaterial;
 
-    [Header("Dissolve Animation")]
-    [Tooltip("Shader Graph 속성 Reference 이름 (Shader에서 확인). 예시: \"Dissolve\" 또는 \"_Dissolve\"")]
     public string dissolveProperty = "_Dissolve";
     public float startValue = 1f;        // 소환 시 시작값
     public float endValue = 0f;          // 0으로 내려가며 등장
@@ -29,7 +24,6 @@ public class MutantSpawnDissolve : MonoBehaviour
         rends = GetComponentsInChildren<Renderer>(true);
         propId = Shader.PropertyToID(dissolveProperty);
 
-        // 타겟 슬롯 수집: dissolveMaterial가 들어있는 슬롯(우선) + 해당 속성을 가진 슬롯
         foreach (var r in rends)
         {
             var mats = r.sharedMaterials;
@@ -101,7 +95,6 @@ public class MutantSpawnDissolve : MonoBehaviour
 
             slot.r.materials = mats;
 
-            // 교체 후 프로퍼티블록 정리(선택)
             var block = new MaterialPropertyBlock();
             slot.r.SetPropertyBlock(block, slot.index);
         }
