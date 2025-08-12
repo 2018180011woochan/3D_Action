@@ -25702,8 +25702,9 @@ MonoBehaviour:
   playerCamera: {fileID: 982297745}
   bossCam: {fileID: 1404669143}
   showSeconds: 4
-  bossPrefab: {fileID: 607559486437967151, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
-  bossSpawnPoint: {fileID: 0}
+  bossPrefab: {fileID: 3813220795979018067, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+  bossSpawnPointPrefab: {fileID: 3359791447596881531, guid: 5473d378cfe28e041842b4b87de9b8b3, type: 3}
+  bossSpawnPoint: {fileID: 1673220037}
 --- !u!4 &892562067 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: ee310940381d5f3409a44456d948e8e3, type: 3}
@@ -39548,7 +39549,7 @@ Transform:
   m_GameObject: {fileID: 1404669142}
   serializedVersion: 2
   m_LocalRotation: {x: -0.22200218, y: 0.72469664, z: -0.26988584, w: -0.5938784}
-  m_LocalPosition: {x: -9.4, y: 4.57, z: 4.34}
+  m_LocalPosition: {x: -0.28, y: 6.51, z: 3.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46552,7 +46553,7 @@ Transform:
   m_GameObject: {fileID: 1673220036}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -12.379, y: 0, z: 3.3}
+  m_LocalPosition: {x: -8.54, y: 0, z: 3.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

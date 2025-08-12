@@ -13,11 +13,12 @@ public class BossScene1Manager : MonoBehaviour
     public int targetGhostCount = 3;
     public CinemachineCamera playerCamera;   
     public CinemachineCamera bossCam;        
-    public float showSeconds = 4.0f;
+    public float showSeconds = 6.0f;
     bool playing;
 
     [Header("보스 스폰")]
     public GameObject bossPrefab;
+    public GameObject bossSpawnPointPrefab;
     public Transform bossSpawnPoint;
     GameObject bossInstance;
     void Awake()
@@ -46,6 +47,8 @@ public class BossScene1Manager : MonoBehaviour
 
         if (bossCam) bossCam.Priority = 100;
 
+        Instantiate(bossSpawnPointPrefab, bossSpawnPoint.position, Quaternion.identity);
+        yield return new WaitForSeconds(2f);
         SpawnBoss();
 
         yield return new WaitForSeconds(showSeconds);
