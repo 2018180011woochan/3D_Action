@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -5,6 +6,8 @@ using UnityEngine.Events;
 
 public class MonsterState : MonoBehaviour
 {
+    public event Action<float> OnDamaged;
+
     [Header("체력 설정")]
     public float maxHP = 100f;
     public string monsterName;
@@ -36,6 +39,7 @@ public class MonsterState : MonoBehaviour
         }
 
         currentHP = Mathf.Max(currentHP - dmg, 0f);
+        OnDamaged?.Invoke(dmg);
         onHealthChanged.Invoke(currentHP / maxHP);
         animator.SetTrigger("GetHit");
 
@@ -61,6 +65,10 @@ public class MonsterState : MonoBehaviour
                     spawnPos,
                     Quaternion.identity
                     );
+            }
+            else if (monsterName == "Ghost")
+            {
+
             }
             else
             {

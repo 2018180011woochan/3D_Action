@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,8 +18,18 @@ public class GhostAI : MonoBehaviour
     [Header("공격")]
     public float attackInterval = 3f;
     public string attackTrigger = "Attack";
-    public GameObject projectilePrefab;     
+    public GameObject projectilePrefab;
 
+    [Header("텔레포트")]
+    public float teleportDistanceFromPlayer = 6f;
+    public float teleportDelay = 1f;
+    public float teleportCooldown = 1.5f;
+    public GameObject teleportEffectPrefab;
+    public float sampleMaxDistance = 1.0f;         
+    public float ringTolerance = 0.25f;             
+    private float lastTeleportTime = -999f;
+    private Coroutine teleportCo;                 
+    private bool teleportPending = false;         
     private enum State { Wander, Chase, Dead }
     private State state = State.Wander;
 
@@ -33,10 +44,23 @@ public class GhostAI : MonoBehaviour
     private float attackTimer = 0f;
     private Vector3 cachedTargetPos;
 
+    private MonsterState ms;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+    }
+
+    void OnEnable()
+    {
+        ms = GetComponent<MonsterState>();
+        ms.OnDamaged += HandleDamaged;
+
+    }
+
+    void OnDisable()
+    {
+        ms.OnDamaged -= HandleDamaged;
     }
 
     void Start()
@@ -148,4 +172,97 @@ public class GhostAI : MonoBehaviour
         }
     }
 
+    void HandleDamaged(float dmg)
+    {
+        if (state == State.Dead) return;
+        if (Time.time - lastTeleportTime < teleportCooldown) return;
+
+        if (teleportPending) return;
+
+        teleportCo = StartCoroutine(TeleportAfterDelay());
+    }
+
+    IEnumerator TeleportAfterDelay()
+    {
+        teleportPending = true;
+        yield return new WaitForSeconds(teleportDelay);
+
+        if (!isActiveAndEnabled || state == State.Dead)
+        {
+            teleportPending = false;
+            teleportCo = null;
+            yield break;
+        }
+
+        Teleport();
+        teleportPending = false;
+        teleportCo = null;
+    }
+    void Teleport()
+    {
+        lastTeleportTime = Time.time;
+
+        Instantiate(teleportEffectPrefab, transform.position, Quaternion.identity);
+
+        if (player && TryGetPointOnRing(player.position, teleportDistanceFromPlayer, sampleMaxDistance, ringTolerance, out var newPos))
+        {
+            if (agent) { agent.Warp(newPos); agent.ResetPath(); }
+
+
+            Instantiate(teleportEffectPrefab, newPos, Quaternion.identity);
+
+            state = State.Chase;
+            if (agent && agent.isOnNavMesh)
+                agent.SetDestination(player.position);
+        }
+    }
+
+    bool TryGetPointOnRing(Vector3 playerPos, float radius, float maxSampleDist, float tolerance, out Vector3 pos)
+    {
+        const int attempts = 24;
+
+        for (int i = 0; i < attempts; i++)
+        {
+            float angle = Random.Range(0f, Mathf.PI * 2f);
+            Vector3 dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+            Vector3 ideal = playerPos + dir * radius;
+
+            if (NavMesh.SamplePosition(ideal, out var hit, maxSampleDist, NavMesh.AllAreas))
+            {
+                float planarDist = PlanarDistance(hit.position, playerPos);
+                if (Mathf.Abs(planarDist - radius) <= tolerance)
+                {
+                    pos = hit.position;
+                    return true;
+                }
+            }
+        }
+
+        float wider = Mathf.Max(tolerance * 2f, 0.5f);
+        for (int i = 0; i < attempts; i++)
+        {
+            float angle = Random.Range(0f, Mathf.PI * 2f);
+            Vector3 dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+            Vector3 ideal = playerPos + dir * radius;
+
+            if (NavMesh.SamplePosition(ideal, out var hit, maxSampleDist, NavMesh.AllAreas))
+            {
+                float planarDist = PlanarDistance(hit.position, playerPos);
+                if (Mathf.Abs(planarDist - radius) <= wider)
+                {
+                    pos = hit.position;
+                    return true;
+                }
+            }
+        }
+
+        pos = transform.position;
+        return false;
+    }
+
+    float PlanarDistance(Vector3 a, Vector3 b)
+    {
+        a.y = 0f; b.y = 0f;
+        return Vector3.Distance(a, b);
+    }
 }

@@ -56,6 +56,6 @@ public class LoadingManager : MonoBehaviour
             yield return null;
         }
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene("BossScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("BossScene1");
     }
 }
