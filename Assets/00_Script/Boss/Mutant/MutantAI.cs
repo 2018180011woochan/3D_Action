@@ -38,7 +38,6 @@ public class MutantAI : MonoBehaviour
             CurrentPhase = next;
             ApplyPhaseControllers(CurrentPhase);
             OnPhaseChanged?.Invoke(CurrentPhase);
-            Debug.Log($"[MutantAI] Phase ¡æ {CurrentPhase}");
         }
     }
 
