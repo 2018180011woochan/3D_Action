@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class MutantAttack1Behaviour : StateMachineBehaviour
+public class MutantRightHandAttackBehaviour : StateMachineBehaviour
 {
     public string hitboxPath =
         "Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_RightShoulder/Character1_RightArm/Character1_RightForeArm/Character1_RightHand/HitBox";
 
-    public int windowStartFrame = 9;
-    public int windowEndFrame = 15;
+    public int windowStartFrame = 2;
+    public int windowEndFrame = 32;
 
     Transform hitBox;  
     AttackHitBox hit;
@@ -19,12 +19,6 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
         {
             hitBox = TryFindByPathOrLeaf(animator.transform, hitboxPath);
             if (hitBox) hit = hitBox.GetComponent<AttackHitBox>();
-        }
-
-        if (!hitBox || !hit)
-        {
-            Debug.LogError($"[HitBox] 경로로 못 찾음: \"{hitboxPath}\"  (애니메이터: {animator.name})");
-            return;
         }
 
         hitBox.gameObject.SetActive(false);
@@ -40,7 +34,7 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
         }
         else
         {
-            float total = stateInfo.length * 60f;    // 60fps 가정
+            float total = stateInfo.length * 60f;    
             startN = Mathf.Clamp01(windowStartFrame / total);
             endN = Mathf.Clamp01(windowEndFrame / total);
         }
@@ -57,7 +51,7 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
 
         if (inWindow && !active)
         {
-            hit.ResetSwing();                 // 창 켜기 직전 보장
+            hit.ResetSwing();                 
             hitBox.gameObject.SetActive(true);
             active = true;
         }
