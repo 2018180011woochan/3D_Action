@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum MutantPhase { Phase1, Phase2 }
 public class MutantAI : MonoBehaviour
@@ -12,9 +13,14 @@ public class MutantAI : MonoBehaviour
     public MutantPhase CurrentPhase { get; private set; } = MutantPhase.Phase1;
     public Action<MutantPhase> OnPhaseChanged;
 
+    public NavMeshAgent agent;
+    public Animator animator;
+
     void Awake()
     {
         monsterState = GetComponent<MonsterState>();
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Start()
