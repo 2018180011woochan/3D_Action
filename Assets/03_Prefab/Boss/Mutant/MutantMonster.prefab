@@ -28630,7 +28630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 827af75bbaf97394db412de7443c8b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MutantAI: {fileID: 6908968473959392625}
+  mutantAI: {fileID: 6908968473959392625}
   detectionRange: 30
   stopDistance: 6
   closeStopDistance: 2
@@ -28654,6 +28654,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f104231cd0a6e49988effe94f31463, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mutantAI: {fileID: 6908968473959392625}
+  startDelay: 4
+  detectionRange: 40
+  runSpeed: 6.5
+  closeStopDistance: 2
+  runBool: IsRunning
+  attackTriggers:
+  - Attack1
+  - Attack2
+  - Attack3
+  - Attack4
+  attackCooldown: 2
 --- !u!195 &2135842618562584694
 NavMeshAgent:
   m_ObjectHideFlags: 0

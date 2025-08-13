@@ -1327,7 +1327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 1
+  maxHP: 50
   monsterName: Ghost
   isDead: 0
   onHealthChanged:
@@ -44435,7 +44435,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19588385245968726, guid: 8ee08d04ad5df46fbb2e97260b63420b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19588385245968726, guid: 8ee08d04ad5df46fbb2e97260b63420b, type: 3}
       propertyPath: m_TagString
@@ -44738,7 +44738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 1
+  maxHP: 50
   monsterName: Ghost
   isDead: 0
   onHealthChanged:
@@ -57086,6 +57086,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a3fd121990df8948b2a3e7c6725fd81, type: 3}
+--- !u!1001 &2054398825
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.50652
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.54069
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.30981
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1744089421668278534, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5640846707312823974, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: m_Name
+      value: MutantMonster
+      objectReference: {fileID: 0}
+    - target: {fileID: 5770011456548488903, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
+      propertyPath: attackCooldown
+      value: 2.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a812e8231b4fc874b87ccb6fe1cfa78b, type: 3}
 --- !u!1001 &2056182200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58356,7 +58417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 1
+  maxHP: 50
   monsterName: Ghost
   isDead: 0
   onHealthChanged:
@@ -60458,3 +60519,4 @@ SceneRoots:
   - {fileID: 1404669144}
   - {fileID: 1673220037}
   - {fileID: 2138925586}
+  - {fileID: 2054398825}
