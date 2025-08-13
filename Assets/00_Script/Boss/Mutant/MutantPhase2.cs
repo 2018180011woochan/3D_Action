@@ -1,16 +1,23 @@
+using System.Collections;
 using UnityEngine;
 
 public class MutantPhase2 : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public MutantAI mutantAI;
+    Transform player;
+    bool started = false;
     void Start()
     {
-        
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        mutantAI.agent.updateRotation = true;
+        mutantAI.agent.isStopped = true;
+        StartCoroutine(BeginAfterDelay());
     }
 
-    // Update is called once per frame
+    IEnumerator BeginAfterDelay() { yield return new WaitForSeconds(4f); started = true; }
+
     void Update()
     {
-
+        if (!started || !player) return;
     }
 }

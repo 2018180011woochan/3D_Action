@@ -4,23 +4,24 @@ using Unity.Cinemachine;
 
 public class BossPhaseCutscene : MonoBehaviour
 {
-    [Header("Refs")]
     public MutantAI bossAI;               
     public Transform boss;                
     public CinemachineCamera playerCam;   
-    public CinemachineCamera cutsceneCam; 
+    public CinemachineCamera cutsceneCam;
+    public GameObject Phase2Effect1;
+    public GameObject Phase2Effect2;
 
-    [Header("Shot (relative to boss)")]
+    public string playerCamTag = "PlayerCamera";
+    public string cutsceneCamTag = "PhaseCutSceneCamera";
+
     public float distanceBack = 6f;   
     public float height = 2f;         
     public float sideOffset = 1.5f;   
 
-    [Header("Timing (seconds)")]
     public float blendIn = 0.6f;  
     public float hold = 2.2f;     
     public float blendOut = 0.6f; 
 
-    [Header("Disable during cutscene")]
     public Behaviour[] disableDuringCutscene;
 
     private bool played = false;
@@ -43,18 +44,29 @@ public class BossPhaseCutscene : MonoBehaviour
 
     private IEnumerator PlayCutscene()
     {
+        if (!playerCam || !cutsceneCam)
+        {
+            var pc = GameObject.FindGameObjectWithTag(playerCamTag);
+            playerCam = pc.GetComponent<CinemachineCamera>();
+
+            var cc = GameObject.FindGameObjectWithTag(cutsceneCamTag);
+            cutsceneCam = cc.GetComponent<CinemachineCamera>();
+        }
+        if (!playerCam || !cutsceneCam)
+        {
+            Debug.LogWarning("[BossPhaseCutscene] Cameras not found. Abort cutscene.");
+            yield break;
+        }
+
         played = true;
 
-        // 1) 조작 잠금
         foreach (var b in disableDuringCutscene)
             if (b) b.enabled = false;
 
         if (bossAI.agent) { bossAI.agent.isStopped = true; bossAI.agent.ResetPath(); }
 
-        // ③ 남아있을 공격 트리거/상태 정리
         if (bossAI.animator)
         {
-            // 네가 쓰는 트리거 이름들에 맞춰서
             string[] attackTriggers = { "Attack1", "Attack2", "Attack3", "Attack4" };
             foreach (var t in attackTriggers) bossAI.animator.ResetTrigger(t);
 
@@ -79,6 +91,10 @@ public class BossPhaseCutscene : MonoBehaviour
         cutsceneCam.Priority = Mathf.Max(originalPlayerPriority + 10, 100);
 
         var anim = boss.GetComponentInChildren<Animator>();
+
+        Phase2Effect1.SetActive(true);
+        Phase2Effect2.SetActive(true);
+
         anim.SetTrigger("Rage"); 
         anim.SetBool("IsPhase2", true);
         yield return new WaitForSeconds(blendIn + hold);

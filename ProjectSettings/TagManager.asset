@@ -7,6 +7,8 @@ TagManager:
   - Monster
   - ClickBlock
   - Ground
+  - PlayerCamera
+  - PhaseCutSceneCamera
   layers:
   - Default
   - TransparentFX

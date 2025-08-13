@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 public class MutantPhase1 : MonoBehaviour
 {
-    public MutantAI MutantAI;
+    public MutantAI ｍutantAI;
     public float detectionRange = 30f;
     public float stopDistance = 6f;       // 슬로우 걷기 시작 거리
     public float closeStopDistance = 2f;  // 근접(공격 거리)
@@ -17,23 +17,19 @@ public class MutantPhase1 : MonoBehaviour
     enum State { Approach, Attack }
     State state = State.Approach;
 
-    //NavMeshAgent agent;
-    //Animator animator;
     Transform player;
     bool started = false;
     float attackTimer = 0f;
 
     void Awake()
     {
-        //agent = GetComponent<NavMeshAgent>();
-        //animator = GetComponentInChildren<Animator>();
     }
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        MutantAI.agent.updateRotation = true;
-        MutantAI.agent.isStopped = true;
+        ｍutantAI.agent.updateRotation = true;
+        ｍutantAI.agent.isStopped = true;
         StartCoroutine(BeginAfterDelay());
     }
 
@@ -50,7 +46,7 @@ public class MutantPhase1 : MonoBehaviour
         {
             case State.Approach:
                 // 탐지 범위 밖이면 대기
-                if (dist > detectionRange) { MutantAI.agent.isStopped = true; MutantAI.animator.SetBool("IsWalking", false); MutantAI.animator.SetBool("SlowWalk", false); return; }
+                if (dist > detectionRange) { ｍutantAI.agent.isStopped = true; ｍutantAI.animator.SetBool("IsWalking", false); ｍutantAI.animator.SetBool("SlowWalk", false); return; }
 
                 // 공격 사정권이면 공격 시도
                 if (dist <= closeStopDistance && attackTimer <= 0f && !IsAttackPlaying())
@@ -60,29 +56,29 @@ public class MutantPhase1 : MonoBehaviour
                 }
 
                 // 이동
-                MutantAI.agent.isStopped = false;
-                MutantAI.agent.SetDestination(player.position);
+                ｍutantAI.agent.isStopped = false;
+                ｍutantAI.agent.SetDestination(player.position);
 
                 if (dist > stopDistance)
                 {
-                    MutantAI.agent.speed = walkSpeed;
-                    MutantAI.agent.stoppingDistance = stopDistance;
-                    MutantAI.animator.SetBool("IsWalking", true);
-                    MutantAI.animator.SetBool("SlowWalk", false);
+                    ｍutantAI.agent.speed = walkSpeed;
+                    ｍutantAI.agent.stoppingDistance = stopDistance;
+                    ｍutantAI.animator.SetBool("IsWalking", true);
+                    ｍutantAI.animator.SetBool("SlowWalk", false);
                 }
                 else if (dist > closeStopDistance)
                 {
-                    MutantAI.agent.speed = slowWalkSpeed;
-                    MutantAI.agent.stoppingDistance = closeStopDistance;
-                    MutantAI.animator.SetBool("IsWalking", false);
-                    MutantAI.animator.SetBool("SlowWalk", true);
+                    ｍutantAI.agent.speed = slowWalkSpeed;
+                    ｍutantAI.agent.stoppingDistance = closeStopDistance;
+                    ｍutantAI.animator.SetBool("IsWalking", false);
+                    ｍutantAI.animator.SetBool("SlowWalk", true);
                 }
                 else
                 {
                     // 사정권인데 쿨타임 중이면 제자리 유지
-                    MutantAI.agent.isStopped = true;
-                    MutantAI.animator.SetBool("IsWalking", false);
-                    MutantAI.animator.SetBool("SlowWalk", false);
+                    ｍutantAI.agent.isStopped = true;
+                    ｍutantAI.animator.SetBool("IsWalking", false);
+                    ｍutantAI.animator.SetBool("SlowWalk", false);
                     FacePlayer();
                 }
                 break;
@@ -105,13 +101,13 @@ public class MutantPhase1 : MonoBehaviour
     {
         if (attackTriggers == null || attackTriggers.Length == 0) return;
 
-        MutantAI.agent.isStopped = true;
-        MutantAI.agent.ResetPath();
-        MutantAI.animator.SetBool("IsWalking", false);
-        MutantAI.animator.SetBool("SlowWalk", false);
+        ｍutantAI.agent.isStopped = true;
+        ｍutantAI.agent.ResetPath();
+        ｍutantAI.animator.SetBool("IsWalking", false);
+        ｍutantAI.animator.SetBool("SlowWalk", false);
 
         int i = Random.Range(0, attackTriggers.Length);
-        MutantAI.animator.SetTrigger(attackTriggers[i]);
+        ｍutantAI.animator.SetTrigger(attackTriggers[i]);
 
         attackTimer = attackCooldown;
         state = State.Attack;
@@ -119,8 +115,8 @@ public class MutantPhase1 : MonoBehaviour
 
     bool IsAttackPlaying()
     {
-        var st = MutantAI.animator.GetCurrentAnimatorStateInfo(0);
-        if (MutantAI.animator.IsInTransition(0)) return true;
+        var st = ｍutantAI.animator.GetCurrentAnimatorStateInfo(0);
+        if (ｍutantAI.animator.IsInTransition(0)) return true;
         return st.IsTag("Attack") && st.normalizedTime < 0.98f;
     }
 
