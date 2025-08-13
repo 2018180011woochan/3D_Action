@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class MutantAttack1Behaviour : StateMachineBehaviour
 {
-    public string hitboxObjectName = "Character1_RightHand";
-    public int windowStartFrame = 11;
+    public string hitboxPath =
+        "Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_RightShoulder/Character1_RightArm/Character1_RightForeArm/Character1_RightHand/HitBox";
+
+    public int windowStartFrame = 9;
     public int windowEndFrame = 15;
 
-    Transform hitBox;              // ★ GameObject를 켜고 끈다
+    Transform hitBox;  
     AttackHitBox hit;
     float startN, endN;
     bool active;
@@ -15,19 +17,19 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
     {
         if (!hitBox)
         {
-            // 경로로 찾기 → 실패 시 이름으로 전역 탐색
-            var t = animator.transform.Find(hitboxObjectName);
-            if (!t)
-                foreach (var tr in animator.GetComponentsInChildren<Transform>(true))
-                    if (tr.name == hitboxObjectName) { t = tr; break; }
-
-            if (t) { hitBox = t; hit = t.GetComponent<AttackHitBox>(); }
+            hitBox = TryFindByPathOrLeaf(animator.transform, hitboxPath);
+            if (hitBox) hit = hitBox.GetComponent<AttackHitBox>();
         }
 
-        if (hitBox) hitBox.gameObject.SetActive(false); // 기본 OFF
+        if (!hitBox || !hit)
+        {
+            Debug.LogError($"[HitBox] 경로로 못 찾음: \"{hitboxPath}\"  (애니메이터: {animator.name})");
+            return;
+        }
+
+        hitBox.gameObject.SetActive(false);
         active = false;
 
-        // 프레임 → 정규화 구간 계산
         var infos = animator.GetCurrentAnimatorClipInfo(layerIndex);
         if (infos.Length > 0 && infos[0].clip)
         {
@@ -38,11 +40,12 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
         }
         else
         {
-            // 예비: 60fps 가정
-            float total = stateInfo.length * 60f;
+            float total = stateInfo.length * 60f;    // 60fps 가정
             startN = Mathf.Clamp01(windowStartFrame / total);
             endN = Mathf.Clamp01(windowEndFrame / total);
         }
+
+        hit.ResetSwing();
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -54,7 +57,8 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
 
         if (inWindow && !active)
         {
-            hitBox.gameObject.SetActive(true);   // ★ AttackHitBox.OnEnable() → hasSwing 리셋
+            hit.ResetSwing();                 // 창 켜기 직전 보장
+            hitBox.gameObject.SetActive(true);
             active = true;
         }
         else if (!inWindow && active)
@@ -68,5 +72,36 @@ public class MutantAttack1Behaviour : StateMachineBehaviour
     {
         if (hitBox) hitBox.gameObject.SetActive(false);
         active = false;
+    }
+
+    static Transform TryFindByPathOrLeaf(Transform root, string path)
+    {
+        if (root == null || string.IsNullOrEmpty(path)) return null;
+
+        var t = root.Find(path);
+        if (t) return t;
+
+        string leaf = path.Contains("/") ? path.Substring(path.LastIndexOf('/') + 1) : path;
+
+        Transform scope = root;
+        string prefix = path.Contains("/") ? path.Substring(0, path.LastIndexOf('/')) : "";
+        if (!string.IsNullOrEmpty(prefix))
+        {
+            var p = root.Find(prefix);
+            if (p) scope = p;
+        }
+
+        return FindDeepChildByName(scope, leaf);
+    }
+
+    static Transform FindDeepChildByName(Transform parent, string name)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == name) return child;
+            var r = FindDeepChildByName(child, name);
+            if (r) return r;
+        }
+        return null;
     }
 }

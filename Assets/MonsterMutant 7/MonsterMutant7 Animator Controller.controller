@@ -1642,8 +1642,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ffd3d7cc467e02468025673fa8cf01e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitboxObjectName: RightHandHitbox
-  windowStartFrame: 11
+  hitboxPath: Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_RightShoulder/Character1_RightArm/Character1_RightForeArm/Character1_RightHand/HitBox
+  windowStartFrame: 7
   windowEndFrame: 15
 --- !u!1101 &2797768250815013069
 AnimatorStateTransition:

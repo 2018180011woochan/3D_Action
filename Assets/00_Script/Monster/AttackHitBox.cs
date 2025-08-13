@@ -26,7 +26,7 @@ public class AttackHitBox : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (hasSwing) return;
-
+        Debug.Log("여기까지 옴");
         if (!animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             return;
 
