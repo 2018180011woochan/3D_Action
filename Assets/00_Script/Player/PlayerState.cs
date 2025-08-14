@@ -28,6 +28,7 @@ public class PlayerState : MonoBehaviour
     public GameObject HealEffect;
 
     private SamuraiMovement movement;
+    public GameObject StunEffect;
     void Awake()
     {
         currentHP = maxHP;
@@ -44,7 +45,9 @@ public class PlayerState : MonoBehaviour
     public bool TakeDamage(float dmg)
     {
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block")) return false;
-        
+
+        StunEffect.SetActive(true);
+
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
 

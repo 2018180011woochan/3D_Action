@@ -16,7 +16,7 @@ public class MonsterState : MonoBehaviour
 
     public UnityEvent<float> onHealthChanged = new UnityEvent<float>();
     Animator animator;
-
+    public GameObject StunEffect;
     public GameObject Potion;
     void Awake()
     {
@@ -27,7 +27,8 @@ public class MonsterState : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
-        Debug.Log(dmg);
+        if (StunEffect != null)
+            StunEffect.SetActive(true);
         if (monsterName.ToLower() == "kerrigan")
         {
             KerriganPhase2 phase2 = GetComponent<KerriganPhase2>();
