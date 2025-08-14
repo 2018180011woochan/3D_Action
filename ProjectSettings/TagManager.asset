@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - PlayerCamera
   - PhaseCutSceneCamera
+  - Phase2Fire
   layers:
   - Default
   - TransparentFX

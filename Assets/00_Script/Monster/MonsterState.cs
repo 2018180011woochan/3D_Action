@@ -74,6 +74,10 @@ public class MonsterState : MonoBehaviour
                     Quaternion.identity
                     );
             }
+            if (monsterName == "Mutant")
+            {
+                GetComponent<MutantAI>()?.HandleDeath(5f, 1f);
+            }
             else if (monsterName == "Ghost")
             {
                 var monAI = GetComponent<GhostAI>();

@@ -13,6 +13,10 @@ public class MutantSpawnDissolve : MonoBehaviour
     public float endValue = 0f;          // 0으로 내려가며 등장
     public float duration = 1f;          // 1초
 
+    public float outDelay = 5f;      // 죽은 뒤 대기 시간
+    public float outDuration = 1f;   // 사라질 때 디졸브 시간
+    public bool destroyAfterOut = true;
+
     // 내부
     Renderer[] rends;
     int propId;
@@ -95,6 +99,56 @@ public class MutantSpawnDissolve : MonoBehaviour
 
             slot.r.materials = mats;
 
+            var block = new MaterialPropertyBlock();
+            slot.r.SetPropertyBlock(block, slot.index);
+        }
+    }
+
+    public void PlayOut(float delay = -1f, float durationOverride = -1f)
+    {
+        // 최종 머티리얼 → 디졸브 머티리얼로 되돌리고, 값 0에서 시작
+        SetToDissolveMaterial();
+        SetValueForAll(0f);
+
+        if (delay < 0f) delay = outDelay;
+        if (durationOverride > 0f) outDuration = durationOverride;
+
+        StopAllCoroutines();
+        StartCoroutine(CoDissolveOut(delay));
+    }
+
+    IEnumerator CoDissolveOut(float delay)
+    {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+
+        float t = 0f;
+        while (t < outDuration)
+        {
+            t += Time.deltaTime;
+            float v = Mathf.Lerp(0f, 1f, Mathf.Clamp01(t / outDuration)); // 0 → 1
+            SetValueForAll(v);
+            yield return null;
+        }
+        SetValueForAll(1f);
+
+        if (destroyAfterOut)
+            Destroy(gameObject);
+    }
+
+    // 최종 머티리얼로 바꿔놨던 슬롯들을 다시 디졸브 머티리얼로 교체
+    void SetToDissolveMaterial()
+    {
+        foreach (var slot in targetSlots)
+        {
+            if (slot.r == null) continue;
+
+            var mats = slot.r.materials;   // 인스턴스 배열(이 오브젝트만 변경)
+            if (slot.index >= 0 && slot.index < mats.Length)
+                mats[slot.index] = dissolveMaterial;
+
+            slot.r.materials = mats;
+
+            // 기존 PropertyBlock 잔여치 제거
             var block = new MaterialPropertyBlock();
             slot.r.SetPropertyBlock(block, slot.index);
         }

@@ -55,12 +55,56 @@ public class MutantPhase2 : MonoBehaviour
 
     IEnumerator BeginAfterDelay()
     {
+        ActivatePhase2Fire();
         yield return new WaitForSeconds(startDelay);
         started = true;
         state = State.Chase;
         ResumeChase();
+        
     }
 
+    [SerializeField] string phase2FireTag = "Phase2Fire";
+    [SerializeField] Transform phase2FireRoot;
+
+    Transform ResolvePhase2FireRoot()
+    {
+        foreach (var t in Resources.FindObjectsOfTypeAll<Transform>())
+        {
+            if (!t) continue;
+            if (!t.gameObject.scene.IsValid() || !t.gameObject.scene.isLoaded) continue; // 프리팹/에셋 제외
+            if (t.CompareTag(phase2FireTag))
+            {
+                phase2FireRoot = t;
+                break;
+            }
+        }
+        return phase2FireRoot;
+    }
+
+    void ActivatePhase2Fire()
+    {
+        var root = ResolvePhase2FireRoot();
+        if (!root)
+        {
+            Debug.LogWarning("[Phase2] Phase2Fire(tag) 오브젝트를 찾지 못했습니다.");
+            return;
+        }
+
+        if (!root.gameObject.activeSelf)
+            root.gameObject.SetActive(true);
+
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
+        {
+            if (t == root) continue;
+            if (!t.gameObject.activeSelf) t.gameObject.SetActive(true);
+
+            var ps = t.GetComponent<ParticleSystem>();
+            if (ps) { ps.Clear(true); ps.Play(true); }
+
+            var light = t.GetComponent<Light>();
+            if (light) light.enabled = true;
+        }
+    }
     void Update()
     {
         if (!started || !player) return;
