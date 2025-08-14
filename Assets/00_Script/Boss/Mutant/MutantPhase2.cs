@@ -11,32 +11,31 @@ public class MutantPhase2 : MonoBehaviour
 
     [Header("Move / Chase")]
     public float runSpeed = 6.5f;
-    public float closeStopDistance = 2f;
+    public float closeStopDistance = 2f;       
     public string runBool = "IsRunning";
 
     [Header("Attack")]
     public string[] attackTriggers = { "Attack1", "Attack2", "Attack3", "Attack4" };
-    public float attackCooldown = 2.2f;
-
-    [Header("Agent Lock During Attack")]
-    public float agentReenableDelay = 2.5f; // ← 요구한 2.5초
-    float agentLockUntil = 0f;
-    bool agentWasEnabled;
-    bool agentLocked = false;
-    Vector3 lockPos;
+    public float attackHoldSeconds = 4f;       
 
     enum State { Chase, Attack }
     State state = State.Chase;
 
     Transform player;
     bool started = false;
-    float attackTimer = 0f;
+
+    // 공격 상태 유지/락 관련
+    float attackStateEndTime = 0f;
+    bool agentWasEnabled;
+    bool agentLocked = false;
+    Vector3 lockPos;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         if (mutantAI.animator) mutantAI.animator.applyRootMotion = false;
+
         if (mutantAI.agent)
         {
             mutantAI.agent.updateRotation = true;
@@ -58,35 +57,25 @@ public class MutantPhase2 : MonoBehaviour
     {
         yield return new WaitForSeconds(startDelay);
         started = true;
+        state = State.Chase;
+        ResumeChase();
     }
 
     void Update()
     {
         if (!started || !player) return;
 
-        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
         float dist = Vector3.Distance(transform.position, player.position);
 
         switch (state)
         {
             case State.Chase:
-                // 사정권 & 쿨타임 끝 → 공격 시작
-                if (dist <= closeStopDistance && attackTimer <= 0f && !IsAttackPlaying())
+                if (dist <= closeStopDistance && !IsAttackPlaying())
                 {
                     StartAttack();
                     return;
                 }
 
-                // 사정권인데 쿨타임 중 → 멈추고 응시
-                if (dist <= closeStopDistance && attackTimer > 0f)
-                {
-                    StopAgent();
-                    if (mutantAI.animator) mutantAI.animator.SetBool(runBool, false);
-                    FacePlayer();
-                    return;
-                }
-
-                // 추격
                 if (mutantAI.agent && mutantAI.agent.enabled)
                 {
                     ResumeChase();
@@ -95,35 +84,19 @@ public class MutantPhase2 : MonoBehaviour
                 break;
 
             case State.Attack:
-                // 공격 동안은 제자리 고정(혹시 모를 미세 이동 봉쇄)
-                if (agentLocked)
-                    transform.position = lockPos;
+                if (agentLocked) transform.position = lockPos;
 
                 FacePlayer();
 
-                // 2.5초 잠금 해제 시점에만 "추격 필요" 판단 → 필요하면 에이전트 재활성화 + Chase 전환
-                if (Time.time >= agentLockUntil)
+                if (Time.time >= attackStateEndTime)
                 {
                     if (dist > closeStopDistance)
                     {
                         ReenableAgentAndChase();
-                        return;
-                    }
-                    // 사정권이면 에이전트는 계속 OFF 상태 유지(제자리에서 추가 공격 가능)
-                }
-
-                // 공격 애니가 끝났을 때의 처리
-                if (!IsAttackPlaying())
-                {
-                    // 사정권 & 쿨타임 끝 → 연속 공격 (여기서도 에이전트는 그대로 OFF 유지)
-                    if (dist <= closeStopDistance && attackTimer <= 0f)
-                    {
-                        StartAttack(); // 새 공격 시작하면 lock 타이머도 새로 설정됨
                     }
                     else
                     {
-                        // 사정권 밖인데 아직 2.5초가 안 지났으면 그대로 대기(Agent OFF 유지)
-                        // 아무 것도 하지 않음. (요구사항대로 2.5초 지나야만 키고 추격)
+                        StartAttack(); 
                     }
                 }
                 break;
@@ -140,15 +113,14 @@ public class MutantPhase2 : MonoBehaviour
         int i = Random.Range(0, attackTriggers.Length);
         mutantAI.animator.SetTrigger(attackTriggers[i]);
 
-        attackTimer = attackCooldown;
+        attackStateEndTime = Time.time + attackHoldSeconds;
 
         if (mutantAI.agent)
         {
             agentWasEnabled = mutantAI.agent.enabled;
             lockPos = transform.position;
-            mutantAI.agent.enabled = false; 
+            mutantAI.agent.enabled = false;
             agentLocked = true;
-            agentLockUntil = Time.time + agentReenableDelay;
         }
 
         state = State.Attack;
@@ -158,11 +130,11 @@ public class MutantPhase2 : MonoBehaviour
     {
         if (mutantAI.agent)
         {
-            mutantAI.agent.enabled = agentWasEnabled;     
-            mutantAI.agent.Warp(transform.position);      
+            mutantAI.agent.enabled = agentWasEnabled; 
+            mutantAI.agent.Warp(transform.position);  
         }
 
-        agentLocked = false; 
+        agentLocked = false;
         state = State.Chase;
 
         ResumeChase();
@@ -184,7 +156,7 @@ public class MutantPhase2 : MonoBehaviour
         mutantAI.agent.isStopped = false;
         mutantAI.agent.speed = runSpeed;
         mutantAI.agent.stoppingDistance = closeStopDistance;
-        if (mutantAI.animator) mutantAI.animator.SetBool(runBool, true);
+        if (mutantAI.animator) mutantAI.animator.SetBool(runBool, true); 
     }
 
     bool IsAttackPlaying()
