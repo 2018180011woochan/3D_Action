@@ -1,0 +1,160 @@
+using System.Collections;
+using UnityEngine;
+
+public class SectorWarning : MonoBehaviour
+{
+    [Header("Shape")]
+    public float radius = 10f;                 // 부채꼴 반경
+    public float angleDeg = 60f;               // 부채꼴 각도
+    [Range(8, 128)] public int segments = 48;  // 가장자리 분할
+
+    [Header("Visuals")]
+    public Material baseMaterial;             
+    public Color lightRed = new Color(1f, 0f, 0f, 0.25f);
+    public Color darkRed = new Color(1f, 0f, 0f, 0.80f);
+    public float fillDuration = 2f;            // 채우는 시간(초)
+    public float yOffset = 0.02f;              // z-fight 방지
+
+    [Header("Align & Attack")]
+    public float warningYawOffsetDeg = 0f;     // 경고 부채꼴 로컬 Y 회전 보정
+    public GameObject attackPrefab;            // 공격 이펙트 프리팹
+    public float attackYawOffsetDeg = 270f;    // 공격 프리팹 로컬 Y 회전 보정
+    public float attackForwardOffset = 0f;     // 경고의 +Z 기준 앞/뒤
+    public Vector3 attackOffset;               // 공격 프리팹 로컬 오프셋
+
+    [Header("Ground")]
+    public bool alignToGround = true;
+    public LayerMask groundMask = ~0;
+
+    Transform warnRoot;   // yaw 보정 적용용 컨테이너
+    Transform fill;       // 진한 채움
+
+    void Start()
+    {
+        if (alignToGround) AlignToGround();
+        Build();
+        StartCoroutine(FillThenAttack());
+    }
+
+    void Build()
+    {
+        var mesh = BuildSectorMesh(radius, angleDeg, segments);
+
+        // 컨테이너(경고 yaw 보정)
+        var root = new GameObject("WarnRoot");
+        root.transform.SetParent(transform, false);
+        root.transform.localRotation = Quaternion.Euler(0f, warningYawOffsetDeg, 0f);
+        warnRoot = root.transform;
+
+        // 1) 밝은 바닥
+        var baseGO = new GameObject("WarnBase");
+        baseGO.transform.SetParent(warnRoot, false);
+        baseGO.transform.localPosition = Vector3.up * yOffset;
+        var mf = baseGO.AddComponent<MeshFilter>(); mf.sharedMesh = mesh;
+        var mr = baseGO.AddComponent<MeshRenderer>();
+        mr.sharedMaterial = new Material(baseMaterial);
+        SetColor(mr.sharedMaterial, lightRed);
+
+        // 2) 진한 채움(스케일로 0→1)
+        var fillGO = new GameObject("WarnFill");
+        fillGO.transform.SetParent(warnRoot, false);
+        fillGO.transform.localPosition = Vector3.up * (yOffset + 0.001f);
+        var mf2 = fillGO.AddComponent<MeshFilter>(); mf2.sharedMesh = mesh;
+        var mr2 = fillGO.AddComponent<MeshRenderer>();
+        mr2.sharedMaterial = new Material(baseMaterial);
+        SetColor(mr2.sharedMaterial, darkRed);
+
+        fill = fillGO.transform;
+        fill.localScale = new Vector3(0f, 1f, 0f);
+    }
+
+    IEnumerator FillThenAttack()
+    {
+        float t = 0f;
+        float dur = Mathf.Max(0f, fillDuration);
+
+        if (dur <= 0f) fill.localScale = new Vector3(1f, 1f, 1f);
+        else
+        {
+            while (t < dur)
+            {
+                t += Time.deltaTime;
+                float k = Mathf.Clamp01(t / dur);
+                fill.localScale = new Vector3(k, 1f, k);
+                yield return null;
+            }
+        }
+
+        // 공격 이펙트 소환(경고의 방향을 기준으로 회전/오프셋 적용)
+        if (attackPrefab)
+        {
+            var warnRot = transform.rotation * Quaternion.Euler(0f, warningYawOffsetDeg, 0f);
+            var finalRot = warnRot * Quaternion.Euler(0f, attackYawOffsetDeg, 0f);
+
+            Vector3 pos =
+                transform.position
+              + warnRot * (Vector3.forward * attackForwardOffset)
+              + finalRot * attackOffset;
+
+            Instantiate(attackPrefab, pos, finalRot);
+        }
+
+        Destroy(gameObject); // 경고 제거
+    }
+
+    Mesh BuildSectorMesh(float R, float angDeg, int seg)
+    {
+        Mesh m = new Mesh();
+        int vCount = seg + 2;
+
+        var v = new Vector3[vCount];
+        var n = new Vector3[vCount];
+        var uv = new Vector2[vCount];
+
+        v[0] = Vector3.zero; n[0] = Vector3.up; uv[0] = new Vector2(0.5f, 0.5f);
+
+        float half = angDeg * 0.5f * Mathf.Deg2Rad;
+        float total = angDeg * Mathf.Deg2Rad;
+
+        for (int i = 0; i <= seg; i++)
+        {
+            float th = -half + total * i / seg; // -half ~ +half
+            float x = Mathf.Sin(th) * R;
+            float z = Mathf.Cos(th) * R;
+            int idx = i + 1;
+
+            v[idx] = new Vector3(x, 0f, z);
+            n[idx] = Vector3.up;
+            uv[idx] = new Vector2((x / R + 1f) * 0.5f, (z / R + 1f) * 0.5f);
+        }
+
+        var tri = new int[seg * 3];
+        for (int i = 0; i < seg; i++)
+        {
+            tri[i * 3 + 0] = 0;
+            tri[i * 3 + 1] = i + 1;
+            tri[i * 3 + 2] = i + 2;
+        }
+
+        m.vertices = v; m.normals = n; m.uv = uv; m.triangles = tri;
+        m.RecalculateBounds();
+        return m;
+    }
+
+    void AlignToGround()
+    {
+        if (Physics.Raycast(transform.position + Vector3.up * 10f, Vector3.down,
+            out var hit, 100f, groundMask, QueryTriggerInteraction.Ignore))
+        {
+            transform.position = new Vector3(transform.position.x, hit.point.y + 0.01f, transform.position.z);
+            transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * transform.rotation;
+        }
+    }
+
+    static void SetColor(Material m, Color c)
+    {
+        if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
+        else if (m.HasProperty("_Color")) m.SetColor("_Color", c);
+        else m.color = c;
+    }
+}
