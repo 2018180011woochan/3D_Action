@@ -55,7 +55,8 @@ public class LoadingManager : MonoBehaviour
         {
             yield return null;
         }
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene("BossScene1");
+        var target = SceneBridge.NextSceneName;
+        SceneBridge.NextSceneName = null;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(target);
     }
 }

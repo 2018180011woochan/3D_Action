@@ -21,6 +21,9 @@ public class BossScene1Manager : MonoBehaviour
     public GameObject bossSpawnPointPrefab;
     public Transform bossSpawnPoint;
     GameObject bossInstance;
+
+    public bool isBossDead = false;
+    public GameObject PotalObject;
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -65,5 +68,14 @@ public class BossScene1Manager : MonoBehaviour
         if (bossInstance != null) return;
 
         bossInstance = Instantiate(bossPrefab, bossSpawnPoint.position, bossSpawnPoint.rotation);
+    }
+
+
+    public void BossDied()
+    {
+        if (isBossDead) return;       
+        isBossDead = true;
+
+        if (PotalObject) PotalObject.SetActive(true);
     }
 }

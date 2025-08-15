@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/08_Scene/NormalScene.unity
     guid: c732593fe76e5a84197f9cd13963f706
   - enabled: 1
-    path: Assets/08_Scene/BossScene2.unity
+    path: Assets/08_Scene/BossScene3.unity
     guid: 53f5a0914b195b74abc2fb43a9e2ce22
   - enabled: 1
     path: Assets/08_Scene/LoadingScene.unity
@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/08_Scene/BossScene1.unity
     guid: 3ac9c9d0e34e67740a613d003ac810dd
+  - enabled: 1
+    path: Assets/08_Scene/MainScene.unity
+    guid: 80890412eec076b42a39818da4800722
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -34,7 +34,6 @@ public class InventoryManager : MonoBehaviour
     {
         InitializeInventory();
         inventoryGameObject.SetActive(false);
-        AddItem(GameDataManager.instance.itemDatabase.GetItem("Bow"));
 
         if (GameDataManager.instance != null)
         {
