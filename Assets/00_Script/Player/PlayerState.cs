@@ -59,19 +59,17 @@ public class PlayerState : MonoBehaviour
         return true;
     }
 
-    public bool TakeCriticalDamage(float dmg, Vector3 dir)
+    public void TakeCriticalDamage(float dmg)
     {
+        StunEffect.SetActive(true);
+
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
 
-        animator.SetTrigger("GetCritical");
+        animator.SetTrigger("GetHit");
         bloodScreen?.Flash();
 
-        if (playerController != null)
-        {
-            playerController.ApplyKnockback(dir.normalized, knockbackForce);
-        }
-        return true;
+        if (movement) movement.Stance = false;
     }
 
     public void Heal(float amount)

@@ -43,7 +43,7 @@ public class GhostProjectile : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         var ps = other.GetComponent<PlayerState>();
-        if (ps) ps.TakeDamage(damage);
+        if (ps) ps.TakeCriticalDamage(damage);
         hasHit = true;
     }
 

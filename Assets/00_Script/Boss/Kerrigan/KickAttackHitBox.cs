@@ -22,7 +22,7 @@ public class KickAttackHitBox : MonoBehaviour
             if (ps != null)
             {
                 Vector3 dir = dir = transform.root.forward;
-                ps.TakeCriticalDamage(damage, dir);
+                ps.TakeCriticalDamage(damage);
 
                 if (AttackEffect != null)
                 {

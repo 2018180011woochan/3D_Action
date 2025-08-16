@@ -45,7 +45,7 @@ public class KerriganFireSkill : MonoBehaviour
             if (playerState != null)
             {
                 Vector3 dir = dir = transform.root.forward;
-                playerState.TakeCriticalDamage(Damage, dir);
+                playerState.TakeCriticalDamage(Damage);
                 Debug.Log("플레이어가 불꽃 영역에 진입!");
             }
         }
