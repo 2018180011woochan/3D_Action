@@ -4937,9 +4937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   criticalDamage: 20
-  activationDelay: 0.5
-  activeDuration: 0.6
-  lifeTime: 5
+  lifeTime: 1.5
 --- !u!1 &2379045638134706954
 GameObject:
   m_ObjectHideFlags: 0

@@ -809,8 +809,8 @@ MonoBehaviour:
   walkSpeed: 2.5
   walkBool: IsWalking
   attackTriggers:
-  - Attack3
-  - Attack3
+  - Attack1
+  - Attack2
   - Attack3
   attackStateDuration: 5
   attack1Prefab: {fileID: 7350188232382256164, guid: 051fd1b6413714b40a8230763d5fd275, type: 3}
