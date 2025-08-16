@@ -34,6 +34,8 @@ public class NecromanserAI : MonoBehaviour
     public float groundYOffset = 0.01f;        // 약간 띄우기
     public LayerMask groundMask = ~0;          // 지면 레이어
 
+    public GameObject attack3Prefab;
+
     enum State { Chase, Attack }
     State state = State.Chase;
 
@@ -170,7 +172,9 @@ public class NecromanserAI : MonoBehaviour
         {
             SpawnAttack2();
         }
-        // else if (trigger == "Attack3") { /* 필요 시 */ }
+        else if (trigger == "Attack3") {
+            SpawnAttack3();
+        }
 
         attackIndex++;
     }
@@ -200,7 +204,6 @@ public class NecromanserAI : MonoBehaviour
         if (animator) animator.SetBool(walkBool, on);
     }
 
-    // ========== Attack1 ==========
     public void SpawnAttack1()
     {
         if (!attack1Prefab) return;
@@ -218,20 +221,18 @@ public class NecromanserAI : MonoBehaviour
         }
     }
 
-    // ========== Attack2: 9×9 격자에서 40칸 랜덤 소환 ==========
     public void SpawnAttack2()
     {
         if (!attack2Prefab) return;
 
-        int size = Mathf.Max(1, gridSize);       // 최소 1
-        if (size % 2 == 0) size += 1;           // 홀수로 강제(정확히 중앙이 있도록)
+        int size = Mathf.Max(1, gridSize);       
+        if (size % 2 == 0) size += 1;           
         int half = size / 2;
 
         Vector3 center = transform.position;
         Vector3 right = transform.right;
         Vector3 fwd = transform.forward;
 
-        // 81개 위치를 미리 담아둔다
         var cells = new List<Vector3>(size * size);
         for (int z = -half; z <= half; z++)
         {
@@ -248,7 +249,6 @@ public class NecromanserAI : MonoBehaviour
             }
         }
 
-        // 중복 없이 랜덤 40칸 선택 (Fisher-Yates 부분 셔플)
         int toSpawn = Mathf.Clamp(cellsToSpawn, 0, cells.Count);
         for (int i = 0; i < toSpawn; i++)
         {
@@ -256,12 +256,41 @@ public class NecromanserAI : MonoBehaviour
             (cells[i], cells[k]) = (cells[k], cells[i]);
         }
 
-        // 첫 toSpawn개만 소환
-        Quaternion rot = transform.rotation; // 필요하면 프리팹 내부에서 회전 처리
+        Quaternion rot = transform.rotation; 
         for (int i = 0; i < toSpawn; i++)
             Instantiate(attack2Prefab, cells[i], rot);
     }
 
+    public void SpawnAttack3()
+    {
+        if (!attack3Prefab) return;
+
+        Vector3 center = transform.position;
+        Quaternion rot = transform.rotation;
+
+        // 첫 번째
+        var a = Instantiate(attack3Prefab, center, rot);
+        var swa = a.GetComponent<RotateSectorWarning>();
+        float r = 6f;
+        if (swa)
+        {
+            swa.orbitCenter = transform;
+            swa.fillDuration = 3f;
+            if (swa.orbitRadius > 0f) r = swa.orbitRadius; // 프리팹 설정값 사용
+        }
+        a.transform.position = center + transform.forward * r;
+
+        // 반대편 두 번째
+        var b = Instantiate(attack3Prefab, center, rot);
+        var swb = b.GetComponent<RotateSectorWarning>();
+        if (swb)
+        {
+            swb.orbitCenter = transform;
+            swb.fillDuration = 3f;
+            // swb.orbitRadius = r; // (같게 강제하고 싶으면 활성화)
+        }
+        b.transform.position = center - transform.forward * r;
+    }
     bool TrySnapToGround(Vector3 pos, out Vector3 snapped)
     {
         Vector3 start = pos + Vector3.up * groundRayUp;
