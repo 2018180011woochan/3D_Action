@@ -15,7 +15,12 @@ public class NecromanserAI : MonoBehaviour
 
     [Header("공격")]
     public string[] attackTriggers = { "Attack1", "Attack2", "Attack3" };
-    public float attackStateDuration = 5f;    
+    public float attackStateDuration = 5f;
+
+    [Header("Attack1")]
+    public GameObject attack1Prefab;     
+    public Transform projectileOrigin;  
+    public float spawnDistance = 1f;    // 보스 중심에서 얼마나 떨어뜨려 생성할지
 
     enum State { Chase, Attack }
     State state = State.Chase;
@@ -144,6 +149,11 @@ public class NecromanserAI : MonoBehaviour
 
         string trigger = attackTriggers[attackIndex % attackTriggers.Length];
         animator.SetTrigger(trigger);
+
+        if (trigger == "Attack1")
+            SpawnAttack1();
+        else if (trigger == "Attack2")
+
         attackIndex++; 
     }
 
@@ -170,5 +180,22 @@ public class NecromanserAI : MonoBehaviour
     void SetWalk(bool on)
     {
         if (animator) animator.SetBool(walkBool, on);
+    }
+
+    public void SpawnAttack1()
+    {
+        if (!attack1Prefab) return;
+
+        Transform originT = projectileOrigin ? projectileOrigin : this.transform;
+        Vector3 origin = originT.position;
+
+        for (int i = 0; i < 4; i++)
+        {
+            Quaternion yaw = Quaternion.AngleAxis(90f * i, Vector3.up);
+            Vector3 dir = yaw * transform.forward;              
+            Vector3 spawnPos = origin + dir.normalized * spawnDistance;
+            Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
+            Instantiate(attack1Prefab, spawnPos, rot);
+        }
     }
 }

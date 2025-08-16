@@ -810,9 +810,12 @@ MonoBehaviour:
   walkBool: IsWalking
   attackTriggers:
   - Attack1
-  - Attack2
-  - Attack3
+  - Attack1
+  - Attack1
   attackStateDuration: 5
+  attack1Prefab: {fileID: 7350188232382256164, guid: 051fd1b6413714b40a8230763d5fd275, type: 3}
+  projectileOrigin: {fileID: 4176490129948687}
+  spawnDistance: 1
   agent: {fileID: 0}
   animator: {fileID: 0}
 --- !u!195 &35248704
@@ -19771,67 +19774,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 857419942575937411, guid: 612c8b614bf3b4b479e77c39a759f05b, type: 3}
   m_PrefabInstance: {fileID: 715015288}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &723086375
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 723086377}
-  - component: {fileID: 723086378}
-  m_Layer: 0
-  m_Name: PF_WarnSector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &723086377
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 723086375}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.5, y: 83.56, z: 871.75}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &723086378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 723086375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c3581779ec392544bd8be0de5f8fb68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 10
-  angleDeg: 60
-  segments: 48
-  baseMaterial: {fileID: 2100000, guid: 9217b194123fb1a4aacf6062e28e1f64, type: 2}
-  lightRed: {r: 1, g: 0, b: 0, a: 0.25}
-  darkRed: {r: 1, g: 0, b: 0, a: 0.7}
-  fillDuration: 2
-  yOffset: 0.02
-  warningYawOffsetDeg: 0
-  attackPrefab: {fileID: 7675801369356219551, guid: 60944402d03eaeb49af75ff049009ad4, type: 3}
-  attackYawOffsetDeg: 270
-  attackForwardOffset: 0
-  attackOffset: {x: 0, y: 0.5, z: 0}
-  alignToGround: 1
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!1001 &724400016
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65297,7 +65239,7 @@ GameObject:
   - component: {fileID: 35248704}
   - component: {fileID: 35248703}
   m_Layer: 0
-  m_Name: Necromanser Prefab
+  m_Name: Necromanser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82606,4 +82548,3 @@ SceneRoots:
   - {fileID: 113377515}
   - {fileID: 1032157163}
   - {fileID: 4176490129948687}
-  - {fileID: 723086377}
