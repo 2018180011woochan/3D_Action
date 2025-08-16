@@ -804,18 +804,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRange: 30
-  attackStartDistance: 10
+  attackStartDistance: 8
   disengageRange: 40
   walkSpeed: 2.5
   walkBool: IsWalking
   attackTriggers:
   - Attack1
-  - Attack1
-  - Attack1
+  - Attack2
+  - Attack2
   attackStateDuration: 5
   attack1Prefab: {fileID: 7350188232382256164, guid: 051fd1b6413714b40a8230763d5fd275, type: 3}
   projectileOrigin: {fileID: 4176490129948687}
   spawnDistance: 1
+  attack2Prefab: {fileID: 1105539982377865653, guid: dcedc692b78311048b3bea98937d6f51, type: 3}
+  gridSize: 9
+  gridSpacing: 8
+  cellsToSpawn: 40
+  alignToGround: 1
+  groundRayUp: 10
+  groundRayDown: 50
+  groundYOffset: 0.01
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   agent: {fileID: 0}
   animator: {fileID: 0}
 --- !u!195 &35248704
@@ -16018,7 +16029,7 @@ MonoBehaviour:
   BlockEffect: {fileID: 0}
   knockbackForce: 10
   HealEffect: {fileID: 0}
-  StunEffect: {fileID: 0}
+  StunEffect: {fileID: 2223927061275390260, guid: 5864289a59fd7f9469d3413b2d203982, type: 3}
 --- !u!65 &563947533
 BoxCollider:
   m_ObjectHideFlags: 0

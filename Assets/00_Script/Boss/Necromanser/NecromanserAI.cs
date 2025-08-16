@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,21 +7,32 @@ public class NecromanserAI : MonoBehaviour
 {
     [Header("탐지/거리")]
     public float detectionRange = 30f;
-    public float attackStartDistance = 10f;   
-    public float disengageRange = 40f;         
+    public float attackStartDistance = 10f;
+    public float disengageRange = 40f;
 
     [Header("이동")]
     public float walkSpeed = 2.5f;
     public string walkBool = "IsWalking";
 
-    [Header("공격")]
+    [Header("공격 공통")]
     public string[] attackTriggers = { "Attack1", "Attack2", "Attack3" };
     public float attackStateDuration = 5f;
 
     [Header("Attack1")]
-    public GameObject attack1Prefab;     
-    public Transform projectileOrigin;  
-    public float spawnDistance = 1f;    // 보스 중심에서 얼마나 떨어뜨려 생성할지
+    public GameObject attack1Prefab;
+    public Transform projectileOrigin;
+    public float spawnDistance = 1f;
+
+    [Header("Attack2 (격자 스폰)")]
+    public GameObject attack2Prefab;
+    public int gridSize = 9;                   // 9×9
+    public float gridSpacing = 6f;             // 칸 간격
+    public int cellsToSpawn = 40;              // 소환할 칸 수
+    public bool alignToGround = true;          // 지면에 붙이기
+    public float groundRayUp = 10f;            // 레이 시작 높이
+    public float groundRayDown = 50f;          // 레이 아래 길이
+    public float groundYOffset = 0.01f;        // 약간 띄우기
+    public LayerMask groundMask = ~0;          // 지면 레이어
 
     enum State { Chase, Attack }
     State state = State.Chase;
@@ -28,7 +40,7 @@ public class NecromanserAI : MonoBehaviour
     Transform player;
     bool inAttackRoutine;
     Coroutine attackRoutine;
-    int attackIndex = 0;                       
+    int attackIndex = 0;
 
     public NavMeshAgent agent;
     public Animator animator;
@@ -151,10 +163,16 @@ public class NecromanserAI : MonoBehaviour
         animator.SetTrigger(trigger);
 
         if (trigger == "Attack1")
+        {
             SpawnAttack1();
+        }
         else if (trigger == "Attack2")
+        {
+            SpawnAttack2();
+        }
+        // else if (trigger == "Attack3") { /* 필요 시 */ }
 
-        attackIndex++; 
+        attackIndex++;
     }
 
     bool IsAttackPlaying()
@@ -182,6 +200,7 @@ public class NecromanserAI : MonoBehaviour
         if (animator) animator.SetBool(walkBool, on);
     }
 
+    // ========== Attack1 ==========
     public void SpawnAttack1()
     {
         if (!attack1Prefab) return;
@@ -192,10 +211,67 @@ public class NecromanserAI : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             Quaternion yaw = Quaternion.AngleAxis(90f * i, Vector3.up);
-            Vector3 dir = yaw * transform.forward;              
+            Vector3 dir = yaw * transform.forward;
             Vector3 spawnPos = origin + dir.normalized * spawnDistance;
             Quaternion rot = Quaternion.LookRotation(dir, Vector3.up);
             Instantiate(attack1Prefab, spawnPos, rot);
         }
+    }
+
+    // ========== Attack2: 9×9 격자에서 40칸 랜덤 소환 ==========
+    public void SpawnAttack2()
+    {
+        if (!attack2Prefab) return;
+
+        int size = Mathf.Max(1, gridSize);       // 최소 1
+        if (size % 2 == 0) size += 1;           // 홀수로 강제(정확히 중앙이 있도록)
+        int half = size / 2;
+
+        Vector3 center = transform.position;
+        Vector3 right = transform.right;
+        Vector3 fwd = transform.forward;
+
+        // 81개 위치를 미리 담아둔다
+        var cells = new List<Vector3>(size * size);
+        for (int z = -half; z <= half; z++)
+        {
+            for (int x = -half; x <= half; x++)
+            {
+                Vector3 pos = center
+                              + right * (x * gridSpacing)
+                              + fwd * (z * gridSpacing);
+
+                if (alignToGround && TrySnapToGround(pos, out Vector3 groundPos))
+                    pos = groundPos + Vector3.up * groundYOffset;
+
+                cells.Add(pos);
+            }
+        }
+
+        // 중복 없이 랜덤 40칸 선택 (Fisher-Yates 부분 셔플)
+        int toSpawn = Mathf.Clamp(cellsToSpawn, 0, cells.Count);
+        for (int i = 0; i < toSpawn; i++)
+        {
+            int k = Random.Range(i, cells.Count);
+            (cells[i], cells[k]) = (cells[k], cells[i]);
+        }
+
+        // 첫 toSpawn개만 소환
+        Quaternion rot = transform.rotation; // 필요하면 프리팹 내부에서 회전 처리
+        for (int i = 0; i < toSpawn; i++)
+            Instantiate(attack2Prefab, cells[i], rot);
+    }
+
+    bool TrySnapToGround(Vector3 pos, out Vector3 snapped)
+    {
+        Vector3 start = pos + Vector3.up * groundRayUp;
+        float dist = groundRayUp + groundRayDown;
+        if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, dist, groundMask, QueryTriggerInteraction.Ignore))
+        {
+            snapped = hit.point;
+            return true;
+        }
+        snapped = pos;
+        return false;
     }
 }
