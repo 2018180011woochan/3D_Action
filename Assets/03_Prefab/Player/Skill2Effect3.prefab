@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2315569298144915860}
   - component: {fileID: 1268717765100036415}
   - component: {fileID: 7594535733790821482}
+  - component: {fileID: 560074401407449175}
   m_Layer: 0
   m_Name: Skill2Effect3
   m_TagString: Untagged
@@ -4846,6 +4847,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &560074401407449175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7493244502594454474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928f1e3fe81552f439a10f6971c3fdd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyTime: 4
 --- !u!1 &7849140145388630491
 GameObject:
   m_ObjectHideFlags: 0

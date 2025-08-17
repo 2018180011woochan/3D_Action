@@ -1966,6 +1966,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doubleClickTime: 0.2
+  SkillReadyEffect: {fileID: 7493244502594454474, guid: 6d1bc8dc52ae7dc46918036a8976c2dd, type: 3}
+  skillEffects:
+  - {fileID: 8231083735961597341, guid: 4b56a750ea27b6a46af4f4f48a228620, type: 3}
+  - {fileID: 7491454514607478536, guid: a386c32b71bc1e8458eb726370263edf, type: 3}
+  - {fileID: 2354438060168334990, guid: 4730212230c953c4ab4922e1d41b73c6, type: 3}
+  - {fileID: 142954600263665536, guid: f82d8dd1200b39b4b879209694c9d3ce, type: 3}
 --- !u!143 &108405868
 CharacterController:
   m_ObjectHideFlags: 0
@@ -13656,6 +13662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fc6ebae5940ec84fa08715301fb0c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destinationScene: BossScene1
 --- !u!65 &857630730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -32799,6 +32806,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: be2052a065b805449ad3bc56211bda24, type: 2}
+    - target: {fileID: -6057140222963153312, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -5975669895035010189, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
       propertyPath: m_Layer
       value: 7
