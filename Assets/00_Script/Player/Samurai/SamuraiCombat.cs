@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class SamuraiCombat : MonoBehaviour
@@ -12,6 +13,12 @@ public class SamuraiCombat : MonoBehaviour
 
     public GameObject SkillReadyEffect;
     public GameObject[] skillEffects;
+    public GameObject ExplosionEffect;
+    public GameObject DustEffect;
+
+    [Header("Camera")]
+    public CinemachineCamera playerCamera;
+    public CinemachineCamera skillCutsceneCamera;
     void Awake()
     { 
         animator = GetComponent<Animator>();
@@ -73,24 +80,84 @@ public class SamuraiCombat : MonoBehaviour
 
     private IEnumerator FireSkillRoutine()
     {
+        movementScript.isBusy = true;
+
         animator.SetTrigger("SkillReady");
         Instantiate(SkillReadyEffect, transform.position, Quaternion.identity);
 
+        playerCamera.Priority = 0;
+        skillCutsceneCamera.Priority = 10;
+        skillCutsceneCamera.transform.position = transform.position - transform.forward * 7f + Vector3.up * 3.5f;
+        skillCutsceneCamera.transform.LookAt(transform);
+
         yield return new WaitForSeconds(4f);
 
-        // SkillEffect1~4를 0.5초 간격으로 생성
+        Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+
         for (int i = 0; i < skillEffects.Length; i++)
         {
-            GameObject skillObj = Instantiate(skillEffects[i], transform.position, Quaternion.identity);
+            GameObject skillObj = Instantiate(skillEffects[i], spawnPos, Quaternion.identity);
 
-            // 내부 모든 ParticleSystem 찾아서 Play 실행
+
             ParticleSystem[] particles = skillObj.GetComponentsInChildren<ParticleSystem>();
             foreach (ParticleSystem ps in particles)
             {
                 ps.Play();
             }
 
-            yield return new WaitForSeconds(0.5f); // 다음 스킬 이펙트 생성 전 대기
+            yield return new WaitForSeconds(0.2f); 
+        }
+
+        skillCutsceneCamera.transform.position = transform.position + transform.forward * 10f + Vector3.up * 1.2f;
+        skillCutsceneCamera.transform.LookAt(transform);
+
+        yield return StartCoroutine(DashForward(3f, 0.15f));
+        StartCoroutine(SpawnAfterEffects(spawnPos));
+
+        yield return new WaitForSeconds(2f);
+        skillCutsceneCamera.Priority = 0;
+        playerCamera.Priority = 10;
+
+        movementScript.Stance = false;
+        animator.SetBool("IsStance", false);
+        movementScript.isBusy = false;
+    }
+
+    private IEnumerator DashForward(float distance, float duration)
+    {
+        Vector3 start = transform.position;
+        Vector3 end = start + transform.forward * distance;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            transform.position = Vector3.Lerp(start, end, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = end; // 보정
+    }
+
+    private IEnumerator SpawnAfterEffects(Vector3 originPos)
+    {
+        // 2초 뒤 Explosion
+        yield return new WaitForSeconds(2f);
+        GameObject explosion = Instantiate(ExplosionEffect, originPos, Quaternion.identity);
+
+        ParticleSystem[] explosionParticles = explosion.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem ps in explosionParticles)
+        {
+            ps.Play();
+        }
+
+        // 1초 뒤 Dust
+        yield return new WaitForSeconds(0.5f);
+        GameObject dust = Instantiate(DustEffect, originPos, Quaternion.identity);
+
+        ParticleSystem[] dustParticles = dust.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem ps in dustParticles)
+        {
+            ps.Play();
         }
     }
 

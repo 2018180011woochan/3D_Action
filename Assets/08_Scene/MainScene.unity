@@ -1972,6 +1972,10 @@ MonoBehaviour:
   - {fileID: 7491454514607478536, guid: a386c32b71bc1e8458eb726370263edf, type: 3}
   - {fileID: 2354438060168334990, guid: 4730212230c953c4ab4922e1d41b73c6, type: 3}
   - {fileID: 142954600263665536, guid: f82d8dd1200b39b4b879209694c9d3ce, type: 3}
+  - {fileID: 8231083735961597341, guid: 4b56a750ea27b6a46af4f4f48a228620, type: 3}
+  - {fileID: 7491454514607478536, guid: a386c32b71bc1e8458eb726370263edf, type: 3}
+  ExplosionEffect: {fileID: 2740201016241793271, guid: 7162db31ea3f5e24ab12bc9090f9d69f, type: 3}
+  DustEffect: {fileID: 7740353523680721667, guid: c17fb4aba148c2940982edaf5e51f20d, type: 3}
 --- !u!143 &108405868
 CharacterController:
   m_ObjectHideFlags: 0
