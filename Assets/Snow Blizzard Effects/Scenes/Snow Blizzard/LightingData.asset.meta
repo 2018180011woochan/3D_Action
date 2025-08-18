@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 78c237bd187f5a842bb48eb188438b9a
+timeCreated: 1523849224
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 25800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 22081
+  packageName: Snow Blizzard Effects
+  packageVersion: 1.3
+  assetPath: Assets/Snow Blizzard Effects/Scenes/Snow Blizzard/LightingData.asset
+  uploadId: 241251

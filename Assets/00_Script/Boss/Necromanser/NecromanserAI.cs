@@ -45,6 +45,9 @@ public class NecromanserAI : MonoBehaviour
     public float ringTolerance = 0.4f;              // 링 오차 허용
     public GameObject teleportEffectPrefab;         // 이펙트(선택)
 
+    public float postTeleportAttackLock = 1.0f;
+    float nextAttackAllowedTime = 0f;
+
     enum State { Chase, Attack }
     State state = State.Chase;
 
@@ -104,9 +107,10 @@ public class NecromanserAI : MonoBehaviour
                     return;
                 }
 
-                if (dist <= attackStartDistance && !inAttackRoutine)
+                if (dist <= attackStartDistance && !inAttackRoutine && Time.time >= nextAttackAllowedTime)
                 {
-                    EnterAttackState();
+                    if (IsAttackPlaying()) {  }
+                    else EnterAttackState();
                     return;
                 }
 
@@ -133,6 +137,7 @@ public class NecromanserAI : MonoBehaviour
     // ───── 공격 스테이트 ─────
     void EnterAttackState()
     {
+        if (Time.time < nextAttackAllowedTime) return;
         if (IsAttackPlaying()) return;
 
         state = State.Attack;
@@ -349,7 +354,9 @@ public class NecromanserAI : MonoBehaviour
             if (agent) { agent.Warp(newPos); agent.ResetPath(); }
             if (teleportEffectPrefab) Instantiate(teleportEffectPrefab, newPos, Quaternion.identity);
 
-            // 공격 중이었다면 정리하고 추격 복귀(최소 처리)
+            // ★ 텔레포트 후 잠깐 공격 금지
+            nextAttackAllowedTime = Time.time + postTeleportAttackLock;
+
             CancelAttackState();
             state = State.Chase;
 

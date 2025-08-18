@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 30161f5f21e1f8d42ac2335883103fec
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 22081
+  packageName: Snow Blizzard Effects
+  packageVersion: 1.3
+  assetPath: Assets/Snow Blizzard Effects/Shaders/TransparentCutoutBumpedCullOff.shader
+  uploadId: 241251
