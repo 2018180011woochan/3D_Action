@@ -107,9 +107,7 @@ public class SamuraiCombat : MonoBehaviour
 
             yield return new WaitForSeconds(0.2f); 
         }
-
-        skillCutsceneCamera.transform.position = transform.position + transform.forward * 10f + Vector3.up * 1.2f;
-        skillCutsceneCamera.transform.LookAt(transform);
+        StartCoroutine(MoveCameraAfterDelay());
 
         yield return StartCoroutine(DashForward(3f, 0.15f));
         StartCoroutine(SpawnAfterEffects(spawnPos));
@@ -121,6 +119,13 @@ public class SamuraiCombat : MonoBehaviour
         movementScript.Stance = false;
         animator.SetBool("IsStance", false);
         movementScript.isBusy = false;
+    }
+
+    private IEnumerator MoveCameraAfterDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        skillCutsceneCamera.transform.position = transform.position + transform.forward * 10f + Vector3.up * 1.2f;
+        skillCutsceneCamera.transform.LookAt(transform);
     }
 
     private IEnumerator DashForward(float distance, float duration)

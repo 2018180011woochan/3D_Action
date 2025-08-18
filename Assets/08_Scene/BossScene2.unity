@@ -809,9 +809,9 @@ MonoBehaviour:
   walkSpeed: 2.5
   walkBool: IsWalking
   attackTriggers:
+  - Attack1
   - Attack2
-  - Attack2
-  - Attack2
+  - Attack3
   attackStateDuration: 5
   attack1Prefab: {fileID: 7350188232382256164, guid: 051fd1b6413714b40a8230763d5fd275, type: 3}
   projectileOrigin: {fileID: 4176490129948687}
@@ -828,6 +828,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   attack3Prefab: {fileID: 4014277989805872420, guid: f6cfa77fa236268499c79a74a5226109, type: 3}
+  teleportDistanceFromPlayer: 6
+  teleportDelay: 0.6
+  teleportCooldown: 2
+  sampleMaxDistance: 1.5
+  ringTolerance: 0.4
+  teleportEffectPrefab: {fileID: 1101093406115985113, guid: 5fb0a3d3939b60e4d921f8889e3470d4, type: 3}
   agent: {fileID: 0}
   animator: {fileID: 0}
 --- !u!195 &35248704
@@ -2968,8 +2974,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 113377509}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2454662, y: 0.63455397, z: -0.22313216, w: 0.69806856}
-  m_LocalPosition: {x: -3.8605788, y: 3.21, z: -0.24407706}
+  m_LocalRotation: {x: -0.0009927972, y: 0.9433721, z: -0.33172303, w: -0.002823371}
+  m_LocalPosition: {x: 6.0239425, y: 84.729996, z: 880.99994}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6305,6 +6311,81 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5440433146879560223, guid: 2a59f1ea3ba1e25488c312f875d89052, type: 3}
   m_PrefabInstance: {fileID: 237966057}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &238326480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 238326482}
+  - component: {fileID: 238326481}
+  m_Layer: 0
+  m_Name: SkillCutSceneCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &238326481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 238326480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority:
+    Enabled: 1
+    m_Value: 0
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 0}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 60.000004
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
+--- !u!4 &238326482
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 238326480}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.102921225, y: 0.7444826, z: -0.64901507, w: -0.11803566}
+  m_LocalPosition: {x: 59.779934, y: -2.9926512, z: -25.946028}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &239257660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16065,6 +16146,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doubleClickTime: 0.2
+  SkillReadyEffect: {fileID: 7493244502594454474, guid: 6d1bc8dc52ae7dc46918036a8976c2dd, type: 3}
+  skillEffects:
+  - {fileID: 8231083735961597341, guid: 4b56a750ea27b6a46af4f4f48a228620, type: 3}
+  - {fileID: 7491454514607478536, guid: a386c32b71bc1e8458eb726370263edf, type: 3}
+  - {fileID: 2354438060168334990, guid: 4730212230c953c4ab4922e1d41b73c6, type: 3}
+  - {fileID: 142954600263665536, guid: f82d8dd1200b39b4b879209694c9d3ce, type: 3}
+  - {fileID: 8231083735961597341, guid: 4b56a750ea27b6a46af4f4f48a228620, type: 3}
+  - {fileID: 7491454514607478536, guid: a386c32b71bc1e8458eb726370263edf, type: 3}
+  ExplosionEffect: {fileID: 2740201016241793271, guid: 7162db31ea3f5e24ab12bc9090f9d69f, type: 3}
+  DustEffect: {fileID: 7740353523680721667, guid: c17fb4aba148c2940982edaf5e51f20d, type: 3}
+  playerCamera: {fileID: 1575326256}
+  skillCutsceneCamera: {fileID: 238326481}
 --- !u!143 &563947535
 CharacterController:
   m_ObjectHideFlags: 0
@@ -68973,7 +69066,7 @@ Transform:
   m_GameObject: {fileID: 1721586231184325}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.22433, y: 81.37, z: 872.6}
+  m_LocalPosition: {x: 7.22433, y: 81.37, z: 820.2}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -82608,3 +82701,4 @@ SceneRoots:
   - {fileID: 113377515}
   - {fileID: 1032157163}
   - {fileID: 4176490129948687}
+  - {fileID: 238326482}

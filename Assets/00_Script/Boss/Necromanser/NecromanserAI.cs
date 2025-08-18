@@ -34,7 +34,16 @@ public class NecromanserAI : MonoBehaviour
     public float groundYOffset = 0.01f;        // 약간 띄우기
     public LayerMask groundMask = ~0;          // 지면 레이어
 
+    [Header("Attack3")]
     public GameObject attack3Prefab;
+
+    [Header("텔레포트")]
+    public float teleportDistanceFromPlayer = 6f;   // 플레이어 주변 링 반경
+    public float teleportDelay = 0.6f;              // 피격 후 텔레포트까지 딜레이
+    public float teleportCooldown = 2f;             // 텔레포트 쿨
+    public float sampleMaxDistance = 1.5f;          // NavMesh.SamplePosition 탐색 반경
+    public float ringTolerance = 0.4f;              // 링 오차 허용
+    public GameObject teleportEffectPrefab;         // 이펙트(선택)
 
     enum State { Chase, Attack }
     State state = State.Chase;
@@ -48,11 +57,25 @@ public class NecromanserAI : MonoBehaviour
     public Animator animator;
     private MonsterState monsterState;
 
+    // 텔레포트 내부 상태(미니멀)
+    float lastTeleportTime = -999f;
+    Coroutine teleportCo;
+
     void Awake()
     {
         monsterState = GetComponent<MonsterState>();
         agent = GetComponent<NavMeshAgent>();
         if (!animator) animator = GetComponentInChildren<Animator>();
+    }
+
+    void OnEnable()
+    {
+        if (monsterState != null) monsterState.OnDamaged += OnDamaged;
+    }
+
+    void OnDisable()
+    {
+        if (monsterState != null) monsterState.OnDamaged -= OnDamaged;
     }
 
     void Start()
@@ -107,8 +130,11 @@ public class NecromanserAI : MonoBehaviour
         }
     }
 
+    // ───── 공격 스테이트 ─────
     void EnterAttackState()
     {
+        if (IsAttackPlaying()) return;
+
         state = State.Attack;
 
         agent.isStopped = true;
@@ -164,17 +190,9 @@ public class NecromanserAI : MonoBehaviour
         string trigger = attackTriggers[attackIndex % attackTriggers.Length];
         animator.SetTrigger(trigger);
 
-        if (trigger == "Attack1")
-        {
-            SpawnAttack1();
-        }
-        else if (trigger == "Attack2")
-        {
-            SpawnAttack2();
-        }
-        else if (trigger == "Attack3") {
-            SpawnAttack3();
-        }
+        if (trigger == "Attack1") SpawnAttack1();
+        else if (trigger == "Attack2") SpawnAttack2();
+        else if (trigger == "Attack3") SpawnAttack3();
 
         attackIndex++;
     }
@@ -204,6 +222,7 @@ public class NecromanserAI : MonoBehaviour
         if (animator) animator.SetBool(walkBool, on);
     }
 
+    // ───── Attack1: 4방향 발사 ─────
     public void SpawnAttack1()
     {
         if (!attack1Prefab) return;
@@ -221,12 +240,13 @@ public class NecromanserAI : MonoBehaviour
         }
     }
 
+    // ───── Attack2: 격자 스폰 ─────
     public void SpawnAttack2()
     {
         if (!attack2Prefab) return;
 
-        int size = Mathf.Max(1, gridSize);       
-        if (size % 2 == 0) size += 1;           
+        int size = Mathf.Max(1, gridSize);
+        if (size % 2 == 0) size += 1;
         int half = size / 2;
 
         Vector3 center = transform.position;
@@ -235,19 +255,13 @@ public class NecromanserAI : MonoBehaviour
 
         var cells = new List<Vector3>(size * size);
         for (int z = -half; z <= half; z++)
-        {
             for (int x = -half; x <= half; x++)
             {
-                Vector3 pos = center
-                              + right * (x * gridSpacing)
-                              + fwd * (z * gridSpacing);
-
+                Vector3 pos = center + right * (x * gridSpacing) + fwd * (z * gridSpacing);
                 if (alignToGround && TrySnapToGround(pos, out Vector3 groundPos))
                     pos = groundPos + Vector3.up * groundYOffset;
-
                 cells.Add(pos);
             }
-        }
 
         int toSpawn = Mathf.Clamp(cellsToSpawn, 0, cells.Count);
         for (int i = 0; i < toSpawn; i++)
@@ -256,11 +270,12 @@ public class NecromanserAI : MonoBehaviour
             (cells[i], cells[k]) = (cells[k], cells[i]);
         }
 
-        Quaternion rot = transform.rotation; 
+        Quaternion rot = transform.rotation;
         for (int i = 0; i < toSpawn; i++)
             Instantiate(attack2Prefab, cells[i], rot);
     }
 
+    // ───── Attack3: 회전 섹터 2개 ─────
     public void SpawnAttack3()
     {
         if (!attack3Prefab) return;
@@ -268,7 +283,6 @@ public class NecromanserAI : MonoBehaviour
         Vector3 center = transform.position;
         Quaternion rot = transform.rotation;
 
-        // 첫 번째
         var a = Instantiate(attack3Prefab, center, rot);
         var swa = a.GetComponent<RotateSectorWarning>();
         float r = 6f;
@@ -276,21 +290,20 @@ public class NecromanserAI : MonoBehaviour
         {
             swa.orbitCenter = transform;
             swa.fillDuration = 3f;
-            if (swa.orbitRadius > 0f) r = swa.orbitRadius; // 프리팹 설정값 사용
+            if (swa.orbitRadius > 0f) r = swa.orbitRadius;
         }
         a.transform.position = center + transform.forward * r;
 
-        // 반대편 두 번째
         var b = Instantiate(attack3Prefab, center, rot);
         var swb = b.GetComponent<RotateSectorWarning>();
         if (swb)
         {
             swb.orbitCenter = transform;
             swb.fillDuration = 3f;
-            // swb.orbitRadius = r; // (같게 강제하고 싶으면 활성화)
         }
         b.transform.position = center - transform.forward * r;
     }
+
     bool TrySnapToGround(Vector3 pos, out Vector3 snapped)
     {
         Vector3 start = pos + Vector3.up * groundRayUp;
@@ -302,5 +315,96 @@ public class NecromanserAI : MonoBehaviour
         }
         snapped = pos;
         return false;
+    }
+
+    // ─────────────────────────────────────────
+    //                텔레포트
+    // ─────────────────────────────────────────
+
+    void OnDamaged(float _)
+    {
+        if (Time.time - lastTeleportTime < teleportCooldown) return;
+        if (teleportCo != null) return;
+        teleportCo = StartCoroutine(TeleportAfterDelay());
+    }
+
+    IEnumerator TeleportAfterDelay()
+    {
+        yield return new WaitForSeconds(teleportDelay);
+
+        // 비활성/사망 등의 예외는 여기서 자연스럽게 스킵
+        Teleport();
+
+        teleportCo = null;
+    }
+
+    void Teleport()
+    {
+        lastTeleportTime = Time.time;
+
+        if (teleportEffectPrefab) Instantiate(teleportEffectPrefab, transform.position, Quaternion.identity);
+
+        if (player && TryGetPointOnRing(player.position, teleportDistanceFromPlayer, sampleMaxDistance, ringTolerance, out var newPos))
+        {
+            if (agent) { agent.Warp(newPos); agent.ResetPath(); }
+            if (teleportEffectPrefab) Instantiate(teleportEffectPrefab, newPos, Quaternion.identity);
+
+            // 공격 중이었다면 정리하고 추격 복귀(최소 처리)
+            CancelAttackState();
+            state = State.Chase;
+
+            if (agent && agent.isOnNavMesh)
+            {
+                agent.isStopped = false;
+                agent.updateRotation = true;
+                agent.SetDestination(player.position);
+            }
+        }
+    }
+
+    void CancelAttackState()
+    {
+        if (attackRoutine != null) StopCoroutine(attackRoutine);
+        inAttackRoutine = false;
+        if (animator != null && attackTriggers != null)
+            foreach (var t in attackTriggers) animator.ResetTrigger(t);
+    }
+
+    bool TryGetPointOnRing(Vector3 playerPos, float radius, float maxSampleDist, float tolerance, out Vector3 pos)
+    {
+        const int attempts = 24;
+
+        for (int i = 0; i < attempts; i++)
+        {
+            float angle = Random.Range(0f, Mathf.PI * 2f);
+            Vector3 dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+            Vector3 ideal = playerPos + dir * radius;
+
+            if (NavMesh.SamplePosition(ideal, out var hit, maxSampleDist, NavMesh.AllAreas))
+            {
+                float planarDist = PlanarDistance(hit.position, playerPos);
+                if (Mathf.Abs(planarDist - radius) <= tolerance)
+                {
+                    pos = hit.position;
+                    return true;
+                }
+            }
+        }
+
+        // 실패 시: 가장 단순한 폴백(앞쪽 대략 워프)
+        if (NavMesh.SamplePosition(playerPos + transform.forward * radius, out var hit2, radius + 2f, NavMesh.AllAreas))
+        {
+            pos = hit2.position;
+            return true;
+        }
+
+        pos = transform.position;
+        return false;
+    }
+
+    float PlanarDistance(Vector3 a, Vector3 b)
+    {
+        a.y = 0f; b.y = 0f;
+        return Vector3.Distance(a, b);
     }
 }
