@@ -1725,8 +1725,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dissolveProp: _Dissolve
-  delay: 2
+  delay: 1
   duration: 2
+  destroyOnComplete: 1
 --- !u!1 &4293006920695866262
 GameObject:
   m_ObjectHideFlags: 0

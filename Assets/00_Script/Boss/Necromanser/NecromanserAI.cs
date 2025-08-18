@@ -72,6 +72,7 @@ public class NecromanserAI : MonoBehaviour
     float lastTeleportTime = -999f;
     Coroutine teleportCo;
 
+    public bool isDead = false;
     void Awake()
     {
         monsterState = GetComponent<MonsterState>();

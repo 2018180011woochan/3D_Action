@@ -130,7 +130,8 @@ public class CircleWarning : MonoBehaviour
         var hits = Physics.RaycastAll(start, Vector3.down, 100f, groundMask, QueryTriggerInteraction.Ignore);
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i].collider.CompareTag("Player")) continue; 
+            if (hits[i].collider.CompareTag("Player")) continue;
+            if (hits[i].collider.transform.root.CompareTag("Monster")) continue;
             transform.position = new Vector3(transform.position.x, hits[i].point.y + 0.01f, transform.position.z);
             transform.rotation = Quaternion.FromToRotation(Vector3.up, hits[i].normal) * transform.rotation;
             return;

@@ -71,6 +71,10 @@ public class MonsterState : MonoBehaviour
                 GetComponent<MutantAI>()?.HandleDeath(5f, 1f);
                 BossScene1Manager.Instance?.BossDied();
             }
+            else if (monsterName == "Necromanser")
+            {
+                GetComponent<NecromanserAI>().isDead = true;
+            }
             else if (monsterName == "Zombi")
             {
                 GetComponent<ZombiAI>().isDead = true;         
