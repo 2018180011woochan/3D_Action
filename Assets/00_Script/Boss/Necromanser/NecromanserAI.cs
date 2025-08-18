@@ -43,7 +43,7 @@ public class NecromanserAI : MonoBehaviour
     public float teleportCooldown = 2f;             // 텔레포트 쿨
     public float sampleMaxDistance = 1.5f;          // NavMesh.SamplePosition 탐색 반경
     public float ringTolerance = 0.4f;              // 링 오차 허용
-    public GameObject teleportEffectPrefab;         // 이펙트(선택)
+    public GameObject teleportEffectPrefab;         
 
     public float postTeleportAttackLock = 1.0f;
     float nextAttackAllowedTime = 0f;
@@ -134,7 +134,6 @@ public class NecromanserAI : MonoBehaviour
         }
     }
 
-    // ───── 공격 스테이트 ─────
     void EnterAttackState()
     {
         if (Time.time < nextAttackAllowedTime) return;
@@ -227,7 +226,6 @@ public class NecromanserAI : MonoBehaviour
         if (animator) animator.SetBool(walkBool, on);
     }
 
-    // ───── Attack1: 4방향 발사 ─────
     public void SpawnAttack1()
     {
         if (!attack1Prefab) return;
@@ -245,7 +243,6 @@ public class NecromanserAI : MonoBehaviour
         }
     }
 
-    // ───── Attack2: 격자 스폰 ─────
     public void SpawnAttack2()
     {
         if (!attack2Prefab) return;
@@ -280,7 +277,6 @@ public class NecromanserAI : MonoBehaviour
             Instantiate(attack2Prefab, cells[i], rot);
     }
 
-    // ───── Attack3: 회전 섹터 2개 ─────
     public void SpawnAttack3()
     {
         if (!attack3Prefab) return;
@@ -322,10 +318,6 @@ public class NecromanserAI : MonoBehaviour
         return false;
     }
 
-    // ─────────────────────────────────────────
-    //                텔레포트
-    // ─────────────────────────────────────────
-
     void OnDamaged(float _)
     {
         if (Time.time - lastTeleportTime < teleportCooldown) return;
@@ -337,7 +329,6 @@ public class NecromanserAI : MonoBehaviour
     {
         yield return new WaitForSeconds(teleportDelay);
 
-        // 비활성/사망 등의 예외는 여기서 자연스럽게 스킵
         Teleport();
 
         teleportCo = null;
@@ -354,7 +345,6 @@ public class NecromanserAI : MonoBehaviour
             if (agent) { agent.Warp(newPos); agent.ResetPath(); }
             if (teleportEffectPrefab) Instantiate(teleportEffectPrefab, newPos, Quaternion.identity);
 
-            // ★ 텔레포트 후 잠깐 공격 금지
             nextAttackAllowedTime = Time.time + postTeleportAttackLock;
 
             CancelAttackState();
@@ -398,7 +388,6 @@ public class NecromanserAI : MonoBehaviour
             }
         }
 
-        // 실패 시: 가장 단순한 폴백(앞쪽 대략 워프)
         if (NavMesh.SamplePosition(playerPos + transform.forward * radius, out var hit2, radius + 2f, NavMesh.AllAreas))
         {
             pos = hit2.position;
