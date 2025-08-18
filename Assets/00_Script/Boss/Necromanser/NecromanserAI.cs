@@ -15,7 +15,7 @@ public class NecromanserAI : MonoBehaviour
     public string walkBool = "IsWalking";
 
     [Header("공격 공통")]
-    public string[] attackTriggers = { "Attack1", "Attack2", "Attack3" };
+    public string[] attackTriggers = { "Attack1", "Attack2", "Attack3", "Attack4" };
     public float attackStateDuration = 5f;
 
     [Header("Attack1")]
@@ -36,6 +36,14 @@ public class NecromanserAI : MonoBehaviour
 
     [Header("Attack3")]
     public GameObject attack3Prefab;
+
+    [Header("Attack4")]
+    public GameObject spawnEffectPrefab;   // 스폰 이펙트
+    public GameObject zombiPrefab;         // 소환할 좀비 프리팹
+    public float zombiSpawnRadius = 5f;    // 보스 주변 반경
+    public int zombiCount = 2;             // 2마리
+    public float zombiSpawnDelay = 1f;   // 이펙트 후 소환 딜레이
+    public float spawnNavSampleDist = 1.5f; // NavMesh 보정 반경
 
     [Header("텔레포트")]
     public float teleportDistanceFromPlayer = 6f;   // 플레이어 주변 링 반경
@@ -197,7 +205,7 @@ public class NecromanserAI : MonoBehaviour
         if (trigger == "Attack1") SpawnAttack1();
         else if (trigger == "Attack2") SpawnAttack2();
         else if (trigger == "Attack3") SpawnAttack3();
-
+        else if (trigger == "Attack4") SpawnAttack4();
         attackIndex++;
     }
 
@@ -304,7 +312,46 @@ public class NecromanserAI : MonoBehaviour
         }
         b.transform.position = center - transform.forward * r;
     }
+    public void SpawnAttack4()
+    {
+        StartCoroutine(CoSpawnZombis());
+    }
 
+    IEnumerator CoSpawnZombis()
+    {
+        for (int i = 0; i < zombiCount; i++)
+        {
+            if (TryGetSpawnPoint(transform.position, zombiSpawnRadius, out var pos))
+            {
+                if (spawnEffectPrefab) Instantiate(spawnEffectPrefab, pos, Quaternion.identity);
+                yield return new WaitForSeconds(zombiSpawnDelay);
+
+                // NavMesh 위로 보정해 배치
+                if (NavMesh.SamplePosition(pos, out var hit, spawnNavSampleDist, NavMesh.AllAreas))
+                    Instantiate(zombiPrefab, hit.position, Quaternion.identity);
+                else
+                    Instantiate(zombiPrefab, pos, Quaternion.identity);
+            }
+        }
+    }
+
+    bool TryGetSpawnPoint(Vector3 center, float radius, out Vector3 pos)
+    {
+        const int attempts = 16;
+        for (int i = 0; i < attempts; i++)
+        {
+            Vector2 c = Random.insideUnitCircle * radius;
+            Vector3 candidate = center + new Vector3(c.x, 0f, c.y);
+
+            if (alignToGround && TrySnapToGround(candidate, out var ground))
+                candidate = ground + Vector3.up * groundYOffset;
+
+            pos = candidate;
+            return true;
+        }
+        pos = center;
+        return false;
+    }
     bool TrySnapToGround(Vector3 pos, out Vector3 snapped)
     {
         Vector3 start = pos + Vector3.up * groundRayUp;

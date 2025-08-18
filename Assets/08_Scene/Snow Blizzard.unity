@@ -20785,9 +20785,10 @@ MonoBehaviour:
   walkSpeed: 2.5
   walkBool: IsWalking
   attackTriggers:
-  - Attack1
-  - Attack2
-  - Attack3
+  - Attack4
+  - Attack4
+  - Attack4
+  - Attack4
   attackStateDuration: 5
   attack1Prefab: {fileID: 7350188232382256164, guid: 051fd1b6413714b40a8230763d5fd275, type: 3}
   projectileOrigin: {fileID: 855027769}
@@ -20804,6 +20805,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   attack3Prefab: {fileID: 4014277989805872420, guid: f6cfa77fa236268499c79a74a5226109, type: 3}
+  spawnEffectPrefab: {fileID: 8246893256481667978, guid: 339a009bea35d5b4496056137911e186, type: 3}
+  zombiPrefab: {fileID: 4271595001382109302, guid: a8fdc35181622b745871cce8fa7f2c14, type: 3}
+  zombiSpawnRadius: 5
+  zombiCount: 2
+  zombiSpawnDelay: 1
+  spawnNavSampleDist: 1.5
   teleportDistanceFromPlayer: 6
   teleportDelay: 0.6
   teleportCooldown: 2

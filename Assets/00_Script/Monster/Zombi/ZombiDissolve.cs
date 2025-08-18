@@ -4,9 +4,10 @@ using UnityEngine;
 public class ZombiDissolve : MonoBehaviour
 {
     [Header("Shader property")]
-    public string dissolveProp = "_Dissolve"; 
-    public float delay = 2f;                 
-    public float duration = 2f;              
+    public string dissolveProp = "_Dissolve";
+    public float delay = 2f;
+    public float duration = 2f;
+    public bool destroyOnComplete = true;   
 
     Renderer[] rends;
     MaterialPropertyBlock mpb;
@@ -17,7 +18,7 @@ public class ZombiDissolve : MonoBehaviour
         rends = GetComponentsInChildren<Renderer>(true);
         mpb = new MaterialPropertyBlock();
         idDissolve = Shader.PropertyToID(dissolveProp);
-        SetValue(0f); // 시작값 0 보장
+        SetValue(0f);
     }
 
     void SetValue(float v)
@@ -41,15 +42,22 @@ public class ZombiDissolve : MonoBehaviour
     {
         if (delay > 0f) yield return new WaitForSeconds(delay);
 
-        if (duration <= 0f) { SetValue(1f); yield break; }
+        if (duration <= 0f)
+        {
+            SetValue(1f);
+            if (destroyOnComplete) Destroy(gameObject);
+            yield break;
+        }
 
         float t = 0f;
         while (t < duration)
         {
             t += Time.deltaTime;
-            SetValue(Mathf.Clamp01(t / duration)); // 0 → 1
+            SetValue(Mathf.Clamp01(t / duration));
             yield return null;
         }
+
         SetValue(1f);
+        if (destroyOnComplete) Destroy(gameObject);  
     }
 }
