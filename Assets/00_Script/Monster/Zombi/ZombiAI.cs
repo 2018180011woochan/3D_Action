@@ -14,11 +14,20 @@ public class ZombiAI : MonoBehaviour
     bool attacking;
     public bool isDead = false;
 
+    [Header("Boss")]
+    public GameObject Boss;
+
+    private MonsterState ms;
+    private NecromanserAI bossAI;
+    private bool handledBossDeath = false;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        agent.isStopped = true; // 생성 직후 대기
+        ms = GetComponent<MonsterState>();
+        agent.isStopped = true; 
+        Boss = GameObject.FindWithTag("Boss");
+        bossAI = Boss.GetComponent<NecromanserAI>();
     }
 
     void OnEnable()
@@ -28,7 +37,7 @@ public class ZombiAI : MonoBehaviour
 
     System.Collections.IEnumerator BeginAI()
     {
-        yield return new WaitForSeconds(3f); // 생성 후 대기 (요청대로)
+        yield return new WaitForSeconds(3f); 
         var p = GameObject.FindGameObjectWithTag("Player");
         if (p == null) yield break;
 
@@ -40,6 +49,16 @@ public class ZombiAI : MonoBehaviour
 
     void Update()
     {
+        if (!handledBossDeath && bossAI.isDead)
+        {
+            handledBossDeath = true;
+
+            if (!ms.isDead)
+            {
+                ms.TakeDamage(ms.currentHP);
+            }
+            return; 
+        }
         if (isDead) return;
         if (!started || player == null) return;
 

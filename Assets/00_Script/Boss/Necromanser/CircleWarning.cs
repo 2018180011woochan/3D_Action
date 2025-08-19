@@ -24,14 +24,18 @@ public class CircleWarning : MonoBehaviour
     public LayerMask groundMask = ~0;
 
     Transform fill; // 진한 채움계층
-
+    public GameObject Boss;
     void Start()
     {
         if (alignToGround) AlignToGround();
         Build();
+        Boss = GameObject.FindWithTag("Boss");
         StartCoroutine(FillThenAttack());
     }
-
+    void Update()
+    {
+        if (Boss.GetComponent<NecromanserAI>().isDead) Destroy(gameObject);
+    }
     void Build()
     {
         var mesh = BuildDiscMesh(radius, segments);

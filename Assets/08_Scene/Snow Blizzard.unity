@@ -20661,7 +20661,7 @@ GameObject:
   - component: {fileID: 855027763}
   m_Layer: 0
   m_Name: Necromanser
-  m_TagString: Monster
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20802,7 +20802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
+  maxHP: 10
   monsterName: Necromanser
   isDead: 0
   onHealthChanged:

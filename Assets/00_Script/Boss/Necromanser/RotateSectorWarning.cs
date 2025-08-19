@@ -34,7 +34,7 @@ public class RotateSectorWarning : MonoBehaviour
 
     Transform warnRoot, fill;
     float _angleDeg, _orbitR;
-
+    public GameObject Boss;
     void Start()
     {
         if (!orbitCenter) AutoAssignOrbitCenterByTag();
@@ -50,10 +50,13 @@ public class RotateSectorWarning : MonoBehaviour
             _orbitR = (orbitRadius > 0f) ? orbitRadius : rel.magnitude;
             _angleDeg = Mathf.Atan2(rel.x, rel.z) * Mathf.Rad2Deg;
         }
-
+        Boss = GameObject.FindWithTag("Boss");
         StartCoroutine(FillThenAttack());
     }
-
+    void Update()
+    {
+        if (Boss.GetComponent<NecromanserAI>().isDead) Destroy(gameObject);
+    }
     void AutoAssignOrbitCenterByTag()
     {
         Transform t = transform;

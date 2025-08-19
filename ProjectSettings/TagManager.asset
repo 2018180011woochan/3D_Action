@@ -10,6 +10,7 @@ TagManager:
   - PlayerCamera
   - PhaseCutSceneCamera
   - Phase2Fire
+  - Boss
   layers:
   - Default
   - TransparentFX

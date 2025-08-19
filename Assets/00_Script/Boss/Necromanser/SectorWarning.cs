@@ -28,14 +28,18 @@ public class SectorWarning : MonoBehaviour
 
     Transform warnRoot;   // yaw 보정 적용용 컨테이너
     Transform fill;       // 진한 채움
-
+    public GameObject Boss;
     void Start()
     {
         if (alignToGround) AlignToGround();
         Build();
         StartCoroutine(FillThenAttack());
+        Boss = GameObject.FindWithTag("Boss");
     }
-
+    void Update()
+    {
+        if (Boss.GetComponent<NecromanserAI>().isDead) Destroy(gameObject);
+    }
     void Build()
     {
         var mesh = BuildSectorMesh(radius, angleDeg, segments);
