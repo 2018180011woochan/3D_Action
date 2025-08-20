@@ -39,6 +39,16 @@ public class InventoryManager : MonoBehaviour
         {
             StartCoroutine(LoadDataAfterInit());
         }
+
+        const string potionName = "Potion";
+        if (HasItem(potionName)) return;
+
+        //// test
+        var db = GameDataManager.instance?.itemDatabase;
+        var potion = db?.GetItem(potionName);
+        if (potion != null) AddItem(potion);
+        else Debug.LogWarning($"'{potionName}' 아이템을 DB에서 찾을 수 없습니다.");
+
     }
 
     IEnumerator LoadDataAfterInit()

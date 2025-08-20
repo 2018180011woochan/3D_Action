@@ -34,29 +34,20 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         curSlotImage.enabled = false;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData e)
     {
+        Debug.Log("slot click"); 
         if (isProcessing) return;
-
         if (curItem == null) return;
+        if (e.button != PointerEventData.InputButton.Left) return;
 
-        float clickTime = Time.time - lastClickTime;
 
-        if (clickTime <= doubleClickTime)
+        if (e.clickCount == 2)
         {
-            isProcessing = true; 
-
-            try
-            {
-                HandleDoubleClick();
-            }
-            finally
-            {
-                isProcessing = false;  
-            }
+            isProcessing = true;
+            try { HandleDoubleClick(); }
+            finally { isProcessing = false; }
         }
-
-        lastClickTime = Time.time;
     }
 
     private void HandleDoubleClick()
@@ -66,6 +57,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
             case "Potion":
                 if (curItem.ItemObj != null)
                 {
+                    Debug.Log("Æ÷¼ÇÅ¬¸¯µÊ");
                     Potion potionScript = curItem.ItemObj.GetComponent<Potion>();
                     potionScript?.Heal();
                 }
