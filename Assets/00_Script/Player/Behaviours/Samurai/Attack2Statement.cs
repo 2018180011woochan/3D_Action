@@ -9,14 +9,20 @@ public class Attack2Statement : StateMachineBehaviour
     private bool fired;
     private SlashSpawner spawner;
     private float targetTime;     // 초로 환산된 타이밍
-
+    public AudioClip slashSfx;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         fired = false;
         spawner = animator.GetComponentInChildren<SlashSpawner>(true);
         targetTime = hitFrame / clipFps;
     }
-
+    private void PlaySfx(Animator animator)
+    {
+        if (slashSfx == null) return;
+        var audio = animator.GetComponent<AudioSource>();
+        if (audio)
+            audio.PlayOneShot(slashSfx, 1f);
+    }
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (fired || spawner == null) return;
@@ -27,6 +33,7 @@ public class Attack2Statement : StateMachineBehaviour
         if (t >= targetTime)
         {
             spawner.SpawnSlash();
+            PlaySfx(animator);
             fired = true; // 한 번만
         }
     }

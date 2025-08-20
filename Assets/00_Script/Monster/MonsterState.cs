@@ -18,18 +18,24 @@ public class MonsterState : MonoBehaviour
     Animator animator;
     public GameObject StunEffect;
     public GameObject Potion;
+
+    public AudioClip hitSfx;
+    public float hitVolume = 1f;
+    private AudioSource sfx;
     void Awake()
     {
         currentHP = maxHP;
-        //currentHP = 40;
         animator = GetComponentInChildren<Animator>();
+        sfx = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        sfx.playOnAwake = false;
+        sfx.loop = false;
     }
 
     public void TakeDamage(float dmg)
     {
         if (StunEffect != null)
             StunEffect.SetActive(true);
-
+        if (hitSfx && sfx) sfx.PlayOneShot(hitSfx, hitVolume);
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         OnDamaged?.Invoke(dmg);
         onHealthChanged.Invoke(currentHP / maxHP);

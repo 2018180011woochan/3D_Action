@@ -9,7 +9,7 @@ public class Attack1Statement : StateMachineBehaviour
 
     private bool fired1, fired2;
     private SlashSpawner spawner;
-
+    public AudioClip slashSfx;
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         fired1 = fired2 = false;
@@ -25,10 +25,22 @@ public class Attack1Statement : StateMachineBehaviour
         float t1 = firstHitFrame / clipFps;   
         float t2 = secondHitFrame / clipFps;
 
-        if (!fired1 && t >= t1) { spawner.SpawnSlash(); fired1 = true; }
-        if (!fired2 && t >= t2) { spawner.SpawnSlash(); fired2 = true; }
+        if (!fired1 && t >= t1) {
+            spawner.SpawnSlash(); fired1 = true;
+            PlaySfx(animator);
+        }
+        if (!fired2 && t >= t2) {
+            spawner.SpawnSlash(); fired2 = true;
+            PlaySfx(animator);
+        }
     }
-
+    private void PlaySfx(Animator animator)
+    {
+        if (slashSfx == null) return;
+        var audio = animator.GetComponent<AudioSource>();
+        if (audio)
+            audio.PlayOneShot(slashSfx, 1f);  // 한 번만 재생, 겹쳐도 OK
+    }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         var combat = animator.GetComponent<SamuraiCombat>();
