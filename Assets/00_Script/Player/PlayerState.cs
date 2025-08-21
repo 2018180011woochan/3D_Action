@@ -29,6 +29,12 @@ public class PlayerState : MonoBehaviour
 
     private SamuraiMovement movement;
     public GameObject StunEffect;
+
+    [Header("»ç¿îµå")]
+    public AudioClip blockSfx;
+    public AudioClip hitSfx;
+    public float Volume = 1f;
+    private AudioSource Src;
     void Awake()
     {
         currentHP = maxHP;
@@ -39,13 +45,26 @@ public class PlayerState : MonoBehaviour
         if (BlockEffect != null)
             blockParticle = BlockEffect.GetComponent<ParticleSystem>();
         movement = GetComponent<SamuraiMovement>();
+
+        Src = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        Src.playOnAwake = false;
+        Src.loop = false;
+        Src.spatialBlend = 0f;
     }
 
-
+    void Start()
+    {
+        if (GameDataManager.instance != null)
+            GameDataManager.instance.LoadPlayerHP(this);
+    }
     public bool TakeDamage(float dmg)
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block")) return false;
-
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block"))
+        {
+            Src.PlayOneShot(blockSfx, Volume);
+            return false;
+        }
+        Src.PlayOneShot(hitSfx, 1f);
         StunEffect.SetActive(true);
 
         currentHP = Mathf.Max(currentHP - dmg, 0f);
@@ -62,7 +81,7 @@ public class PlayerState : MonoBehaviour
     public void TakeCriticalDamage(float dmg)
     {
         StunEffect.SetActive(true);
-
+        Src.PlayOneShot(hitSfx, 1f);
         currentHP = Mathf.Max(currentHP - dmg, 0f);
         onHealthChanged.Invoke(currentHP / maxHP);
 

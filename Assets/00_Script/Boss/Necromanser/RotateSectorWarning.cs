@@ -12,7 +12,7 @@ public class RotateSectorWarning : MonoBehaviour
     public Material baseMaterial;
     public Color lightRed = new Color(1f, 0f, 0f, 0.25f);
     public Color darkRed = new Color(1f, 0f, 0f, 0.80f);
-    public float fillDuration = 3f;     
+    public float fillDuration = 3f;
     public float yOffset = 0.02f;
 
     [Header("Align & Attack")]
@@ -22,25 +22,34 @@ public class RotateSectorWarning : MonoBehaviour
     public float attackForwardOffset = 0f;
     public Vector3 attackOffset;
 
-    public Transform orbitCenter;       
+    public Transform orbitCenter;
     public float orbitRadius = 6f;
     public float orbitSpeedDeg = 180f;
     public bool faceOutward = true;
 
-    public string monsterTag = "Monster";   
-
+    public string monsterTag = "Monster";
     public bool alignToGround = true;
     public LayerMask groundMask = ~0;
+
+    [Header("Sound")]
+    public AudioClip attackSfx;
 
     Transform warnRoot, fill;
     float _angleDeg, _orbitR;
     public GameObject Boss;
+
+    AudioSource sfx;
+
     void Start()
     {
         if (!orbitCenter) AutoAssignOrbitCenterByTag();
-
         if (alignToGround) AlignToGround();
         Build();
+
+        sfx = gameObject.AddComponent<AudioSource>();
+        sfx.playOnAwake = false;
+        sfx.loop = false;
+        sfx.spatialBlend = 0f;
 
         if (orbitCenter)
         {
@@ -53,10 +62,12 @@ public class RotateSectorWarning : MonoBehaviour
         Boss = GameObject.FindWithTag("Boss");
         StartCoroutine(FillThenAttack());
     }
+
     void Update()
     {
         if (Boss.GetComponent<NecromanserAI>().isDead) Destroy(gameObject);
     }
+
     void AutoAssignOrbitCenterByTag()
     {
         Transform t = transform;
@@ -121,7 +132,6 @@ public class RotateSectorWarning : MonoBehaviour
             float k = Mathf.Clamp01(t / dur);
             fill.localScale = new Vector3(k, 1f, k);
 
-            // 보스 주변 회전
             if (orbitCenter)
             {
                 _angleDeg += orbitSpeedDeg * Time.deltaTime;
@@ -142,20 +152,17 @@ public class RotateSectorWarning : MonoBehaviour
             yield return null;
         }
 
-        // 공격 이펙트 소환
         if (attackPrefab)
         {
             var warnRot = transform.rotation * Quaternion.Euler(0f, warningYawOffsetDeg, 0f);
             var finalRot = warnRot * Quaternion.Euler(0f, attackYawOffsetDeg, 0f);
-
-            Vector3 pos =
-                transform.position
-              + warnRot * (Vector3.forward * attackForwardOffset)
-              + finalRot * attackOffset;
-
+            Vector3 pos = transform.position
+                        + warnRot * (Vector3.forward * attackForwardOffset)
+                        + finalRot * attackOffset;
             Instantiate(attackPrefab, pos, finalRot);
         }
 
+        if (attackSfx) AudioSource.PlayClipAtPoint(attackSfx, transform.position, 1f);
         Destroy(gameObject);
     }
 

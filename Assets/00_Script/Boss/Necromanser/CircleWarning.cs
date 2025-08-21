@@ -4,43 +4,55 @@ using UnityEngine;
 public class CircleWarning : MonoBehaviour
 {
     [Header("Shape")]
-    public float radius = 10f;                  // 원 반경
-    [Range(16, 256)] public int segments = 96;  // 가장자리 분할
+    public float radius = 10f;
+    [Range(16, 256)] public int segments = 96;
 
     [Header("Visuals")]
     public Material baseMaterial;
     public Color lightRed = new Color(1f, 0f, 0f, 0.25f);
     public Color darkRed = new Color(1f, 0f, 0f, 0.80f);
-    public float fillDuration = 2f;             // 채우는 시간(초)
-    public float yOffset = 0.02f;               // z-fight 방지
+    public float fillDuration = 2f;
+    public float yOffset = 0.02f;
 
     [Header("Attack")]
-    public GameObject attackPrefab;             // 공격 이펙트 프리팹
-    public float attackYawOffsetDeg = 0f;       // 프리팹 로컬 Y 회전 보정(필요 시)
-    public Vector3 attackOffset;                // 프리팹 로컬 오프셋
+    public GameObject attackPrefab;
+    public float attackYawOffsetDeg = 0f;
+    public Vector3 attackOffset;
 
     [Header("Ground")]
     public bool alignToGround = true;
     public LayerMask groundMask = ~0;
 
-    Transform fill; // 진한 채움계층
+    [Header("Sound")]
+    public AudioClip attackSfx;
+
+    Transform fill;
     public GameObject Boss;
+    AudioSource sfx;
+
     void Start()
     {
         if (alignToGround) AlignToGround();
         Build();
+
+        sfx = gameObject.AddComponent<AudioSource>();
+        sfx.playOnAwake = false;
+        sfx.loop = false;
+        sfx.spatialBlend = 0f;
+
         Boss = GameObject.FindWithTag("Boss");
         StartCoroutine(FillThenAttack());
     }
+
     void Update()
     {
         if (Boss.GetComponent<NecromanserAI>().isDead) Destroy(gameObject);
     }
+
     void Build()
     {
         var mesh = BuildDiscMesh(radius, segments);
 
-        // 1) 밝은 바닥
         var baseGO = new GameObject("WarnBase");
         baseGO.transform.SetParent(transform, false);
         baseGO.transform.localPosition = Vector3.up * yOffset;
@@ -49,7 +61,6 @@ public class CircleWarning : MonoBehaviour
         mr1.sharedMaterial = new Material(baseMaterial);
         SetColor(mr1.sharedMaterial, lightRed);
 
-        // 2) 진한 채움(스케일 0→1로 퍼지게)
         var fillGO = new GameObject("WarnFill");
         fillGO.transform.SetParent(transform, false);
         fillGO.transform.localPosition = Vector3.up * (yOffset + 0.001f);
@@ -59,7 +70,7 @@ public class CircleWarning : MonoBehaviour
         SetColor(mr2.sharedMaterial, darkRed);
 
         fill = fillGO.transform;
-        fill.localScale = new Vector3(0f, 1f, 0f);   // 반지름 0부터 시작
+        fill.localScale = new Vector3(0f, 1f, 0f);
     }
 
     IEnumerator FillThenAttack()
@@ -73,12 +84,11 @@ public class CircleWarning : MonoBehaviour
             {
                 t += Time.deltaTime;
                 float k = Mathf.Clamp01(t / dur);
-                fill.localScale = new Vector3(k, 1f, k); // 0→1
+                fill.localScale = new Vector3(k, 1f, k);
                 yield return null;
             }
         }
 
-        // 공격 이펙트 생성 (원형이라 방향 자유: 필요시 보정 각도만 적용)
         if (attackPrefab)
         {
             var finalRot = transform.rotation * Quaternion.Euler(0f, attackYawOffsetDeg, 0f);
@@ -86,26 +96,25 @@ public class CircleWarning : MonoBehaviour
             Instantiate(attackPrefab, pos, finalRot);
         }
 
-        Destroy(gameObject); // 경고 제거
+        if (attackSfx) AudioSource.PlayClipAtPoint(attackSfx, transform.position, 1f);
+        Destroy(gameObject);
     }
 
-    // 원형(디스크) 메쉬: 중심 + 둘레(seg+1개, 마지막은 시작점과 동일)
     Mesh BuildDiscMesh(float R, int seg)
     {
         seg = Mathf.Max(3, seg);
 
         Mesh m = new Mesh();
-        int vCount = seg + 2; // center + (0..seg) 둘레 + 클로저 1
+        int vCount = seg + 2;
         var v = new Vector3[vCount];
         var n = new Vector3[vCount];
         var uv = new Vector2[vCount];
 
         v[0] = Vector3.zero; n[0] = Vector3.up; uv[0] = new Vector2(0.5f, 0.5f);
 
-        // 0..seg(포함)까지 돌면서 2π를 커버(마지막 점은 시작점과 동일 각도)
         for (int i = 0; i <= seg; i++)
         {
-            float th = Mathf.PI * 2f * i / seg;    // 0 ~ 2π
+            float th = Mathf.PI * 2f * i / seg;
             float x = Mathf.Sin(th) * R;
             float z = Mathf.Cos(th) * R;
             int idx = i + 1;
@@ -150,4 +159,3 @@ public class CircleWarning : MonoBehaviour
         else m.color = c;
     }
 }
-

@@ -39,7 +39,7 @@ public class Attack1Statement : StateMachineBehaviour
         if (slashSfx == null) return;
         var audio = animator.GetComponent<AudioSource>();
         if (audio)
-            audio.PlayOneShot(slashSfx, 1f);  // 한 번만 재생, 겹쳐도 OK
+            audio.PlayOneShot(slashSfx, 1f);  
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

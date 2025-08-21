@@ -4,9 +4,9 @@ using Unity.Cinemachine;
 
 public class BossPhaseCutscene : MonoBehaviour
 {
-    public MutantAI bossAI;               
-    public Transform boss;                
-    public CinemachineCamera playerCam;   
+    public MutantAI bossAI;
+    public Transform boss;
+    public CinemachineCamera playerCam;
     public CinemachineCamera cutsceneCam;
     public GameObject Phase2Effect1;
     public GameObject Phase2Effect2;
@@ -14,17 +14,21 @@ public class BossPhaseCutscene : MonoBehaviour
     public string playerCamTag = "PlayerCamera";
     public string cutsceneCamTag = "PhaseCutSceneCamera";
 
-    public float distanceBack = 6f;   
-    public float height = 2f;         
-    public float sideOffset = 1.5f;   
+    public float distanceBack = 6f;
+    public float height = 2f;
+    public float sideOffset = 1.5f;
 
-    public float blendIn = 0.6f;  
-    public float hold = 2.2f;     
-    public float blendOut = 0.6f; 
+    public float blendIn = 0.6f;
+    public float hold = 2.2f;
+    public float blendOut = 0.6f;
 
     public Behaviour[] disableDuringCutscene;
 
-    private bool played = false;
+    public AudioClip phase2Sfx;
+    [Range(0f, 1f)] public float phase2SfxVolume = 1f;
+
+    bool played = false;
+    AudioSource sfx;
 
     void OnEnable()
     {
@@ -34,6 +38,15 @@ public class BossPhaseCutscene : MonoBehaviour
     void OnDisable()
     {
         if (bossAI != null) bossAI.OnPhaseChanged -= OnPhaseChanged;
+    }
+
+    void EnsureSfx()
+    {
+        if (sfx) return;
+        sfx = gameObject.AddComponent<AudioSource>();
+        sfx.playOnAwake = false;
+        sfx.loop = false;
+        sfx.spatialBlend = 0f;
     }
 
     private void OnPhaseChanged(MutantPhase phase)
@@ -95,7 +108,10 @@ public class BossPhaseCutscene : MonoBehaviour
         Phase2Effect1.SetActive(true);
         Phase2Effect2.SetActive(true);
 
-        anim.SetTrigger("Rage"); 
+        EnsureSfx();
+        if (phase2Sfx) sfx.PlayOneShot(phase2Sfx, phase2SfxVolume);
+
+        anim.SetTrigger("Rage");
         anim.SetBool("IsPhase2", true);
         yield return new WaitForSeconds(blendIn + hold);
 

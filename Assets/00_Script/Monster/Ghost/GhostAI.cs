@@ -45,10 +45,21 @@ public class GhostAI : MonoBehaviour
     private Vector3 cachedTargetPos;
 
     private MonsterState ms;
+
+    [Header("»ç¿îµå")]
+    public AudioClip attackSfx;
+    [Range(0f, 1f)] public float attackVolume = 1f;
+    public bool attackSfx3D = true;
+    private AudioSource sfxSrc;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+
+        sfxSrc = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        sfxSrc.playOnAwake = false;
+        sfxSrc.loop = false;
+        sfxSrc.spatialBlend = attackSfx3D ? 1f : 0f;
     }
 
     void OnEnable()
@@ -127,6 +138,13 @@ public class GhostAI : MonoBehaviour
         if (attackTimer > 0f || IsAttackPlaying()) return;
 
         if (animator) animator.SetTrigger(attackTrigger);
+
+        if (attackSfx)
+        {
+            sfxSrc.spatialBlend = attackSfx3D ? 1f : 0f; 
+            sfxSrc.PlayOneShot(attackSfx, attackVolume);
+        }
+
         attackTimer = attackInterval;
 
 

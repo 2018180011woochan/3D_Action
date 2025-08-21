@@ -65,6 +65,9 @@ MonoBehaviour:
   hitboxPath: Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_RightShoulder/Character1_RightArm/Character1_RightForeArm/Character1_RightHand/HitBox
   windowStartFrame: 2
   windowEndFrame: 32
+  swingSfx: {fileID: 8300000, guid: af1a29b34abc19b44a652af6047326b8, type: 3}
+  swingVolume: 1
+  swingDelay: 0.5
 --- !u!1101 &-6763920776250193089
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -305,6 +308,9 @@ MonoBehaviour:
   hitboxPath: Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_RightShoulder/Character1_RightArm/Character1_RightForeArm/Character1_RightHand/HitBox
   windowStartFrame: 2
   windowEndFrame: 32
+  swingSfx: {fileID: 8300000, guid: af1a29b34abc19b44a652af6047326b8, type: 3}
+  swingVolume: 1
+  swingDelay: 0.5
 --- !u!1101 &-2352610751120733134
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -545,6 +551,9 @@ MonoBehaviour:
   hitboxPath: Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_RightShoulder/Character1_RightArm/Character1_RightForeArm/Character1_RightHand/HitBox
   windowStartFrame: 2
   windowEndFrame: 32
+  swingSfx: {fileID: 8300000, guid: af1a29b34abc19b44a652af6047326b8, type: 3}
+  swingVolume: 1
+  swingDelay: 0.3
 --- !u!1101 &-148618262950374079
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2361,6 +2370,9 @@ MonoBehaviour:
   hitboxPath: Character1_Reference/Character1_Hips/Character1_Spine/Character1_Spine1/Character1_Spine2/Character1_LeftShoulder/Character1_LeftArm/Character1_LeftForeArm/Character1_LeftHand/HitBox
   windowStartFrame: 2
   windowEndFrame: 32
+  swingSfx: {fileID: 8300000, guid: af1a29b34abc19b44a652af6047326b8, type: 3}
+  swingVolume: 1
+  swingDelay: 0.7
 --- !u!1101 &8928172598252286375
 AnimatorStateTransition:
   m_ObjectHideFlags: 1

@@ -21,6 +21,11 @@ public class MutantPhase1 : MonoBehaviour
     bool started = false;
     float attackTimer = 0f;
 
+    [Header("»ç¿îµå")]
+    public AudioClip roarSfx;
+    public float roarVolume = 1f;
+    private AudioSource roarSrc;
+
     void Awake()
     {
     }
@@ -30,10 +35,21 @@ public class MutantPhase1 : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         mutantAI.agent.updateRotation = true;
         mutantAI.agent.isStopped = true;
+
+        roarSrc = gameObject.AddComponent<AudioSource>();
+        roarSrc.playOnAwake = false;
+        roarSrc.loop = false;
+        roarSrc.spatialBlend = 0f;   
+        roarSrc.volume = roarVolume;
+
         StartCoroutine(BeginAfterDelay());
     }
 
-    IEnumerator BeginAfterDelay() { yield return new WaitForSeconds(4f); started = true; }
+    IEnumerator BeginAfterDelay() {
+        roarSrc.PlayOneShot(roarSfx, roarVolume);
+        yield return new WaitForSeconds(4f);
+        started = true;
+    }
 
     void Update()
     {

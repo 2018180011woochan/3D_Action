@@ -11465,6 +11465,9 @@ MonoBehaviour:
   knockbackForce: 10
   HealEffect: {fileID: 4400417614324756487, guid: 0fc1ff5563cddb642b743d7b5bf7b90a, type: 3}
   StunEffect: {fileID: 2223927061275390260, guid: 5864289a59fd7f9469d3413b2d203982, type: 3}
+  blockSfx: {fileID: 8300000, guid: e74e8c51632a095479b9d27b2e376c31, type: 3}
+  hitSfx: {fileID: 8300000, guid: 8a6bee19116d2ea44b5fdeb2b9f76f5b, type: 3}
+  Volume: 1
 --- !u!65 &421454427
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11511,6 +11514,9 @@ MonoBehaviour:
   DustEffect: {fileID: 7740353523680721667, guid: c17fb4aba148c2940982edaf5e51f20d, type: 3}
   playerCamera: {fileID: 75819275}
   skillCutsceneCamera: {fileID: 280357150}
+  skillReadySfx: {fileID: 8300000, guid: 9ae51581261fba34493fe84670e4f17c, type: 3}
+  dashSfx: {fileID: 8300000, guid: ba99417d37ec7224cb855ebaf009f0a2, type: 3}
+  explosionSfx: {fileID: 8300000, guid: 53cdd0bcdb8c12448925368bc6c079da, type: 3}
 --- !u!143 &421454429
 CharacterController:
   m_ObjectHideFlags: 0
@@ -11561,11 +11567,113 @@ MonoBehaviour:
   dashDuration: 0.2
   dashCooldown: 0.3
   cameraTransform: {fileID: 75819276}
+  runLoopSfx: {fileID: 8300000, guid: b97d7e707d16fec49b0e6039dc9881c5, type: 3}
+  runVolume: 0.8
+  jumpSfx: {fileID: 8300000, guid: 69fde2b6d72ca6344aa87329da81a6a6, type: 3}
+  drawSfx: {fileID: 8300000, guid: ba99417d37ec7224cb855ebaf009f0a2, type: 3}
+  jumpVolume: 1
 --- !u!4 &421454432 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
   m_PrefabInstance: {fileID: 947623455}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &421454433
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421454423}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &422456741
 GameObject:
   m_ObjectHideFlags: 0
@@ -20659,6 +20767,7 @@ GameObject:
   - component: {fileID: 855027765}
   - component: {fileID: 855027764}
   - component: {fileID: 855027763}
+  - component: {fileID: 855027770}
   m_Layer: 0
   m_Name: Necromanser
   m_TagString: Boss
@@ -20802,7 +20911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 10
+  maxHP: 100
   monsterName: Necromanser
   isDead: 0
   onHealthChanged:
@@ -20810,6 +20919,11 @@ MonoBehaviour:
       m_Calls: []
   StunEffect: {fileID: 0}
   Potion: {fileID: 0}
+  hitSfx: {fileID: 8300000, guid: 8a6bee19116d2ea44b5fdeb2b9f76f5b, type: 3}
+  hitVolume: 1
+  redSkeletonDeathSfx: {fileID: 0}
+  GolemDeathSfx: {fileID: 0}
+  MutantDeathSfx: {fileID: 0}
 --- !u!95 &855027768
 Animator:
   serializedVersion: 7
@@ -20854,6 +20968,103 @@ Transform:
   - {fileID: 93699357}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!82 &855027770
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 855027762}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &855656451
 GameObject:
   m_ObjectHideFlags: 0
@@ -23231,6 +23442,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 421454424}
+    - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 421454433}
     - targetCorrespondingSourceObject: {fileID: 3027529118582626968, guid: 51328a00c9eb8674e9b3007bd5ec669b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1958754708}
@@ -30020,6 +30234,10 @@ PrefabInstance:
     - target: {fileID: 400000, guid: 1386846904eb0e2449516a42bd256c8e, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 199560624152104208, guid: 1386846904eb0e2449516a42bd256c8e, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

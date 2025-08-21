@@ -19,10 +19,22 @@ public class SamuraiCombat : MonoBehaviour
     [Header("Camera")]
     public CinemachineCamera playerCamera;
     public CinemachineCamera skillCutsceneCamera;
+
+    [Header("Sound")]
+    public AudioClip skillReadySfx;   // 준비 상태 시작
+    public AudioClip dashSfx;         // 대시 시작
+    public AudioClip explosionSfx;    // 폭발 순간
+    private AudioSource sfx;
+
     void Awake()
-    { 
+    {
         animator = GetComponent<Animator>();
         movementScript = GetComponent<SamuraiMovement>();
+
+        sfx = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        sfx.playOnAwake = false;
+        sfx.loop = false;
+        sfx.spatialBlend = 0f; // 2D
     }
 
     void Update()
@@ -59,7 +71,6 @@ public class SamuraiCombat : MonoBehaviour
         }
     }
 
-
     private void Attack1()
     {
         movementScript.isBusy = true;
@@ -84,6 +95,7 @@ public class SamuraiCombat : MonoBehaviour
 
         animator.SetTrigger("SkillReady");
         Instantiate(SkillReadyEffect, transform.position, Quaternion.identity);
+        if (skillReadySfx) sfx.PlayOneShot(skillReadySfx, 1f);   // 준비 사운드
 
         playerCamera.Priority = 0;
         skillCutsceneCamera.Priority = 10;
@@ -97,19 +109,18 @@ public class SamuraiCombat : MonoBehaviour
         for (int i = 0; i < skillEffects.Length; i++)
         {
             GameObject skillObj = Instantiate(skillEffects[i], spawnPos, Quaternion.identity);
-
-
-            ParticleSystem[] particles = skillObj.GetComponentsInChildren<ParticleSystem>();
-            foreach (ParticleSystem ps in particles)
-            {
+            foreach (var ps in skillObj.GetComponentsInChildren<ParticleSystem>())
                 ps.Play();
-            }
 
-            yield return new WaitForSeconds(0.2f); 
+            yield return new WaitForSeconds(0.2f);
         }
-        StartCoroutine(MoveCameraAfterDelay());
 
+        StartCoroutine(MoveCameraAfterDelay());
+        if (sfx.isPlaying) sfx.Stop();
+        // 대시 사운드
+        if (dashSfx) sfx.PlayOneShot(dashSfx, 1f);
         yield return StartCoroutine(DashForward(3f, 0.15f));
+
         StartCoroutine(SpawnAfterEffects(spawnPos));
 
         yield return new WaitForSeconds(2f);
@@ -140,30 +151,25 @@ public class SamuraiCombat : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.position = end; // 보정
+        transform.position = end;
     }
 
     private IEnumerator SpawnAfterEffects(Vector3 originPos)
     {
-        // 2초 뒤 Explosion
         yield return new WaitForSeconds(2f);
+
         GameObject explosion = Instantiate(ExplosionEffect, originPos, Quaternion.identity);
-
-        ParticleSystem[] explosionParticles = explosion.GetComponentsInChildren<ParticleSystem>();
-        foreach (ParticleSystem ps in explosionParticles)
-        {
+        foreach (var ps in explosion.GetComponentsInChildren<ParticleSystem>())
             ps.Play();
-        }
 
-        // 1초 뒤 Dust
+        // 폭발 사운드
+        if (explosionSfx) sfx.PlayOneShot(explosionSfx, 1f);
+
         yield return new WaitForSeconds(0.5f);
-        GameObject dust = Instantiate(DustEffect, originPos, Quaternion.identity);
 
-        ParticleSystem[] dustParticles = dust.GetComponentsInChildren<ParticleSystem>();
-        foreach (ParticleSystem ps in dustParticles)
-        {
+        GameObject dust = Instantiate(DustEffect, originPos, Quaternion.identity);
+        foreach (var ps in dust.GetComponentsInChildren<ParticleSystem>())
             ps.Play();
-        }
     }
 
     public void OnAttackEnd()

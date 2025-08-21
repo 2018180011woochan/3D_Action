@@ -4,53 +4,63 @@ using UnityEngine;
 public class SectorWarning : MonoBehaviour
 {
     [Header("Shape")]
-    public float radius = 10f;                 // 부채꼴 반경
-    public float angleDeg = 60f;               // 부채꼴 각도
-    [Range(8, 128)] public int segments = 48;  // 가장자리 분할
+    public float radius = 10f;
+    public float angleDeg = 60f;
+    [Range(8, 128)] public int segments = 48;
 
     [Header("Visuals")]
-    public Material baseMaterial;             
+    public Material baseMaterial;
     public Color lightRed = new Color(1f, 0f, 0f, 0.25f);
     public Color darkRed = new Color(1f, 0f, 0f, 0.80f);
-    public float fillDuration = 2f;            // 채우는 시간(초)
-    public float yOffset = 0.02f;              // z-fight 방지
+    public float fillDuration = 2f;
+    public float yOffset = 0.02f;
 
     [Header("Align & Attack")]
-    public float warningYawOffsetDeg = 0f;     // 경고 부채꼴 로컬 Y 회전 보정
-    public GameObject attackPrefab;            // 공격 이펙트 프리팹
-    public float attackYawOffsetDeg = 270f;    // 공격 프리팹 로컬 Y 회전 보정
-    public float attackForwardOffset = 0f;     // 경고의 +Z 기준 앞/뒤
-    public Vector3 attackOffset;               // 공격 프리팹 로컬 오프셋
+    public float warningYawOffsetDeg = 0f;
+    public GameObject attackPrefab;
+    public float attackYawOffsetDeg = 270f;
+    public float attackForwardOffset = 0f;
+    public Vector3 attackOffset;
 
     [Header("Ground")]
     public bool alignToGround = true;
     public LayerMask groundMask = ~0;
 
-    Transform warnRoot;   // yaw 보정 적용용 컨테이너
-    Transform fill;       // 진한 채움
+    [Header("Sound")]
+    public AudioClip attackSfx;
+
+    Transform warnRoot;
+    Transform fill;
     public GameObject Boss;
+
+    AudioSource sfx;
+
     void Start()
     {
         if (alignToGround) AlignToGround();
         Build();
+        sfx = gameObject.AddComponent<AudioSource>();
+        sfx.playOnAwake = false;
+        sfx.loop = false;
+        sfx.spatialBlend = 0f;
         StartCoroutine(FillThenAttack());
         Boss = GameObject.FindWithTag("Boss");
     }
+
     void Update()
     {
         if (Boss.GetComponent<NecromanserAI>().isDead) Destroy(gameObject);
     }
+
     void Build()
     {
         var mesh = BuildSectorMesh(radius, angleDeg, segments);
 
-        // 컨테이너(경고 yaw 보정)
         var root = new GameObject("WarnRoot");
         root.transform.SetParent(transform, false);
         root.transform.localRotation = Quaternion.Euler(0f, warningYawOffsetDeg, 0f);
         warnRoot = root.transform;
 
-        // 1) 밝은 바닥
         var baseGO = new GameObject("WarnBase");
         baseGO.transform.SetParent(warnRoot, false);
         baseGO.transform.localPosition = Vector3.up * yOffset;
@@ -59,7 +69,6 @@ public class SectorWarning : MonoBehaviour
         mr.sharedMaterial = new Material(baseMaterial);
         SetColor(mr.sharedMaterial, lightRed);
 
-        // 2) 진한 채움(스케일로 0→1)
         var fillGO = new GameObject("WarnFill");
         fillGO.transform.SetParent(warnRoot, false);
         fillGO.transform.localPosition = Vector3.up * (yOffset + 0.001f);
@@ -89,21 +98,16 @@ public class SectorWarning : MonoBehaviour
             }
         }
 
-        // 공격 이펙트 소환(경고의 방향을 기준으로 회전/오프셋 적용)
         if (attackPrefab)
         {
             var warnRot = transform.rotation * Quaternion.Euler(0f, warningYawOffsetDeg, 0f);
             var finalRot = warnRot * Quaternion.Euler(0f, attackYawOffsetDeg, 0f);
-
-            Vector3 pos =
-                transform.position
-              + warnRot * (Vector3.forward * attackForwardOffset)
-              + finalRot * attackOffset;
-
+            Vector3 pos = transform.position + warnRot * (Vector3.forward * attackForwardOffset) + finalRot * attackOffset;
             Instantiate(attackPrefab, pos, finalRot);
         }
 
-        Destroy(gameObject); // 경고 제거
+        if (attackSfx) AudioSource.PlayClipAtPoint(attackSfx, transform.position, 1f);
+        Destroy(gameObject);
     }
 
     Mesh BuildSectorMesh(float R, float angDeg, int seg)
@@ -122,7 +126,7 @@ public class SectorWarning : MonoBehaviour
 
         for (int i = 0; i <= seg; i++)
         {
-            float th = -half + total * i / seg; // -half ~ +half
+            float th = -half + total * i / seg;
             float x = Mathf.Sin(th) * R;
             float z = Mathf.Cos(th) * R;
             int idx = i + 1;
@@ -151,7 +155,7 @@ public class SectorWarning : MonoBehaviour
         var hits = Physics.RaycastAll(start, Vector3.down, 100f, groundMask, QueryTriggerInteraction.Ignore);
         if (hits == null || hits.Length == 0) return;
 
-        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance)); // 가까운 것부터
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
         for (int i = 0; i < hits.Length; i++)
         {

@@ -8,10 +8,19 @@ public class MutantRightHandAttackBehaviour : StateMachineBehaviour
     public int windowStartFrame = 2;
     public int windowEndFrame = 32;
 
-    Transform hitBox;  
+    Transform hitBox;
     AttackHitBox hit;
     float startN, endN;
     bool active;
+
+    [Header("SFX")]
+    public AudioClip swingSfx;
+    public float swingVolume = 1f;
+    public float swingDelay = 0.5f;
+    AudioSource sfxSrc;
+
+    bool sfxPending = false;
+    float sfxPlayAt = 0f;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -21,7 +30,7 @@ public class MutantRightHandAttackBehaviour : StateMachineBehaviour
             if (hitBox) hit = hitBox.GetComponent<AttackHitBox>();
         }
 
-        hitBox.gameObject.SetActive(false);
+        if (hitBox) hitBox.gameObject.SetActive(false);
         active = false;
 
         var infos = animator.GetCurrentAnimatorClipInfo(layerIndex);
@@ -34,12 +43,19 @@ public class MutantRightHandAttackBehaviour : StateMachineBehaviour
         }
         else
         {
-            float total = stateInfo.length * 60f;    
+            float total = stateInfo.length * 60f;
             startN = Mathf.Clamp01(windowStartFrame / total);
             endN = Mathf.Clamp01(windowEndFrame / total);
         }
 
-        hit.ResetSwing();
+        if (hit) hit.ResetSwing();
+
+        sfxSrc = animator.GetComponent<AudioSource>()
+              ?? animator.GetComponentInParent<AudioSource>()
+              ?? animator.GetComponentInChildren<AudioSource>();
+
+        sfxPending = false;
+        sfxPlayAt = 0f;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -51,14 +67,24 @@ public class MutantRightHandAttackBehaviour : StateMachineBehaviour
 
         if (inWindow && !active)
         {
-            hit.ResetSwing();                 
+            if (hit) hit.ResetSwing();
             hitBox.gameObject.SetActive(true);
             active = true;
+
+            sfxPending = true;
+            sfxPlayAt = Time.time + swingDelay;
         }
         else if (!inWindow && active)
         {
             hitBox.gameObject.SetActive(false);
             active = false;
+            sfxPending = false;
+        }
+
+        if (sfxPending && Time.time >= sfxPlayAt)
+        {
+            PlaySwingSfx(animator);
+            sfxPending = false;
         }
     }
 
@@ -66,6 +92,14 @@ public class MutantRightHandAttackBehaviour : StateMachineBehaviour
     {
         if (hitBox) hitBox.gameObject.SetActive(false);
         active = false;
+        sfxPending = false;
+    }
+
+    void PlaySwingSfx(Animator animator)
+    {
+        if (!swingSfx) return;
+        if (sfxSrc) sfxSrc.PlayOneShot(swingSfx, swingVolume);
+        else AudioSource.PlayClipAtPoint(swingSfx, animator.transform.position, swingVolume);
     }
 
     static Transform TryFindByPathOrLeaf(Transform root, string path)

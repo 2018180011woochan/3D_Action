@@ -4,8 +4,8 @@ using UnityEngine.AI;
 public class GolemAI : MonoBehaviour
 {
     [Header("탐지/추격")]
-    public float detectionRange = 12f;         // 추격 시작 거리
-    public float loseSightMultiplier = 1.25f;   // 시야 이탈 여유 배수
+    public float detectionRange = 12f;
+    public float loseSightMultiplier = 1.25f;
     public float chaseSpeed = 3.5f;
     public float stoppingDistance = 2f;
 
@@ -14,26 +14,50 @@ public class GolemAI : MonoBehaviour
     public float wanderInterval = 3f;
     public float wanderSpeed = 2f;
 
-
     [Header("공격")]
-    public float attackRange = 3.5f;      // 이 거리 안에 들어오면 공격 시작
-    public float attackCooldown = 1.0f;   // 1,2타 끝난 뒤 다음 공격까지 대기
+    public float attackRange = 3.5f;
+    public float attackCooldown = 1.0f;
     public string attackTrigger1 = "Attack1";
     public string attackTrigger2 = "Attack2";
 
+    [Header("피격 정지")]
+    public string[] hitTags = { "Hit" }; // 애니메이터 상태 Tag
+    public float hitStopSeconds = 0.35f;          // 데미지 직후 강제 정지 시간
+
     private NavMeshAgent agent;
     private Transform player;
-    private Animator animator;      
-    private float moveThreshold = 0.05f; 
+    private Animator animator;
+    private float moveThreshold = 0.05f;
     private float wanderTimer;
     private float attackTimer;
     public enum State { Wander, Chase, Attack, Dead }
     public State state = State.Wander;
     private int attackPhase = 0;
+
+    // 데미지 콜백용
+    private MonsterState ms;
+    private float hitStopTimer = 0f;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+    }
+
+    void OnEnable()
+    {
+        ms = GetComponent<MonsterState>();
+        if (ms) ms.OnDamaged += OnDamaged;
+    }
+
+    void OnDisable()
+    {
+        if (ms) ms.OnDamaged -= OnDamaged;
+    }
+
+    void OnDamaged(float dmg)
+    {
+        hitStopTimer = Mathf.Max(hitStopTimer, hitStopSeconds);
     }
 
     void Start()
@@ -55,6 +79,19 @@ public class GolemAI : MonoBehaviour
     void Update()
     {
         if (state == State.Dead) return;
+
+        // === 피격 중 정지 처리 ===
+        if (hitStopTimer > 0f || IsHitPlaying())
+        {
+            hitStopTimer -= Time.deltaTime;
+            agent.isStopped = true;
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+            animator.SetBool("IsMoving", false);
+            return; // 이 프레임은 추가 로직 스킵
+        }
+        // ========================
+
         if (attackTimer > 0f) attackTimer -= Time.deltaTime;
         float dist = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;
 
@@ -85,14 +122,15 @@ public class GolemAI : MonoBehaviour
                 if (dist <= attackRange && attackTimer <= 0f && !IsAttackPlaying())
                 {
                     state = State.Attack;
-                    EnterAttack();     // 정지/회전
-                    TriggerAttack1();  // 1타부터
+                    EnterAttack();
+                    TriggerAttack1();
                     attackPhase = 1;
                 }
 
                 if (dist > detectionRange * loseSightMultiplier)
                     state = State.Wander;
                 break;
+
             case State.Attack:
                 if (!player) { ExitToChase(); break; }
 
@@ -122,9 +160,9 @@ public class GolemAI : MonoBehaviour
 
         float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
         bool isMoving = agent.hasPath && agent.remainingDistance > agent.stoppingDistance && speed > moveThreshold;
-
         animator.SetBool("IsMoving", isMoving);
     }
+
     void EnterAttack()
     {
         agent.isStopped = true;
@@ -156,7 +194,23 @@ public class GolemAI : MonoBehaviour
     {
         var st = animator.GetCurrentAnimatorStateInfo(0);
         if (animator.IsInTransition(0)) return true;
-        return st.IsTag("Attack") && st.normalizedTime < 0.98f; 
+        return st.IsTag("Attack") && st.normalizedTime < 0.98f;
+    }
+
+    bool IsHitPlaying()
+    {
+        if (!animator) return false;
+        var st = animator.GetCurrentAnimatorStateInfo(0);
+        // 현재 상태가 Hit 관련 태그인지 확인
+        for (int i = 0; i < hitTags.Length; i++)
+        {
+            var tag = hitTags[i];
+            if (!string.IsNullOrEmpty(tag) && st.IsTag(tag))
+                return st.normalizedTime < 0.98f;
+        }
+        // 태그를 안 쓰고 상태명이 "GetHit"인 경우 대비
+        if (st.IsName("GetHit")) return st.normalizedTime < 0.98f;
+        return false;
     }
 
     void FacePlayer()
@@ -170,8 +224,7 @@ public class GolemAI : MonoBehaviour
     void SetRandomWanderDestination()
     {
         Vector3 random = transform.position + Random.insideUnitSphere * wanderRadius;
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(random, out hit, 4f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(random, out var hit, 4f, NavMesh.AllAreas))
             agent.SetDestination(hit.position);
     }
 

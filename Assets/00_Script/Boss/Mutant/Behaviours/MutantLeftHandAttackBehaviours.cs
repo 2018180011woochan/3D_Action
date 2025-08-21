@@ -13,6 +13,14 @@ public class MutantLeftHandAttackBehaviours : StateMachineBehaviour
     float startN, endN;
     bool active;
 
+    [Header("SFX")]
+    public AudioClip swingSfx;
+    public float swingVolume = 1f;
+    public float swingDelay = 0.5f;
+    AudioSource sfxSrc;
+    bool sfxPending;
+    float sfxPlayAt;
+
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (!hitBox)
@@ -40,6 +48,13 @@ public class MutantLeftHandAttackBehaviours : StateMachineBehaviour
         }
 
         hit.ResetSwing();
+
+        sfxSrc = animator.GetComponent<AudioSource>()
+              ?? animator.GetComponentInParent<AudioSource>()
+              ?? animator.GetComponentInChildren<AudioSource>();
+
+        sfxPending = false;
+        sfxPlayAt = 0f;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -54,18 +69,36 @@ public class MutantLeftHandAttackBehaviours : StateMachineBehaviour
             hit.ResetSwing();
             hitBox.gameObject.SetActive(true);
             active = true;
+
+            sfxPending = true;
+            sfxPlayAt = Time.time + swingDelay;
         }
         else if (!inWindow && active)
         {
             hitBox.gameObject.SetActive(false);
             active = false;
+            sfxPending = false;
         }
+
+        if (sfxPending && Time.time >= sfxPlayAt)
+        {
+            PlaySwingSfx(animator);
+            sfxPending = false;
+        }
+    }
+
+    void PlaySwingSfx(Animator animator)
+    {
+        if (!swingSfx) return;
+        if (sfxSrc) sfxSrc.PlayOneShot(swingSfx, swingVolume);
+        else AudioSource.PlayClipAtPoint(swingSfx, animator.transform.position, swingVolume);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (hitBox) hitBox.gameObject.SetActive(false);
         active = false;
+        sfxPending = false;
     }
 
     static Transform TryFindByPathOrLeaf(Transform root, string path)

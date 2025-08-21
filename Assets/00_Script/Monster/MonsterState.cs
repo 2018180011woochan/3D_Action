@@ -22,6 +22,11 @@ public class MonsterState : MonoBehaviour
     public AudioClip hitSfx;
     public float hitVolume = 1f;
     private AudioSource sfx;
+
+    [Header("몬스터별 사망 사운드")]
+    public AudioClip redSkeletonDeathSfx;
+    public AudioClip GolemDeathSfx;
+    public AudioClip MutantDeathSfx;
     void Awake()
     {
         currentHP = maxHP;
@@ -71,20 +76,24 @@ public class MonsterState : MonoBehaviour
                     spawnPos,
                     Quaternion.identity
                     );
+                sfx.PlayOneShot(GolemDeathSfx, 1f);
             }
             else if (monsterName == "Mutant")
             {
                 GetComponent<MutantAI>()?.HandleDeath(5f, 1f);
                 BossScene1Manager.Instance?.BossDied();
+                sfx.PlayOneShot(MutantDeathSfx, 1f);
             }
             else if (monsterName == "Necromanser")
             {
                 GetComponent<NecromanserAI>().isDead = true;
+                sfx.PlayOneShot(GolemDeathSfx, 1f);
             }
             else if (monsterName == "Zombi")
             {
                 GetComponent<ZombiAI>().isDead = true;         
                 GetComponent<ZombiDissolve>()?.Play();
+                sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
             }
             else if (monsterName == "Ghost")
             {
@@ -114,7 +123,7 @@ public class MonsterState : MonoBehaviour
                     spawnPos,
                     Quaternion.identity
                     );
-
+                sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
             }
 
             animator.SetTrigger("Dead");

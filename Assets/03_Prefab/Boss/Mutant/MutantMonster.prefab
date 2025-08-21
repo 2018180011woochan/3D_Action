@@ -23010,6 +23010,7 @@ GameObject:
   - component: {fileID: 7224728153780029815}
   - component: {fileID: 7467424356245242986}
   - component: {fileID: 3619454293728513153}
+  - component: {fileID: 4743288030895267573}
   m_Layer: 0
   m_Name: MutantMonster
   m_TagString: Monster
@@ -23075,6 +23076,9 @@ MonoBehaviour:
   startValue: 1
   endValue: 0
   duration: 1
+  outDelay: 5
+  outDuration: 1
+  destroyAfterOut: 1
 --- !u!65 &5813129508305888074
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23114,7 +23118,13 @@ MonoBehaviour:
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
+  StunEffect: {fileID: 0}
   Potion: {fileID: 0}
+  hitSfx: {fileID: 8300000, guid: 8a6bee19116d2ea44b5fdeb2b9f76f5b, type: 3}
+  hitVolume: 1
+  redSkeletonDeathSfx: {fileID: 0}
+  GolemDeathSfx: {fileID: 0}
+  MutantDeathSfx: {fileID: 8300000, guid: 247cdf63c46f66840b3f16521b2fc086, type: 3}
 --- !u!54 &1451137247348800478
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -23183,6 +23193,8 @@ MonoBehaviour:
   - Attack3
   - Attack4
   attackCooldown: 0.8
+  roarSfx: {fileID: 8300000, guid: 74f425a53a628ed45aa896e5ed339155, type: 3}
+  roarVolume: 1
 --- !u!114 &7224728153780029815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23206,6 +23218,7 @@ MonoBehaviour:
   - Attack3
   - Attack4
   attackHoldSeconds: 4
+  phase2FireTag: Phase2Fire
   phase2FireRoot: {fileID: 0}
 --- !u!195 &7467424356245242986
 NavMeshAgent:
@@ -23258,6 +23271,105 @@ MonoBehaviour:
   disableDuringCutscene:
   - {fileID: 8172422821082942585}
   - {fileID: 7224728153780029815}
+  phase2Sfx: {fileID: 8300000, guid: 63bee272cf131834abe9a1bab51fda19, type: 3}
+  phase2SfxVolume: 1
+--- !u!82 &4743288030895267573
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4469192234749095143}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4520754241837364111
 GameObject:
   m_ObjectHideFlags: 0

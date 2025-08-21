@@ -15,10 +15,21 @@ public class GhostProjectile : MonoBehaviour
     private bool canDamage = false;
     private bool hasHit = false;
 
+    [Header("사운드")]
+    public AudioClip bombSfx;
+    [Range(0f, 1f)] public float bombVolume = 1f;
+    private AudioSource audioSrc;
     void Awake()
     {
         col = GetComponent<BoxCollider>();
-        if (col == null) Debug.LogWarning("BoxCollider가 필요합니다.");
+
+        audioSrc = GetComponent<AudioSource>();
+        if (!audioSrc)
+        {
+            audioSrc = gameObject.AddComponent<AudioSource>();
+            audioSrc.playOnAwake = false;
+            audioSrc.spatialBlend = 1f; 
+        }
     }
 
     void OnEnable()
@@ -35,6 +46,8 @@ public class GhostProjectile : MonoBehaviour
 
         if (col) col.enabled = true;
         canDamage = true;
+
+        audioSrc.PlayOneShot(bombSfx, bombVolume);
     }
 
     void TryHit(GameObject other)

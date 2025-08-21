@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class SamuraiMovement : MonoBehaviour
@@ -35,10 +36,34 @@ public class SamuraiMovement : MonoBehaviour
 
     bool isFirstDraw = true;
 
+    [Header("사운드")]
+    public AudioClip runLoopSfx;
+    public float runVolume = 0.8f;
+    private AudioSource runSrc;
+
+    public AudioClip jumpSfx;
+    public AudioClip drawSfx;
+    [Range(0f, 1f)] public float jumpVolume = 1f;
+    private AudioSource sfxSrc;
     void Awake()
     {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+
+        if (runLoopSfx)
+        {
+            runSrc = gameObject.AddComponent<AudioSource>();
+            runSrc.clip = runLoopSfx;
+            runSrc.playOnAwake = false;
+            runSrc.loop = true;        
+            runSrc.spatialBlend = 0f;  
+            runSrc.volume = runVolume;
+        }
+
+        sfxSrc = gameObject.AddComponent<AudioSource>();
+        sfxSrc.playOnAwake = false;
+        sfxSrc.loop = false;
+        sfxSrc.spatialBlend = 0f;
     }
 
     void Update()
@@ -66,7 +91,35 @@ public class SamuraiMovement : MonoBehaviour
         {
             HandleCombatMove();
         }
+        UpdateRunSfx();
     }
+
+    void UpdateRunSfx()
+    {
+        if (!runSrc) return;
+
+        // 가로 속도만 사용
+        Vector3 hv = controller.velocity; hv.y = 0f;
+        float speed = hv.magnitude;
+
+        bool shouldPlay =
+            isGrounded &&            
+            !isBusy &&               
+            !isDashing &&            
+            isRunning &&             
+            speed > 0.1f;            
+
+        if (shouldPlay)
+        {
+            if (!runSrc.isPlaying) runSrc.Play();
+            runSrc.pitch = Mathf.Lerp(0.95f, 1.05f, Mathf.InverseLerp(moveSpeed, runSpeed, speed));
+        }
+        else
+        {
+            if (runSrc.isPlaying) runSrc.Stop();
+        }
+    }
+
     private void ApplyGravity()
     {
         isGrounded = controller.isGrounded;
@@ -137,7 +190,12 @@ public class SamuraiMovement : MonoBehaviour
 
         controller.Move(finalVelocity * Time.deltaTime);
     }
-
+    private Coroutine drawSfxCo;
+    private IEnumerator PlayDrawSfxDelayed()
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (drawSfx) sfxSrc.PlayOneShot(drawSfx, 1f);
+    }
     private void HandleDraw()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -149,6 +207,7 @@ public class SamuraiMovement : MonoBehaviour
                     animator.SetTrigger("Draw");
                     isBusy = true;
                     isFirstDraw = false;
+                    StartCoroutine(PlayDrawSfxDelayed());
                 }
                 else
                     Stance = true;
@@ -165,7 +224,7 @@ public class SamuraiMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             animator.SetTrigger("Jump");
-
+            if (jumpSfx) sfxSrc.PlayOneShot(jumpSfx, jumpVolume);
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
         }
     }
@@ -173,7 +232,7 @@ public class SamuraiMovement : MonoBehaviour
     private void HandleDash()
     {
         if (dashCooldownTimer > 0f) dashCooldownTimer -= Time.deltaTime;
-
+        
         if (isDashing)
         {
             Vector3 final = dashDirection * dashSpeed;
@@ -199,6 +258,7 @@ public class SamuraiMovement : MonoBehaviour
             dashDirection = camF;
 
             isDashing = true;
+            if (jumpSfx) sfxSrc.PlayOneShot(jumpSfx, jumpVolume);
             dashTimer = dashDuration;
 
             animator.ResetTrigger("Dash");

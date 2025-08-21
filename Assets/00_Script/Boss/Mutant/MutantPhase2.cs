@@ -49,7 +49,6 @@ public class MutantPhase2 : MonoBehaviour
             mutantAI.animator.SetBool("SlowWalk", false);
             mutantAI.animator.SetBool(runBool, false);
         }
-
         StartCoroutine(BeginAfterDelay());
     }
 
@@ -86,7 +85,7 @@ public class MutantPhase2 : MonoBehaviour
         var root = ResolvePhase2FireRoot();
         if (!root)
         {
-            Debug.LogWarning("[Phase2] Phase2Fire(tag) 오브젝트를 찾지 못했습니다.");
+            Debug.LogWarning("Phase2 오브젝트를 찾지 못했습니다.");
             return;
         }
 
