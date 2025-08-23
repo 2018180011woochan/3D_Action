@@ -55,11 +55,11 @@ public class MutantPhase2 : MonoBehaviour
     IEnumerator BeginAfterDelay()
     {
         ActivatePhase2Fire();
-        yield return new WaitForSeconds(startDelay);
+        //yield return new WaitForSeconds(startDelay);
         started = true;
         state = State.Chase;
         ResumeChase();
-        
+        yield return null;
     }
 
     [SerializeField] string phase2FireTag = "Phase2Fire";

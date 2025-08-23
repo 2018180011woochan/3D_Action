@@ -38,6 +38,7 @@ public class MonsterState : MonoBehaviour
 
     public void TakeDamage(float dmg)
     {
+        if (BossPhaseCutscene.isPlayingCutScene) return;
         if (StunEffect != null)
             StunEffect.SetActive(true);
         if (hitSfx && sfx) sfx.PlayOneShot(hitSfx, hitVolume);

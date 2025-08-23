@@ -4,6 +4,8 @@ using Unity.Cinemachine;
 
 public class BossPhaseCutscene : MonoBehaviour
 {
+    public static bool isPlayingCutScene = false;
+
     public MutantAI bossAI;
     public Transform boss;
     public CinemachineCamera playerCam;
@@ -60,10 +62,10 @@ public class BossPhaseCutscene : MonoBehaviour
         if (!playerCam || !cutsceneCam)
         {
             var pc = GameObject.FindGameObjectWithTag(playerCamTag);
-            playerCam = pc.GetComponent<CinemachineCamera>();
+            playerCam = pc ? pc.GetComponent<CinemachineCamera>() : null;
 
             var cc = GameObject.FindGameObjectWithTag(cutsceneCamTag);
-            cutsceneCam = cc.GetComponent<CinemachineCamera>();
+            cutsceneCam = cc ? cc.GetComponent<CinemachineCamera>() : null;
         }
         if (!playerCam || !cutsceneCam)
         {
@@ -73,56 +75,66 @@ public class BossPhaseCutscene : MonoBehaviour
 
         played = true;
 
-        foreach (var b in disableDuringCutscene)
-            if (b) b.enabled = false;
+        isPlayingCutScene = true;
 
-        if (bossAI.agent) { bossAI.agent.isStopped = true; bossAI.agent.ResetPath(); }
-
-        if (bossAI.animator)
+        try
         {
-            string[] attackTriggers = { "Attack1", "Attack2", "Attack3", "Attack4" };
-            foreach (var t in attackTriggers) bossAI.animator.ResetTrigger(t);
+            foreach (var b in disableDuringCutscene)
+                if (b) b.enabled = false;
 
-            string[] hit = { "GetHit1", "GetHit2", "GetHit3", "GetHit4" };
-            foreach (var t in hit) bossAI.animator.ResetTrigger(t);
+            if (bossAI.agent) { bossAI.agent.isStopped = true; bossAI.agent.ResetPath(); }
 
-            bossAI.animator.SetBool("IsWalking", false);
-            bossAI.animator.SetBool("SlowWalk", false);
+            if (bossAI.animator)
+            {
+                string[] attackTriggers = { "Attack1", "Attack2", "Attack3", "Attack4" };
+                foreach (var t in attackTriggers) bossAI.animator.ResetTrigger(t);
+
+                string[] hit = { "GetHit1", "GetHit2", "GetHit3", "GetHit4" };
+                foreach (var t in hit) bossAI.animator.ResetTrigger(t);
+
+                bossAI.animator.SetBool("IsWalking", false);
+                bossAI.animator.SetBool("SlowWalk", false);
+            }
+
+            Vector3 pos = boss.position
+                          + boss.forward * distanceBack
+                          + Vector3.up * height
+                          + boss.right * sideOffset;
+
+            Quaternion rot = Quaternion.LookRotation(boss.position - pos, Vector3.up);
+            cutsceneCam.transform.SetPositionAndRotation(pos, rot);
+
+            int originalPlayerPriority = playerCam ? playerCam.Priority : 10;
+            int originalCutscenePriority = cutsceneCam.Priority;
+
+            cutsceneCam.Priority = Mathf.Max(originalPlayerPriority + 10, 100);
+
+            var anim = boss.GetComponentInChildren<Animator>();
+
+            if (Phase2Effect1) Phase2Effect1.SetActive(true);
+            if (Phase2Effect2) Phase2Effect2.SetActive(true);
+
+            EnsureSfx();
+            if (phase2Sfx) sfx.PlayOneShot(phase2Sfx, phase2SfxVolume);
+
+            anim.SetTrigger("Rage");
+            anim.SetBool("IsPhase2", true);
+
+            yield return new WaitForSeconds(blendIn + hold);
+
+            cutsceneCam.Priority = originalCutscenePriority;
+
+            yield return new WaitForSeconds(blendOut);
         }
-
-        Vector3 pos = boss.position
-                      + boss.forward * distanceBack
-                      + Vector3.up * height
-                      + boss.right * sideOffset;
-
-        Quaternion rot = Quaternion.LookRotation(boss.position - pos, Vector3.up);
-        cutsceneCam.transform.SetPositionAndRotation(pos, rot);
-
-        int originalPlayerPriority = playerCam ? playerCam.Priority : 10;
-        int originalCutscenePriority = cutsceneCam.Priority;
-
-        cutsceneCam.Priority = Mathf.Max(originalPlayerPriority + 10, 100);
-
-        var anim = boss.GetComponentInChildren<Animator>();
-
-        Phase2Effect1.SetActive(true);
-        Phase2Effect2.SetActive(true);
-
-        EnsureSfx();
-        if (phase2Sfx) sfx.PlayOneShot(phase2Sfx, phase2SfxVolume);
-
-        anim.SetTrigger("Rage");
-        anim.SetBool("IsPhase2", true);
-        yield return new WaitForSeconds(blendIn + hold);
-
-        cutsceneCam.Priority = originalCutscenePriority;
-
-        yield return new WaitForSeconds(blendOut);
-
-        foreach (var b in disableDuringCutscene)
+        finally
         {
-            if (b is MutantPhase1) continue;
-            b.enabled = true;
+            isPlayingCutScene = false;
+
+            foreach (var b in disableDuringCutscene)
+            {
+                if (b is MutantPhase1) continue;
+                if (b) b.enabled = true;
+            }
         }
     }
 }
