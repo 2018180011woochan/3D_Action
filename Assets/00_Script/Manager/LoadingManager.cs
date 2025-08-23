@@ -11,7 +11,7 @@ public class LoadingManager : MonoBehaviour
 
     private string[] gameTips = {
         "팁: 적의 패턴을 파악하여 공격하세요",
-        "팁: 방패를 들어 공격을 막을 수 있습니다",
+        "팁: 방어 자세로 막을 수 없는 공격도 있습니다",
         "팁: Tap 키를 눌러 락온 기능을 사용할 수 있습니다",
 
     };

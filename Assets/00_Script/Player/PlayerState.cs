@@ -25,7 +25,9 @@ public class PlayerState : MonoBehaviour
     public float knockbackForce = 10f;
 
     private Coroutine healCoroutine;
-    public GameObject HealEffect;
+    public GameObject HealEffectPrefab;
+
+    private GameObject healEffectInstance;
 
     private SamuraiMovement movement;
     public GameObject StunEffect;
@@ -114,33 +116,44 @@ public class PlayerState : MonoBehaviour
         if (healCoroutine != null)
         {
             StopCoroutine(healCoroutine);
-            Destroy(HealEffect); 
+            healCoroutine = null;
+        }
+        if (healEffectInstance != null)
+        {
+            Destroy(healEffectInstance);
+            healEffectInstance = null;
         }
 
-        healCoroutine = StartCoroutine(HealCoroutine(healPerSecond, duration, HealEffect));
+        // 새로 시작
+        healCoroutine = StartCoroutine(HealCoroutine(healPerSecond, duration));
     }
 
-    IEnumerator HealCoroutine(float healPerSecond, float duration, GameObject healEffectPrefab)
+    IEnumerator HealCoroutine(float healPerSecond, float duration)
     {
         float elapsedTime = 0f;
 
-        HealEffect = Instantiate(healEffectPrefab, transform.position, Quaternion.identity);
-        HealEffect.transform.SetParent(transform);
-        HealEffect.transform.localPosition = new Vector3(0, 0, 0);
+        // ? 프리팹에서 새 인스턴스 생성
+        if (HealEffectPrefab != null)
+        {
+            healEffectInstance = Instantiate(HealEffectPrefab, transform.position, Quaternion.identity);
+            healEffectInstance.transform.SetParent(transform);
+            healEffectInstance.transform.localPosition = Vector3.zero;
+        }
 
         while (elapsedTime < duration)
         {
             if (currentHP >= maxHP) break;
-            
+
             Heal(healPerSecond);
 
             yield return new WaitForSeconds(1f);
             elapsedTime += 1f;
         }
 
-        if (HealEffect != null)
+        if (healEffectInstance != null)
         {
-            Destroy(HealEffect);
+            Destroy(healEffectInstance);
+            healEffectInstance = null;
         }
 
         healCoroutine = null;

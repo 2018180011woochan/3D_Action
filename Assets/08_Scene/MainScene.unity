@@ -2188,7 +2188,7 @@ MonoBehaviour:
   bloodScreen: {fileID: 143503383}
   BlockEffect: {fileID: 0}
   knockbackForce: 10
-  HealEffect: {fileID: 4400417614324756487, guid: 0fc1ff5563cddb642b743d7b5bf7b90a, type: 3}
+  HealEffectPrefab: {fileID: 4400417614324756487, guid: 0fc1ff5563cddb642b743d7b5bf7b90a, type: 3}
   StunEffect: {fileID: 3920551899058651545}
   blockSfx: {fileID: 8300000, guid: e74e8c51632a095479b9d27b2e376c31, type: 3}
   hitSfx: {fileID: 8300000, guid: 8a6bee19116d2ea44b5fdeb2b9f76f5b, type: 3}
@@ -14540,12 +14540,17 @@ MonoBehaviour:
   wanderInterval: 3
   wanderSpeed: 1
   chaseSpeed: 2
-  attackTrigger: Attack
+  confrontDuration: 2
+  confrontRadius: 3
+  confrontSpeed: 60
+  confrontMoveSpeed: 2
   attackCooldown: 1
-  hitTags:
-  - Hit
-  - GetHit
-  hitStopSeconds: 0.35
+  attackLungeDistance: 1
+  attackLungeSpeed: 5
+  attackLungeDuration: 0.3
+  retreatDistance: 3
+  retreatSpeed: 3
+  retreatDuration: 1.5
   currentState: 0
 --- !u!4 &868042320
 Transform:

@@ -1791,7 +1791,7 @@ MonoBehaviour:
   bloodScreen: {fileID: 1985780024}
   BlockEffect: {fileID: 0}
   knockbackForce: 10
-  HealEffect: {fileID: 4400417614324756487, guid: 0fc1ff5563cddb642b743d7b5bf7b90a, type: 3}
+  HealEffectPrefab: {fileID: 4400417614324756487, guid: 0fc1ff5563cddb642b743d7b5bf7b90a, type: 3}
   StunEffect: {fileID: 2223927061275390260, guid: 5864289a59fd7f9469d3413b2d203982, type: 3}
   blockSfx: {fileID: 8300000, guid: e74e8c51632a095479b9d27b2e376c31, type: 3}
   hitSfx: {fileID: 8300000, guid: 8a6bee19116d2ea44b5fdeb2b9f76f5b, type: 3}
