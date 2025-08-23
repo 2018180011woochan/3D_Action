@@ -45,11 +45,13 @@ public class SamuraiMovement : MonoBehaviour
     public AudioClip drawSfx;
     [Range(0f, 1f)] public float jumpVolume = 1f;
     private AudioSource sfxSrc;
+
+    private PlayerState playerState;
     void Awake()
     {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-
+        playerState = GetComponent<PlayerState>();
         if (runLoopSfx)
         {
             runSrc = gameObject.AddComponent<AudioSource>();
@@ -69,30 +71,38 @@ public class SamuraiMovement : MonoBehaviour
     void Update()
     {
         ApplyGravity();
-
         HandleDash();
 
         animator.SetBool("IsStance", Stance);
+
+        bool isJumpingNow = !controller.isGrounded;
+
         if (isBusy)
         {
             animator.SetBool("Run", false);
             animator.SetFloat("Speed", 0f);
+
+            if (!isDashing && !isJumpingNow)
+                playerState?.RecoverStamina(5f * Time.deltaTime);
             return;
         }
 
-        isRunning = Input.GetKey(KeyCode.LeftShift);
+        bool shiftHeld = Input.GetKey(KeyCode.LeftShift);
+        bool hasStaminaToRun = (playerState == null) || (playerState.currentStamina > 0f);
+        isRunning = shiftHeld && hasStaminaToRun;
+
         HandleJump();
         HandleDraw();
-        if (Stance == false)
-        {
-            HandleMove();
-        }
-        else
-        {
-            HandleCombatMove();
-        }
+
+        if (!Stance) HandleMove();
+        else HandleCombatMove();
+
         UpdateRunSfx();
+
+        if (!isRunning && !isDashing && !isJumpingNow)
+            playerState?.RecoverStamina(10f * Time.deltaTime);
     }
+
 
     void UpdateRunSfx()
     {
@@ -113,6 +123,7 @@ public class SamuraiMovement : MonoBehaviour
         {
             if (!runSrc.isPlaying) runSrc.Play();
             runSrc.pitch = Mathf.Lerp(0.95f, 1.05f, Mathf.InverseLerp(moveSpeed, runSpeed, speed));
+            playerState?.ConsumeStamina(5f * Time.deltaTime);
         }
         else
         {
@@ -221,22 +232,26 @@ public class SamuraiMovement : MonoBehaviour
     }
     private void HandleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space)
+            && isGrounded
+            && (playerState == null || playerState.currentStamina >= 10f)) 
         {
             animator.SetTrigger("Jump");
             if (jumpSfx) sfxSrc.PlayOneShot(jumpSfx, jumpVolume);
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+
+            playerState?.ConsumeStamina(10f);
         }
     }
 
     private void HandleDash()
     {
         if (dashCooldownTimer > 0f) dashCooldownTimer -= Time.deltaTime;
-        
+
         if (isDashing)
         {
             Vector3 final = dashDirection * dashSpeed;
-            final.y = playerVelocity.y; 
+            final.y = playerVelocity.y;
             controller.Move(final * Time.deltaTime);
 
             dashTimer -= Time.deltaTime;
@@ -251,10 +266,11 @@ public class SamuraiMovement : MonoBehaviour
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
-        if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0f && !isBusy && v > 0.1f)
+        bool hasStaminaToDash = (playerState == null) || (playerState.currentStamina >= 10f); 
+
+        if (Input.GetKeyDown(dashKey) && dashCooldownTimer <= 0f && !isBusy && v > 0.1f && hasStaminaToDash)
         {
             Vector3 camF = cameraTransform.forward; camF.y = 0; camF.Normalize();
- 
             dashDirection = camF;
 
             isDashing = true;
@@ -263,6 +279,8 @@ public class SamuraiMovement : MonoBehaviour
 
             animator.ResetTrigger("Dash");
             animator.SetTrigger("Dash");
+
+            playerState?.ConsumeStamina(10f); 
         }
     }
 
