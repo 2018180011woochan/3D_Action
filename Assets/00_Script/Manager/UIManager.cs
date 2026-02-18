@@ -141,10 +141,8 @@ public class UIManager : MonoBehaviour
 
     void OnHealthChanged(float normalizedHP)
     {
-        // 앞바 즉시
         hpFillImage.fillAmount = normalizedHP;
 
-        // 뒷바 애니메이션
         if (hpCoroutine != null) StopCoroutine(hpCoroutine);
         hpCoroutine = StartCoroutine(
             AnimateBar(hpDamageImage, normalizedHP));

@@ -1784,10 +1784,10 @@ MonoBehaviour:
   onHealthChanged:
     m_PersistentCalls:
       m_Calls: []
-  maxStamina: 100
   onStaminaChanged:
     m_PersistentCalls:
       m_Calls: []
+  maxStamina: 100
   bloodScreen: {fileID: 1985780024}
   BlockEffect: {fileID: 0}
   knockbackForce: 10

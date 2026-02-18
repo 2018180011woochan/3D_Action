@@ -41,7 +41,7 @@ public class GhostProjectile : MonoBehaviour
 
     IEnumerator ActivateAfterDelay()
     {
-        if (col) col.enabled = false;     // 1초 동안 무적
+        if (col) col.enabled = false;     
         yield return new WaitForSeconds(activationDelay);
 
         if (col) col.enabled = true;

@@ -68,12 +68,10 @@ public class LockOn : MonoBehaviour
 
     void UpdateMidPoint()
     {
-        // 플레이어 위치 + 몬스터 위치를 2로 나누면 중간!
         Vector3 midPoint = (transform.position + currentTarget.position) / 2f;
 
         midPoint.y += 1.5f;
 
-        // 계산한 위치로 중간점 오브젝트 이동
         cameraLookTarget.position = midPoint;
 
         if (playerCamera != null)

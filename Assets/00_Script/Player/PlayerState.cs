@@ -8,11 +8,11 @@ public class PlayerState : MonoBehaviour
     public float currentHP { get; private set; }
 
     public UnityEvent<float> onHealthChanged = new UnityEvent<float>();
+    public UnityEvent<float> onStaminaChanged = new UnityEvent<float>();
 
     public float maxStamina = 100f;
     public float currentStamina { get; private set; }
 
-    public UnityEvent<float> onStaminaChanged = new UnityEvent<float>();
     Animator animator;
     public BloodScreen bloodScreen;
 
@@ -132,7 +132,6 @@ public class PlayerState : MonoBehaviour
     {
         float elapsedTime = 0f;
 
-        // ? 프리팹에서 새 인스턴스 생성
         if (HealEffectPrefab != null)
         {
             healEffectInstance = Instantiate(HealEffectPrefab, transform.position, Quaternion.identity);

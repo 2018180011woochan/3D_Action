@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Attack2Statement : StateMachineBehaviour
 {
-    [Header("Frame timing")]
-    public float clipFps = 60f;   // 애니메이션 클립의 Samples(FPS)
-    public int hitFrame = 22;     // 22프레임에 1회 발동
+    [Header("공격 타이밍")]
+    public float clipFps = 60f;   
+    public int hitFrame = 22;     
 
     private bool fired;
     private SlashSpawner spawner;

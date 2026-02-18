@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Attack1Statement : StateMachineBehaviour
 {
-    [Header("Hit timings (frames)")]
+    [Header("공격 타이밍")]
     public float clipFps = 60f;        
     public int firstHitFrame = 10;     
     public int secondHitFrame = 68;    

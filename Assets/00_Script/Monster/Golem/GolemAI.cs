@@ -80,7 +80,7 @@ public class GolemAI : MonoBehaviour
     {
         if (state == State.Dead) return;
 
-        // === 피격 중 정지 처리 ===
+
         if (hitStopTimer > 0f || IsHitPlaying())
         {
             hitStopTimer -= Time.deltaTime;
@@ -88,9 +88,9 @@ public class GolemAI : MonoBehaviour
             agent.ResetPath();
             agent.velocity = Vector3.zero;
             animator.SetBool("IsMoving", false);
-            return; // 이 프레임은 추가 로직 스킵
+            return; 
         }
-        // ========================
+
 
         if (attackTimer > 0f) attackTimer -= Time.deltaTime;
         float dist = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;

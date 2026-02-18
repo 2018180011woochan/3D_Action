@@ -180,7 +180,6 @@ public class InventoryManager : MonoBehaviour
         return slots;
     }
 
-    // 특정 아이템이 인벤토리에 있는지 확인하는 메서드 (선택사항)
     public bool HasItem(string itemName)
     {
         foreach (ItemSlot slot in slots)

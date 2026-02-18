@@ -222,7 +222,7 @@ public class GhostAI : MonoBehaviour
 
         Instantiate(teleportEffectPrefab, transform.position, Quaternion.identity);
 
-        if (player && TryGetPointOnRing(player.position, teleportDistanceFromPlayer, sampleMaxDistance, ringTolerance, out var newPos))
+        if (TryGetPointOnRing(player.position, teleportDistanceFromPlayer, sampleMaxDistance, ringTolerance, out var newPos))
         {
             if (agent) { agent.Warp(newPos); agent.ResetPath(); }
 

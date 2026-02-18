@@ -66,7 +66,6 @@ public class GameDataManager : MonoBehaviour
             if (item != null)
             {
                 inventory.AddItem(item);
-                Debug.Log($"{itemName} 로드 완료");
             }
         }
 

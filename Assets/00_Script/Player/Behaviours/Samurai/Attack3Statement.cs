@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Attack3Statement : StateMachineBehaviour
 {
-    [Header("Hit timings (frames)")]
-    public float clipFps = 60f;        // 클립 프레임레이트(보통 60)
-    public int firstHitFrame = 12;     // 0:10  => 10프레임
-    public int secondHitFrame = 27;    // 1:08  => 60+8 = 68프레임
+    [Header("공격 타이밍")]
+    public float clipFps = 60f;        
+    public int firstHitFrame = 12;     
+    public int secondHitFrame = 27;    
 
     private bool fired1, fired2;
     private SlashSpawner spawner;
