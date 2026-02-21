@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -26,6 +27,9 @@ public class NetworkManager : MonoBehaviour
 {
     private Socket _socket;
     private byte[] _recvBuffer = new byte[1024];
+
+    private Queue<Action> _packetQueue = new Queue<Action>();
+    private object _lock = new object();
 
     private void Start()
     {
@@ -87,7 +91,14 @@ public class NetworkManager : MonoBehaviour
                     IntPtr dataPtr = new IntPtr(ptr.ToInt64() + headerSize);
 
                     S_LOGIN sLoginPkt = (S_LOGIN)Marshal.PtrToStructure(dataPtr, typeof(S_LOGIN));
-                    Debug.Log($"Login Success. Player ID: {sLoginPkt.playerId}");
+
+                    lock (_lock)
+                    {
+                        _packetQueue.Enqueue(() =>
+                        {
+                            Debug.Log($"Login Success. Player ID: {sLoginPkt.playerId}");
+                        });
+                    }
                 }
 
                 Marshal.FreeHGlobal(ptr);
@@ -97,6 +108,18 @@ public class NetworkManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Receive Error: {e.Message}");
+        }
+    }
+
+    private void Update()
+    {
+        lock (_lock)
+        {
+            while (_packetQueue.Count > 0)
+            {
+                Action action = _packetQueue.Dequeue();
+                action.Invoke(); 
+            }
         }
     }
 }
