@@ -52,6 +52,16 @@ public struct C_MOVE
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_MOVE
+{
+    public int playerId; 
+    public float posX;
+    public float posY;
+    public float posZ;
+    public float rotY;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct S_ENTER_GAME
 {
     public int playerId;
@@ -214,7 +224,24 @@ public class NetworkManager : MonoBehaviour
                             });
                         }
                     }
+                    else if (header.id == (ushort)PacketID.PKT_S_MOVE)
+                    {
+                        S_MOVE movePkt = (S_MOVE)Marshal.PtrToStructure(payloadPtr, typeof(S_MOVE));
 
+                        lock (_lock)
+                        {
+                            _packetQueue.Enqueue(() =>
+                            {
+                                if (movePkt.playerId == myPlayerId) return;
+
+                                if (_players.TryGetValue(movePkt.playerId, out GameObject targetObj))
+                                {
+                                    targetObj.transform.position = new Vector3(movePkt.posX, movePkt.posY, movePkt.posZ);
+                                    targetObj.transform.rotation = Quaternion.Euler(0, movePkt.rotY, 0);
+                                }
+                            });
+                        }
+                    }
                     Marshal.FreeHGlobal(dataPtr);
                     offset += header.size;
                 }

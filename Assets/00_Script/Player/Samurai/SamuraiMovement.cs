@@ -51,7 +51,7 @@ public class SamuraiMovement : MonoBehaviour
     private float syncTimer = 0f;
     private float syncInterval = 0.1f; // 0.1초마다 1번씩 전송 (초당 10번)
     public bool isMine = false; // 현재 캐릭터가 본인 클라이언트의 캐릭터인가 
-
+    private Vector3 _lastPos;   // 이전위치
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -122,9 +122,14 @@ public class SamuraiMovement : MonoBehaviour
 
         if (syncTimer >= syncInterval)
         {
-            if (NetworkManager.Instance != null)
+            if (Vector3.Distance(_lastPos, transform.position) > 0.01f)
             {
-                NetworkManager.Instance.SendMovePacket(transform.position, transform.eulerAngles.y);
+                if (NetworkManager.Instance != null)
+                {
+                    NetworkManager.Instance.SendMovePacket(transform.position, transform.eulerAngles.y);
+                }
+
+                _lastPos = transform.position;
             }
 
             syncTimer = 0f;
