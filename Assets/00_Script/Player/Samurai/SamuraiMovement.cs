@@ -47,6 +47,11 @@ public class SamuraiMovement : MonoBehaviour
     private AudioSource sfxSrc;
 
     private PlayerState playerState;
+
+    private float syncTimer = 0f;
+    private float syncInterval = 0.1f; // 0.1초마다 1번씩 전송 (초당 10번)
+    public bool isMine = false; // 현재 캐릭터가 본인 클라이언트의 캐릭터인가 
+
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -66,10 +71,16 @@ public class SamuraiMovement : MonoBehaviour
         sfxSrc.playOnAwake = false;
         sfxSrc.loop = false;
         sfxSrc.spatialBlend = 0f;
+
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
     }
 
     void Update()
     {
+        if (!isMine) return;
         ApplyGravity();
         HandleDash();
 
@@ -101,8 +112,24 @@ public class SamuraiMovement : MonoBehaviour
 
         if (!isRunning && !isDashing && !isJumpingNow)
             playerState?.RecoverStamina(10f * Time.deltaTime);
+
+        SyncTransformToServer();
     }
 
+    private void SyncTransformToServer()
+    {
+        syncTimer += Time.deltaTime;
+
+        if (syncTimer >= syncInterval)
+        {
+            if (NetworkManager.Instance != null)
+            {
+                NetworkManager.Instance.SendMovePacket(transform.position, transform.eulerAngles.y);
+            }
+
+            syncTimer = 0f;
+        }
+    }
 
     void UpdateRunSfx()
     {
