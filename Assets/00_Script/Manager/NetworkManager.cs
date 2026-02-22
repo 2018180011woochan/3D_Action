@@ -236,8 +236,12 @@ public class NetworkManager : MonoBehaviour
 
                                 if (_players.TryGetValue(movePkt.playerId, out GameObject targetObj))
                                 {
-                                    targetObj.transform.position = new Vector3(movePkt.posX, movePkt.posY, movePkt.posZ);
-                                    targetObj.transform.rotation = Quaternion.Euler(0, movePkt.rotY, 0);
+                                    SamuraiMovement movement = targetObj.GetComponent<SamuraiMovement>();
+                                    if (movement != null)
+                                    {
+                                        movement.syncPos = new Vector3(movePkt.posX, movePkt.posY, movePkt.posZ);
+                                        movement.syncRotY = movePkt.rotY;
+                                    }
                                 }
                             });
                         }

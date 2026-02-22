@@ -52,6 +52,10 @@ public class SamuraiMovement : MonoBehaviour
     private float syncInterval = 0.1f; // 0.1초마다 1번씩 전송 (초당 10번)
     public bool isMine = false; // 현재 캐릭터가 본인 클라이언트의 캐릭터인가 
     private Vector3 _lastPos;   // 이전위치
+
+    [Header("네트워크 동기화")]
+    public Vector3 syncPos;  // 서버가 알려준 진짜 위치
+    public float syncRotY;   // 서버가 알려준 진짜 바라보는 방향
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -78,9 +82,19 @@ public class SamuraiMovement : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        syncPos = transform.position;
+        syncRotY = transform.eulerAngles.y;
+    }
+
     void Update()
     {
-        if (!isMine) return;
+        if (!isMine)
+        {
+            UpdateRemoteMove();
+            return;
+        }
         ApplyGravity();
         HandleDash();
 
@@ -114,6 +128,20 @@ public class SamuraiMovement : MonoBehaviour
             playerState?.RecoverStamina(10f * Time.deltaTime);
 
         SyncTransformToServer();
+    }
+
+    private void UpdateRemoteMove()
+    {
+        transform.position = Vector3.Lerp(transform.position, syncPos, Time.deltaTime * 10f);
+
+        Quaternion targetRot = Quaternion.Euler(0, syncRotY, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+
+        float distance = Vector3.Distance(transform.position, syncPos);
+
+        bool isMoving = distance > 0.1f;
+        animator.SetFloat("Speed", isMoving ? runSpeed : 0f);
+        animator.SetBool("Run", isMoving);
     }
 
     private void SyncTransformToServer()
