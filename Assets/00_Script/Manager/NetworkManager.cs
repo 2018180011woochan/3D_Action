@@ -14,6 +14,7 @@ public enum PacketID : ushort
     PKT_S_CHAT = 1005,
     PKT_C_MOVE = 1006,
     PKT_S_MOVE = 1007,
+    PKT_S_LEAVE_GAME = 1008,
 }
 
 enum ROOM : ushort
@@ -69,6 +70,12 @@ public struct S_ENTER_GAME
     public float posY;
     public float posZ;
     public float rotY;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_LEAVE_GAME
+{
+    public int playerId;
 }
 
 public class NetworkManager : MonoBehaviour
@@ -246,6 +253,26 @@ public class NetworkManager : MonoBehaviour
                             });
                         }
                     }
+
+                    else if (header.id == (ushort)PacketID.PKT_S_LEAVE_GAME)
+                    {
+                        S_LEAVE_GAME leavePkt = (S_LEAVE_GAME)Marshal.PtrToStructure(payloadPtr, typeof(S_LEAVE_GAME));
+
+                        lock (_lock)
+                        {
+                            _packetQueue.Enqueue(() =>
+                            {
+                                if (_players.TryGetValue(leavePkt.playerId, out GameObject targetObj))
+                                {
+                                    Destroy(targetObj);
+
+                                    _players.Remove(leavePkt.playerId);
+
+                                    Debug.Log($"[퇴장] 플레이어({leavePkt.playerId})가 게임을 종료했습니다.");
+                                }
+                            });
+                        }
+                    }
                     Marshal.FreeHGlobal(dataPtr);
                     offset += header.size;
                 }
@@ -267,6 +294,34 @@ public class NetworkManager : MonoBehaviour
             {
                 Action action = _packetQueue.Dequeue();
                 action.Invoke();
+            }
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Disconnect();
+    }
+
+    private void OnDestroy()
+    {
+        Disconnect();
+    }
+
+    private void Disconnect()
+    {
+        if (_socket != null && _socket.Connected)
+        {
+            try
+            {
+                _socket.Shutdown(SocketShutdown.Both);
+                _socket.Close();
+                _socket = null;
+                Debug.Log("서버와의 연결을 명시적으로 종료했습니다.");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"소켓 종료 중 에러: {e.Message}");
             }
         }
     }
