@@ -15,6 +15,8 @@ public enum PacketID : ushort
     PKT_C_MOVE = 1006,
     PKT_S_MOVE = 1007,
     PKT_S_LEAVE_GAME = 1008,
+    PKT_C_STANCE = 1009,
+    PKT_S_STANCE = 1010,
 }
 
 enum ROOM : ushort
@@ -78,6 +80,19 @@ public struct S_LEAVE_GAME
     public int playerId;
 }
 
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_STANCE
+{
+    public int isStance;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_STANCE
+{
+    public int playerId;
+    public int isStance;
+}
+
 public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager Instance { get; private set; }
@@ -88,6 +103,7 @@ public class NetworkManager : MonoBehaviour
 
     private Socket _socket;
     private byte[] _recvBuffer = new byte[1024];
+    private List<byte> _packetBuffer = new List<byte>();
 
     private Queue<Action> _packetQueue = new Queue<Action>();
     private object _lock = new object();
@@ -159,33 +175,66 @@ public class NetworkManager : MonoBehaviour
         _socket.Send(sendBuffer);
     }
 
+    public void SendStancePacket(bool isStance)
+    {
+        if (_socket == null || !_socket.Connected) return;
+
+        C_STANCE pkt = new C_STANCE { isStance = isStance ? 1 : 0 };
+        ushort pktSize = (ushort)(Marshal.SizeOf(typeof(PacketHeader)) + Marshal.SizeOf(typeof(C_STANCE)));
+        PacketHeader header = new PacketHeader { size = pktSize, id = (ushort)PacketID.PKT_C_STANCE };
+
+        byte[] sendBuffer = new byte[pktSize];
+        IntPtr ptr = Marshal.AllocHGlobal(pktSize);
+
+        Marshal.StructureToPtr(header, ptr, false);
+        Marshal.StructureToPtr(pkt, ptr + Marshal.SizeOf(typeof(PacketHeader)), false);
+        Marshal.Copy(ptr, sendBuffer, 0, pktSize);
+        Marshal.FreeHGlobal(ptr);
+
+        _socket.Send(sendBuffer);
+    }
+
     private void OnReceive(IAsyncResult ar)
     {
+        if (_socket == null || !_socket.Connected) return;
+
         try
         {
             int bytesRead = _socket.EndReceive(ar);
             if (bytesRead > 0)
             {
-                int offset = 0;
+                byte[] newBytes = new byte[bytesRead];
+                Array.Copy(_recvBuffer, 0, newBytes, 0, bytesRead);
+                _packetBuffer.AddRange(newBytes);
 
-                while (offset < bytesRead)
+                while (true)
                 {
                     int headerSize = Marshal.SizeOf(typeof(PacketHeader));
+
+                    if (_packetBuffer.Count < headerSize) break;
+
+                    byte[] headerBytes = _packetBuffer.GetRange(0, headerSize).ToArray();
                     IntPtr headerPtr = Marshal.AllocHGlobal(headerSize);
-                    Marshal.Copy(_recvBuffer, offset, headerPtr, headerSize);
+                    Marshal.Copy(headerBytes, 0, headerPtr, headerSize);
                     PacketHeader header = (PacketHeader)Marshal.PtrToStructure(headerPtr, typeof(PacketHeader));
                     Marshal.FreeHGlobal(headerPtr);
 
-                    IntPtr dataPtr = Marshal.AllocHGlobal(header.size);
-                    Marshal.Copy(_recvBuffer, offset, dataPtr, header.size);
+                    if (_packetBuffer.Count < header.size) break;
 
+                    byte[] packetData = _packetBuffer.GetRange(0, header.size).ToArray();
+                    _packetBuffer.RemoveRange(0, header.size);
+
+                    IntPtr dataPtr = Marshal.AllocHGlobal(header.size);
+                    Marshal.Copy(packetData, 0, dataPtr, header.size);
                     IntPtr payloadPtr = new IntPtr(dataPtr.ToInt64() + headerSize);
+
+                    Debug.Log($"[추적] 완전한 조립 패킷! ID: {header.id}, Size: {header.size}");
 
                     if (header.id == (ushort)PacketID.PKT_S_LOGIN)
                     {
                         S_LOGIN sLoginPkt = (S_LOGIN)Marshal.PtrToStructure(payloadPtr, typeof(S_LOGIN));
                         myPlayerId = sLoginPkt.playerId;
-                        Debug.Log($"Login Success. My ID: {myPlayerId}");
+                        Debug.Log($"로그인 성공! 내 ID: {myPlayerId}");
                     }
                     else if (header.id == (ushort)PacketID.PKT_S_ENTER_GAME)
                     {
@@ -204,12 +253,8 @@ public class NetworkManager : MonoBehaviour
                                 _players.Add(spawnPkt.playerId, go);
 
                                 bool isMyCharacter = (spawnPkt.playerId == myPlayerId);
-
                                 SamuraiMovement movement = go.GetComponent<SamuraiMovement>();
-                                if (movement != null)
-                                {
-                                    movement.isMine = isMyCharacter;
-                                }
+                                if (movement != null) movement.isMine = isMyCharacter;
 
                                 if (isMyCharacter)
                                 {
@@ -217,10 +262,7 @@ public class NetworkManager : MonoBehaviour
                                     if (camObj != null)
                                     {
                                         var vcam = camObj.GetComponent<Unity.Cinemachine.CinemachineCamera>();
-                                        if (vcam != null)
-                                        {
-                                            vcam.Target.TrackingTarget = go.transform;
-                                        }
+                                        if (vcam != null) vcam.Target.TrackingTarget = go.transform;
                                     }
                                     Debug.Log($"[스폰] 내 캐릭터({spawnPkt.playerId}) 생성 완료 & 카메라 셋업 끝!");
                                 }
@@ -234,13 +276,11 @@ public class NetworkManager : MonoBehaviour
                     else if (header.id == (ushort)PacketID.PKT_S_MOVE)
                     {
                         S_MOVE movePkt = (S_MOVE)Marshal.PtrToStructure(payloadPtr, typeof(S_MOVE));
-
                         lock (_lock)
                         {
                             _packetQueue.Enqueue(() =>
                             {
                                 if (movePkt.playerId == myPlayerId) return;
-
                                 if (_players.TryGetValue(movePkt.playerId, out GameObject targetObj))
                                 {
                                     SamuraiMovement movement = targetObj.GetComponent<SamuraiMovement>();
@@ -253,11 +293,9 @@ public class NetworkManager : MonoBehaviour
                             });
                         }
                     }
-
                     else if (header.id == (ushort)PacketID.PKT_S_LEAVE_GAME)
                     {
                         S_LEAVE_GAME leavePkt = (S_LEAVE_GAME)Marshal.PtrToStructure(payloadPtr, typeof(S_LEAVE_GAME));
-
                         lock (_lock)
                         {
                             _packetQueue.Enqueue(() =>
@@ -265,16 +303,30 @@ public class NetworkManager : MonoBehaviour
                                 if (_players.TryGetValue(leavePkt.playerId, out GameObject targetObj))
                                 {
                                     Destroy(targetObj);
-
                                     _players.Remove(leavePkt.playerId);
-
                                     Debug.Log($"[퇴장] 플레이어({leavePkt.playerId})가 게임을 종료했습니다.");
                                 }
                             });
                         }
                     }
+                    else if (header.id == (ushort)PacketID.PKT_S_STANCE)
+                    {
+                        S_STANCE stancePkt = (S_STANCE)Marshal.PtrToStructure(payloadPtr, typeof(S_STANCE));
+                        lock (_lock)
+                        {
+                            _packetQueue.Enqueue(() =>
+                            {
+                                if (stancePkt.playerId == myPlayerId) return;
+                                if (_players.TryGetValue(stancePkt.playerId, out GameObject targetObj))
+                                {
+                                    SamuraiMovement movement = targetObj.GetComponent<SamuraiMovement>();
+                                    if (movement != null) movement.ApplyRemoteStance(stancePkt.isStance == 1);
+                                }
+                            });
+                        }
+                    }
+
                     Marshal.FreeHGlobal(dataPtr);
-                    offset += header.size;
                 }
 
                 _socket.BeginReceive(_recvBuffer, 0, _recvBuffer.Length, SocketFlags.None, OnReceive, null);

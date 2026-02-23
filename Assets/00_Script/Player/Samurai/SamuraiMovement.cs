@@ -271,6 +271,8 @@ public class SamuraiMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            bool targetStance = !Stance;
+
             if (Stance == false)
             {
                 if (isFirstDraw)
@@ -288,6 +290,34 @@ public class SamuraiMovement : MonoBehaviour
                 Stance = false;
                 animator.SetBool("IsStance", false);
             }
+
+            if (NetworkManager.Instance != null)
+            {
+                NetworkManager.Instance.SendStancePacket(targetStance);
+            }
+        }
+    }
+
+    public void ApplyRemoteStance(bool newStance)
+    {
+        if (newStance && !Stance) 
+        {
+            if (isFirstDraw)
+            {
+                animator.SetTrigger("Draw");
+                isBusy = true;
+                isFirstDraw = false;
+                StartCoroutine(PlayDrawSfxDelayed());
+            }
+            else
+            {
+                Stance = true;
+            }
+        }
+        else if (!newStance && Stance) 
+        {
+            Stance = false;
+            animator.SetBool("IsStance", false);
         }
     }
     private void HandleJump()
