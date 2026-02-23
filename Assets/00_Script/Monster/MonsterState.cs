@@ -115,7 +115,10 @@ public class MonsterState : MonoBehaviour
             else
             {
                 var monAI = GetComponent<MonsterAI>();
-                monAI.currentState = MonsterAI.State.Dead;
+                if (monAI != null)
+                {
+                    monAI.currentState = EMonsterState.DEAD;
+                }
 
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y  + 1f, transform.position.z);
 

@@ -20,7 +20,8 @@ public enum PacketID : ushort
     PKT_C_JUMP = 1011,
     PKT_S_JUMP = 1012,
     PKT_C_ATTACK = 1013,   
-    PKT_S_ATTACK = 1014,   
+    PKT_S_ATTACK = 1014,
+    PKT_S_MONSTER_STATE = 1015,
 }
 
 enum ROOM : ushort
@@ -36,6 +37,17 @@ public enum AttackType : ushort
     SLASH2,
     SLASH3,
     SKILL
+}
+
+public enum EMonsterState : ushort
+{
+    IDLE = 0,
+    WANDER,
+    CHASE,
+    CONFRONT,
+    ATTACK,
+    RETREAT,
+    DEAD
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -132,12 +144,20 @@ public struct S_ATTACK
     public AttackType attackType;
 }
 
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_MONSTER_STATE
+{
+    public int monsterId;
+    public EMonsterState state;
+}
+
 public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager Instance { get; private set; }
 
     public GameObject playerPrefab;
     public Dictionary<int, GameObject> _players = new Dictionary<int, GameObject>();
+    public Dictionary<int, GameObject> _monsters = new Dictionary<int, GameObject>();
     public int myPlayerId;
 
     private Socket _socket;
@@ -437,6 +457,23 @@ public class NetworkManager : MonoBehaviour
                                 {
                                     SamuraiCombat combat = targetObj.GetComponent<SamuraiCombat>();
                                     if (combat != null) combat.ApplyRemoteAttack(attackPkt.attackType);
+                                }
+                            });
+                        }
+                    }
+                    else if (header.id == (ushort)PacketID.PKT_S_MONSTER_STATE)
+                    {
+                        S_MONSTER_STATE statePkt = (S_MONSTER_STATE)Marshal.PtrToStructure(payloadPtr, typeof(S_MONSTER_STATE));
+
+                        Debug.Log($"[패킷 도착!] 서버가 몬스터 {statePkt.monsterId} 한테 {statePkt.state} 하라고 명령함!");
+                        lock (_lock)
+                        {
+                            _packetQueue.Enqueue(() =>
+                            {
+                                if (_monsters.TryGetValue(statePkt.monsterId, out GameObject mobObj))
+                                {
+                                    MonsterAI ai = mobObj.GetComponent<MonsterAI>();
+                                    if (ai != null) ai.ApplyRemoteState(statePkt.state);
                                 }
                             });
                         }

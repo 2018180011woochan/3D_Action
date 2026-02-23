@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MonsterAI : MonoBehaviour
+/*public class MonsterAI : MonoBehaviour
 {
     [Header("탐지 설정")]
     public float detectionRange = 10f;  // 플레이어 탐지 범위
@@ -73,7 +73,18 @@ public class MonsterAI : MonoBehaviour
     void Update()
     {
         if (currentState == State.Dead) return;
-        if (player == null) return;
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                player = playerObj.transform;
+            }
+            else
+            {
+                return; 
+            }
+        }
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit")) return;
         UpdateAnimationState();
 
@@ -417,6 +428,90 @@ public class MonsterAI : MonoBehaviour
                 retreatTimer = 0f;
                 agent.speed = retreatSpeed;
                 agent.isStopped = false;
+                break;
+        }
+    }
+}*/
+
+public class MonsterAI : MonoBehaviour
+{
+    private NavMeshAgent agent;
+    private Animator animator;
+
+    public EMonsterState currentState = EMonsterState.IDLE;
+
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
+
+        if (NetworkManager.Instance != null)
+        {
+            // Dictionary에 100번 키로 나 자신을 등록!
+            NetworkManager.Instance._monsters[100] = this.gameObject;
+        }
+    }
+
+    void Update()
+    {
+        float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
+        animator.SetFloat("Speed", speed);
+    }
+
+    public void ApplyRemoteState(EMonsterState newState)
+    {
+        currentState = newState;
+
+        switch (newState)
+        {
+            case EMonsterState.IDLE:
+                agent.isStopped = true;
+                break;
+
+            case EMonsterState.WANDER:
+                agent.isStopped = false;
+                Vector3 randomDir = UnityEngine.Random.insideUnitSphere * 5f;
+                randomDir.y = 0;
+                randomDir += transform.position;
+                if (NavMesh.SamplePosition(randomDir, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+                {
+                    agent.SetDestination(hit.position);
+                }
+                break;
+
+            case EMonsterState.CHASE:
+                agent.isStopped = false;
+                GameObject target = GameObject.FindGameObjectWithTag("Player");
+                if (target != null)
+                {
+                    agent.SetDestination(target.transform.position);
+                }
+                break;
+
+            case EMonsterState.CONFRONT:
+                agent.isStopped = true;
+                animator.SetTrigger("LeftMove");
+                break;
+
+            case EMonsterState.ATTACK:
+                agent.isStopped = true;
+                animator.SetTrigger("Attack");
+                break;
+
+            case EMonsterState.RETREAT:
+                agent.isStopped = false;
+                GameObject danger = GameObject.FindGameObjectWithTag("Player");
+                if (danger != null)
+                {
+                    Vector3 retreatDir = (transform.position - danger.transform.position).normalized;
+                    if (NavMesh.SamplePosition(transform.position + retreatDir * 3f, out NavMeshHit rHit, 3f, NavMesh.AllAreas))
+                        agent.SetDestination(rHit.position);
+                }
+                break;
+
+            case EMonsterState.DEAD:
+                agent.isStopped = true;
+                animator.SetTrigger("Dead");
                 break;
         }
     }

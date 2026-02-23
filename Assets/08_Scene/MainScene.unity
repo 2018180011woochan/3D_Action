@@ -2118,22 +2118,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8214978928212223176, guid: 1d4bc01ec61261b4d869950883ff57c4, type: 3}
   m_PrefabInstance: {fileID: 1944187561}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &108405866 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-  m_PrefabInstance: {fileID: 7746437304046951509}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &108405871 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9172081516000619897, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-  m_PrefabInstance: {fileID: 7746437304046951509}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c839b8f760d9a0a46b93cc387dffe6c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &114990384
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8476,7 +8460,7 @@ PrefabInstance:
     - target: {fileID: 3862441213218680564, guid: 9b8c73e451e767a4293ab7402a4b58bd, type: 3}
       propertyPath: Target.TrackingTarget
       value: 
-      objectReference: {fileID: 108405866}
+      objectReference: {fileID: 0}
     - target: {fileID: 5771983089263979976, guid: 9b8c73e451e767a4293ab7402a4b58bd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 59.81
@@ -28316,7 +28300,7 @@ MonoBehaviour:
   battoSkillTimer: {fileID: 1488450122}
   monsterHPBarPrefab: {fileID: -153740726128067773, guid: 1cb77f3586aa869448addaa043b16523, type: 3}
   monsterHPParent: {fileID: 1700404296}
-  playerState: {fileID: 108405871}
+  playerState: {fileID: 0}
 --- !u!1 &1580356663
 GameObject:
   m_ObjectHideFlags: 0
@@ -28863,22 +28847,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5204000061518567051, guid: 3abfb1199d749ef45a3c2cc145721cea, type: 3}
   m_PrefabInstance: {fileID: 1597517104}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1612586901 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5771983089263979976, guid: 9b8c73e451e767a4293ab7402a4b58bd, type: 3}
-  m_PrefabInstance: {fileID: 491195756}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1612586907 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3862441213218680564, guid: 9b8c73e451e767a4293ab7402a4b58bd, type: 3}
-  m_PrefabInstance: {fileID: 491195756}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1613431164
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58141,87 +58109,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   disableTime: 1
---- !u!1001 &7746437304046951509
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3275486442545554424, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: playerCamera
-      value: 
-      objectReference: {fileID: 1612586907}
-    - target: {fileID: 3275486442545554424, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: skillCutsceneCamera
-      value: 
-      objectReference: {fileID: 821280636}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 59.81
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -8.77
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -25.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6646014997963516265, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7665191116360014714, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_Name
-      value: SK_OniSamurai
-      objectReference: {fileID: 0}
-    - target: {fileID: 7665191116360014714, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7834838695002944886, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: playerCamera
-      value: 
-      objectReference: {fileID: 1612586907}
-    - target: {fileID: 7861109380352598367, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: cameraTransform
-      value: 
-      objectReference: {fileID: 1612586901}
-    - target: {fileID: 9172081516000619897, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-      propertyPath: bloodScreen
-      value: 
-      objectReference: {fileID: 143503383}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
 --- !u!4 &7869501148809680333
 Transform:
   m_ObjectHideFlags: 0
@@ -67897,7 +67784,6 @@ SceneRoots:
   - {fileID: 32385618}
   - {fileID: 258462963}
   - {fileID: 649725961}
-  - {fileID: 7746437304046951509}
   - {fileID: 1238918207}
   - {fileID: 1460469073}
   - {fileID: 1426683760}
