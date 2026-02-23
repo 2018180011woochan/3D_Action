@@ -56,6 +56,7 @@ public class SamuraiMovement : MonoBehaviour
     [Header("네트워크 동기화")]
     public Vector3 syncPos;  // 서버가 알려준 진짜 위치
     public float syncRotY;   // 서버가 알려준 진짜 바라보는 방향
+    public bool syncIsRunning = false;
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -148,9 +149,10 @@ public class SamuraiMovement : MonoBehaviour
 
         if (Stance)
         {
-            animator.SetBool("Run", false);
+            bool remoteIsRunning = syncIsRunning && isMoving;
+            animator.SetBool("Run", remoteIsRunning);
 
-            animator.SetFloat("Speed", isMoving ? combatMoveSpeed : 0f);
+            animator.SetFloat("Speed", remoteIsRunning ? runSpeed : (isMoving ? combatMoveSpeed : 0f));
 
             float curMoveX = animator.GetFloat("MoveX");
             float curMoveY = animator.GetFloat("MoveY");
@@ -159,8 +161,8 @@ public class SamuraiMovement : MonoBehaviour
         }
         else
         {
-            animator.SetBool("Run", isMoving);
-            animator.SetFloat("Speed", isMoving ? runSpeed : 0f);
+            animator.SetBool("Run", syncIsRunning && isMoving);
+            animator.SetFloat("Speed", isMoving ? 1f : 0f);
         }
 
         transform.position = Vector3.Lerp(transform.position, syncPos, Time.deltaTime * 10f);
@@ -178,7 +180,7 @@ public class SamuraiMovement : MonoBehaviour
             {
                 if (NetworkManager.Instance != null)
                 {
-                    NetworkManager.Instance.SendMovePacket(transform.position, transform.eulerAngles.y);
+                    NetworkManager.Instance.SendMovePacket(transform.position, transform.eulerAngles.y, isRunning);
                 }
 
                 _lastPos = transform.position;

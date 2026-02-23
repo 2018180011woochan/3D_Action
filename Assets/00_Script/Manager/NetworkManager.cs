@@ -52,6 +52,7 @@ public struct C_MOVE
     public float posY;
     public float posZ;
     public float rotY;
+    public int isRunning;
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -62,6 +63,7 @@ public struct S_MOVE
     public float posY;
     public float posZ;
     public float rotY;
+    public int isRunning;
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -155,11 +157,11 @@ public class NetworkManager : MonoBehaviour
         _socket.Send(sendBuffer);
     }
 
-    public void SendMovePacket(Vector3 pos, float rotationY)
+    public void SendMovePacket(Vector3 pos, float rotationY, bool isRunning)
     {
         if (_socket == null || !_socket.Connected) return;
 
-        C_MOVE pkt = new C_MOVE { posX = pos.x, posY = pos.y, posZ = pos.z, rotY = rotationY };
+        C_MOVE pkt = new C_MOVE { posX = pos.x, posY = pos.y, posZ = pos.z, rotY = rotationY, isRunning = isRunning ? 1 : 0 };
         ushort pktSize = (ushort)(Marshal.SizeOf(typeof(PacketHeader)) + Marshal.SizeOf(typeof(C_MOVE)));
 
         PacketHeader header = new PacketHeader { size = pktSize, id = (ushort)PacketID.PKT_C_MOVE };
@@ -288,6 +290,7 @@ public class NetworkManager : MonoBehaviour
                                     {
                                         movement.syncPos = new Vector3(movePkt.posX, movePkt.posY, movePkt.posZ);
                                         movement.syncRotY = movePkt.rotY;
+                                        movement.syncIsRunning = (movePkt.isRunning == 1);
                                     }
                                 }
                             });
