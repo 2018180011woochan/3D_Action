@@ -132,25 +132,40 @@ public class SamuraiMovement : MonoBehaviour
 
     private void UpdateRemoteMove()
     {
-        transform.position = Vector3.Lerp(transform.position, syncPos, Time.deltaTime * 10f);
-        Quaternion targetRot = Quaternion.Euler(0, syncRotY, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+        Vector3 worldMoveDir = syncPos - transform.position;
+        worldMoveDir.y = 0f; // 높이는 무시
+
+        float distance = worldMoveDir.magnitude;
+        bool isMoving = distance > 0.05f; // 너무 미세한 움직임은 무시
+
+        Vector3 localMoveDir = Vector3.zero;
+        if (isMoving)
+        {
+            localMoveDir = transform.InverseTransformDirection(worldMoveDir.normalized);
+        }
 
         animator.SetBool("IsStance", Stance);
 
-        float distance = Vector3.Distance(transform.position, syncPos);
-        bool isMoving = distance > 0.1f;
-
         if (Stance)
         {
+            animator.SetBool("Run", false);
+
             animator.SetFloat("Speed", isMoving ? combatMoveSpeed : 0f);
-            animator.SetBool("Run", isMoving);
+
+            float curMoveX = animator.GetFloat("MoveX");
+            float curMoveY = animator.GetFloat("MoveY");
+            animator.SetFloat("MoveX", Mathf.Lerp(curMoveX, localMoveDir.x, Time.deltaTime * 10f));
+            animator.SetFloat("MoveY", Mathf.Lerp(curMoveY, localMoveDir.z, Time.deltaTime * 10f));
         }
         else
         {
-            animator.SetFloat("Speed", isMoving ? runSpeed : 0f);
             animator.SetBool("Run", isMoving);
+            animator.SetFloat("Speed", isMoving ? runSpeed : 0f);
         }
+
+        transform.position = Vector3.Lerp(transform.position, syncPos, Time.deltaTime * 10f);
+        Quaternion targetRot = Quaternion.Euler(0, syncRotY, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
     }
 
     private void SyncTransformToServer()
