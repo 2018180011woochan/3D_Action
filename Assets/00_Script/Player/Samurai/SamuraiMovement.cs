@@ -133,15 +133,24 @@ public class SamuraiMovement : MonoBehaviour
     private void UpdateRemoteMove()
     {
         transform.position = Vector3.Lerp(transform.position, syncPos, Time.deltaTime * 10f);
-
         Quaternion targetRot = Quaternion.Euler(0, syncRotY, 0);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
 
-        float distance = Vector3.Distance(transform.position, syncPos);
+        animator.SetBool("IsStance", Stance);
 
+        float distance = Vector3.Distance(transform.position, syncPos);
         bool isMoving = distance > 0.1f;
-        animator.SetFloat("Speed", isMoving ? runSpeed : 0f);
-        animator.SetBool("Run", isMoving);
+
+        if (Stance)
+        {
+            animator.SetFloat("Speed", isMoving ? combatMoveSpeed : 0f);
+            animator.SetBool("Run", isMoving);
+        }
+        else
+        {
+            animator.SetFloat("Speed", isMoving ? runSpeed : 0f);
+            animator.SetBool("Run", isMoving);
+        }
     }
 
     private void SyncTransformToServer()
