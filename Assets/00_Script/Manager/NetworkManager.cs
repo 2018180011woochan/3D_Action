@@ -19,6 +19,8 @@ public enum PacketID : ushort
     PKT_S_STANCE = 1010,
     PKT_C_JUMP = 1011,
     PKT_S_JUMP = 1012,
+    PKT_C_ATTACK = 1013,   
+    PKT_S_ATTACK = 1014,   
 }
 
 enum ROOM : ushort
@@ -26,6 +28,14 @@ enum ROOM : ushort
     ROOM_1,
     ROOM_2,
     ROOM_3,
+}
+
+public enum AttackType : ushort
+{
+    SLASH1 = 0,
+    SLASH2,
+    SLASH3,
+    SKILL
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -107,6 +117,19 @@ public struct C_JUMP
 public struct S_JUMP
 {
     public int playerId;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_ATTACK
+{
+    public AttackType attackType;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_ATTACK
+{
+    public int playerId;
+    public AttackType attackType;
 }
 
 public class NetworkManager : MonoBehaviour
@@ -217,6 +240,25 @@ public class NetworkManager : MonoBehaviour
         C_JUMP pkt = new C_JUMP { dummy = 1 };
         ushort pktSize = (ushort)(Marshal.SizeOf(typeof(PacketHeader)) + Marshal.SizeOf(typeof(C_JUMP)));
         PacketHeader header = new PacketHeader { size = pktSize, id = (ushort)PacketID.PKT_C_JUMP };
+
+        byte[] sendBuffer = new byte[pktSize];
+        IntPtr ptr = Marshal.AllocHGlobal(pktSize);
+
+        Marshal.StructureToPtr(header, ptr, false);
+        Marshal.StructureToPtr(pkt, ptr + Marshal.SizeOf(typeof(PacketHeader)), false);
+        Marshal.Copy(ptr, sendBuffer, 0, pktSize);
+        Marshal.FreeHGlobal(ptr);
+
+        _socket.Send(sendBuffer);
+    }
+
+    public void SendAttackPacket(AttackType type)
+    {
+        if (_socket == null || !_socket.Connected) return;
+
+        C_ATTACK pkt = new C_ATTACK { attackType = type };
+        ushort pktSize = (ushort)(Marshal.SizeOf(typeof(PacketHeader)) + Marshal.SizeOf(typeof(C_ATTACK)));
+        PacketHeader header = new PacketHeader { size = pktSize, id = (ushort)PacketID.PKT_C_ATTACK };
 
         byte[] sendBuffer = new byte[pktSize];
         IntPtr ptr = Marshal.AllocHGlobal(pktSize);
@@ -377,6 +419,24 @@ public class NetworkManager : MonoBehaviour
                                     SamuraiMovement movement = targetObj.GetComponent<SamuraiMovement>();
                                     // 상대방 스크립트의 '원격 점프' 함수 실행!
                                     if (movement != null) movement.ApplyRemoteJump();
+                                }
+                            });
+                        }
+                    }
+                    else if (header.id == (ushort)PacketID.PKT_S_ATTACK)
+                    {
+                        S_ATTACK attackPkt = (S_ATTACK)Marshal.PtrToStructure(payloadPtr, typeof(S_ATTACK));
+
+                        lock (_lock)
+                        {
+                            _packetQueue.Enqueue(() =>
+                            {
+                                if (attackPkt.playerId == myPlayerId) return;
+
+                                if (_players.TryGetValue(attackPkt.playerId, out GameObject targetObj))
+                                {
+                                    SamuraiCombat combat = targetObj.GetComponent<SamuraiCombat>();
+                                    if (combat != null) combat.ApplyRemoteAttack(attackPkt.attackType);
                                 }
                             });
                         }

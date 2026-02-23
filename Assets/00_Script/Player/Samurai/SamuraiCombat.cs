@@ -39,6 +39,7 @@ public class SamuraiCombat : MonoBehaviour
 
     void Update()
     {
+        if (!movementScript.isMine) return;
         if (movementScript.Stance == false) return;
         if (movementScript.isBusy) return;
 
@@ -75,18 +76,41 @@ public class SamuraiCombat : MonoBehaviour
     {
         movementScript.isBusy = true;
         animator.SetTrigger("Attack1");
+        if (NetworkManager.Instance != null) NetworkManager.Instance.SendAttackPacket(AttackType.SLASH1);
     }
 
     private void Attack2()
     {
         movementScript.isBusy = true;
         animator.SetTrigger("Attack2");
+        if (NetworkManager.Instance != null) NetworkManager.Instance.SendAttackPacket(AttackType.SLASH2);
     }
 
     private void Attack3()
     {
         movementScript.isBusy = true;
         animator.SetTrigger("Attack3");
+        if (NetworkManager.Instance != null) NetworkManager.Instance.SendAttackPacket(AttackType.SLASH3);
+    }
+
+    public void ApplyRemoteAttack(AttackType type)
+    {
+        movementScript.isBusy = true;
+
+        switch (type)
+        {
+            case AttackType.SLASH1:
+                animator.SetTrigger("Attack1");
+                break;
+            case AttackType.SLASH2:
+                animator.SetTrigger("Attack2");
+                break;
+            case AttackType.SLASH3:
+                animator.SetTrigger("Attack3");
+                break;
+            case AttackType.SKILL:
+                break;
+        }
     }
 
     private IEnumerator FireSkillRoutine()
