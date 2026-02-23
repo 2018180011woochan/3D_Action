@@ -17,6 +17,8 @@ public enum PacketID : ushort
     PKT_S_LEAVE_GAME = 1008,
     PKT_C_STANCE = 1009,
     PKT_S_STANCE = 1010,
+    PKT_C_JUMP = 1011,
+    PKT_S_JUMP = 1012,
 }
 
 enum ROOM : ushort
@@ -93,6 +95,18 @@ public struct S_STANCE
 {
     public int playerId;
     public int isStance;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_JUMP
+{
+    public int dummy;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_JUMP
+{
+    public int playerId;
 }
 
 public class NetworkManager : MonoBehaviour
@@ -184,6 +198,25 @@ public class NetworkManager : MonoBehaviour
         C_STANCE pkt = new C_STANCE { isStance = isStance ? 1 : 0 };
         ushort pktSize = (ushort)(Marshal.SizeOf(typeof(PacketHeader)) + Marshal.SizeOf(typeof(C_STANCE)));
         PacketHeader header = new PacketHeader { size = pktSize, id = (ushort)PacketID.PKT_C_STANCE };
+
+        byte[] sendBuffer = new byte[pktSize];
+        IntPtr ptr = Marshal.AllocHGlobal(pktSize);
+
+        Marshal.StructureToPtr(header, ptr, false);
+        Marshal.StructureToPtr(pkt, ptr + Marshal.SizeOf(typeof(PacketHeader)), false);
+        Marshal.Copy(ptr, sendBuffer, 0, pktSize);
+        Marshal.FreeHGlobal(ptr);
+
+        _socket.Send(sendBuffer);
+    }
+
+    public void SendJumpPacket()
+    {
+        if (_socket == null || !_socket.Connected) return;
+
+        C_JUMP pkt = new C_JUMP { dummy = 1 };
+        ushort pktSize = (ushort)(Marshal.SizeOf(typeof(PacketHeader)) + Marshal.SizeOf(typeof(C_JUMP)));
+        PacketHeader header = new PacketHeader { size = pktSize, id = (ushort)PacketID.PKT_C_JUMP };
 
         byte[] sendBuffer = new byte[pktSize];
         IntPtr ptr = Marshal.AllocHGlobal(pktSize);
@@ -328,7 +361,26 @@ public class NetworkManager : MonoBehaviour
                             });
                         }
                     }
+                    else if (header.id == (ushort)PacketID.PKT_S_JUMP)
+                    {
+                        S_JUMP jumpPkt = (S_JUMP)Marshal.PtrToStructure(payloadPtr, typeof(S_JUMP));
 
+                        lock (_lock)
+                        {
+                            _packetQueue.Enqueue(() =>
+                            {
+                                // 내 캐릭터면 패스 (이미 스페이스바 누를 때 뛰었음)
+                                if (jumpPkt.playerId == myPlayerId) return;
+
+                                if (_players.TryGetValue(jumpPkt.playerId, out GameObject targetObj))
+                                {
+                                    SamuraiMovement movement = targetObj.GetComponent<SamuraiMovement>();
+                                    // 상대방 스크립트의 '원격 점프' 함수 실행!
+                                    if (movement != null) movement.ApplyRemoteJump();
+                                }
+                            });
+                        }
+                    }
                     Marshal.FreeHGlobal(dataPtr);
                 }
 

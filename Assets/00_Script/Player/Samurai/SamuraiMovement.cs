@@ -355,9 +355,18 @@ public class SamuraiMovement : MonoBehaviour
             animator.SetTrigger("Jump");
             if (jumpSfx) sfxSrc.PlayOneShot(jumpSfx, jumpVolume);
             playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
-
             playerState?.ConsumeStamina(10f);
+
+            if (NetworkManager.Instance != null)
+                NetworkManager.Instance.SendJumpPacket();
         }
+    }
+
+    public void ApplyRemoteJump()
+    {
+        animator.SetTrigger("Jump");
+
+        if (jumpSfx) sfxSrc.PlayOneShot(jumpSfx, jumpVolume);
     }
 
     private void HandleDash()
