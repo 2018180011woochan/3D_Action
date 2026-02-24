@@ -149,6 +149,11 @@ public struct S_MONSTER_STATE
 {
     public int monsterId;
     public EMonsterState state;
+
+    public int targetId; 
+    public float destX;  
+    public float destY;
+    public float destZ;
 }
 
 public class NetworkManager : MonoBehaviour
@@ -473,7 +478,7 @@ public class NetworkManager : MonoBehaviour
                                 if (_monsters.TryGetValue(statePkt.monsterId, out GameObject mobObj))
                                 {
                                     MonsterAI ai = mobObj.GetComponent<MonsterAI>();
-                                    if (ai != null) ai.ApplyRemoteState(statePkt.state);
+                                    if (ai != null) ai.ApplyRemoteState(statePkt);
                                 }
                             });
                         }

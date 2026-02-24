@@ -458,11 +458,11 @@ public class MonsterAI : MonoBehaviour
         animator.SetFloat("Speed", speed);
     }
 
-    public void ApplyRemoteState(EMonsterState newState)
+    public void ApplyRemoteState(S_MONSTER_STATE pkt)
     {
-        currentState = newState;
+        currentState = pkt.state;
 
-        switch (newState)
+        switch (pkt.state)
         {
             case EMonsterState.IDLE:
                 agent.isStopped = true;
@@ -470,10 +470,9 @@ public class MonsterAI : MonoBehaviour
 
             case EMonsterState.WANDER:
                 agent.isStopped = false;
-                Vector3 randomDir = UnityEngine.Random.insideUnitSphere * 5f;
-                randomDir.y = 0;
-                randomDir += transform.position;
-                if (NavMesh.SamplePosition(randomDir, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+                Vector3 dest = new Vector3(pkt.destX, pkt.destY, pkt.destZ);
+
+                if (NavMesh.SamplePosition(dest, out NavMeshHit hit, 20f, NavMesh.AllAreas))
                 {
                     agent.SetDestination(hit.position);
                 }
@@ -481,10 +480,9 @@ public class MonsterAI : MonoBehaviour
 
             case EMonsterState.CHASE:
                 agent.isStopped = false;
-                GameObject target = GameObject.FindGameObjectWithTag("Player");
-                if (target != null)
+                if (NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
                 {
-                    agent.SetDestination(target.transform.position);
+                    agent.SetDestination(targetUser.transform.position);
                 }
                 break;
 
