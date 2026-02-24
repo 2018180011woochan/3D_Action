@@ -18,6 +18,8 @@ public enum PacketID : ushort
     PKT_C_ATTACK = 1013,
     PKT_S_ATTACK = 1014,
     PKT_S_MONSTER_STATE = 1015,
+    PKT_C_DASH = 1016, 
+    PKT_S_DASH = 1017, 
 }
 
 public enum ROOM : ushort { ROOM_1, ROOM_2, ROOM_3 }
@@ -73,3 +75,9 @@ public struct S_MONSTER_STATE
     public float destY;
     public float destZ;
 }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_DASH { public int dummy; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_DASH { public int playerId; }

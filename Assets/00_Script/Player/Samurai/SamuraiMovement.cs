@@ -405,8 +405,21 @@ public class SamuraiMovement : MonoBehaviour
             animator.ResetTrigger("Dash");
             animator.SetTrigger("Dash");
 
-            playerState?.ConsumeStamina(10f); 
+            playerState?.ConsumeStamina(10f);
+
+            if (NetworkManager.Instance != null)
+            {
+                NetworkManager.Instance.SendDashPacket();
+            }
         }
+    }
+
+    public void ApplyRemoteDash()
+    {
+        animator.ResetTrigger("Dash");
+        animator.SetTrigger("Dash");
+
+        if (jumpSfx) sfxSrc.PlayOneShot(jumpSfx, jumpVolume);
     }
 
     public void OnDrawEnd()
