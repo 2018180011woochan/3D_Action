@@ -19,7 +19,20 @@ public enum PacketID : ushort
     PKT_S_ATTACK = 1014,
     PKT_S_MONSTER_STATE = 1015,
     PKT_C_DASH = 1016, 
-    PKT_S_DASH = 1017, 
+    PKT_S_DASH = 1017,
+    PKT_C_HIT_MONSTER = 1018, 
+    PKT_S_HIT_MONSTER = 1019,
+}
+
+public enum EMonsterType : ushort
+{
+    NONE = 0,
+    SKELETON = 1,
+    GOLEM = 2,
+    MUTANT = 3,
+    NECROMANCER = 4,
+    ZOMBIE = 5,
+    GHOST = 6
 }
 
 public enum ROOM : ushort { ROOM_1, ROOM_2, ROOM_3 }
@@ -81,3 +94,18 @@ public struct C_DASH { public int dummy; }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct S_DASH { public int playerId; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_HIT_MONSTER
+{
+    public int monsterId; 
+    public float damage;  
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_HIT_MONSTER
+{
+    public int monsterId;
+    public float damage;
+    public float currentHp; 
+}

@@ -69,6 +69,8 @@ public class NetworkManager : MonoBehaviour
     public void SendJumpPacket() => SendPacket(new C_JUMP { dummy = 1 }, PacketID.PKT_C_JUMP);
     public void SendAttackPacket(AttackType type) => SendPacket(new C_ATTACK { attackType = type }, PacketID.PKT_C_ATTACK);
     public void SendDashPacket() => SendPacket(new C_DASH { dummy = 1 }, PacketID.PKT_C_DASH);
+    public void SendHitMonsterPacket(int mobId, float dmg)
+        => SendPacket(new C_HIT_MONSTER { monsterId = mobId, damage = dmg }, PacketID.PKT_C_HIT_MONSTER);
 
     private void RegisterPacketHandlers()
     {
@@ -81,6 +83,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_ATTACK, Handle_S_ATTACK);
         _packetHandlers.Add((ushort)PacketID.PKT_S_MONSTER_STATE, Handle_S_MONSTER_STATE);
         _packetHandlers.Add((ushort)PacketID.PKT_S_DASH, Handle_S_DASH);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_MONSTER, Handle_S_HIT_MONSTER);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -254,6 +257,20 @@ public class NetworkManager : MonoBehaviour
                 if (_players.TryGetValue(pkt.playerId, out GameObject go) && go.TryGetComponent(out SamuraiMovement mov))
                 {
                     mov.ApplyRemoteDash();
+                }
+            });
+        }
+    }
+
+    private void Handle_S_HIT_MONSTER(IntPtr payloadPtr)
+    {
+        S_HIT_MONSTER pkt = (S_HIT_MONSTER)Marshal.PtrToStructure(payloadPtr, typeof(S_HIT_MONSTER));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                if (_monsters.TryGetValue(pkt.monsterId, out GameObject mob) && mob.TryGetComponent(out MonsterState ms))
+                {
+                    ms.ApplyRemoteDamage(pkt.damage, pkt.currentHp);
                 }
             });
         }

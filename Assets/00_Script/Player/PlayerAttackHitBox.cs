@@ -45,6 +45,8 @@ public class PlayerAttackHitBox : MonoBehaviour
     {
         if (hasHitThisSwing) return;
         if (!animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
+        SamuraiMovement movement = GetComponentInParent<SamuraiMovement>();
+        if (movement != null && !movement.isMine) return;
 
         var ms = other.GetComponentInParent<MonsterState>();
         if (ms == null || ms.isDead) return;
@@ -53,7 +55,11 @@ public class PlayerAttackHitBox : MonoBehaviour
 
         UIManager.Instance.AddTargetMonster(ms);
 
-        ms.TakeDamage(damage);
+        //ms.TakeDamage(damage);
+        if (NetworkManager.Instance != null)
+        {
+            NetworkManager.Instance.SendHitMonsterPacket(ms.monsterId, damage);
+        }
 
         if (AttackEffect)
         {

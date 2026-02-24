@@ -55,7 +55,7 @@ public class ZombiAI : MonoBehaviour
 
             if (!ms.isDead)
             {
-                ms.TakeDamage(ms.currentHP);
+                //ms.TakeDamage(ms.currentHP);
             }
             return; 
         }

@@ -53,7 +53,7 @@ public class Arrow : MonoBehaviour
             if (ms != null)
             {
                 UIManager.Instance.AddTargetMonster(ms);
-                ms.TakeDamage(damage);
+                //ms.TakeDamage(damage);
 
                 if (AttackEffect != null)
                 {

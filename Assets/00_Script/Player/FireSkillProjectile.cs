@@ -42,7 +42,7 @@ public class FireSkillProjectile : MonoBehaviour
             if (monsterState != null)
             {
                 UIManager.Instance.AddTargetMonster(monsterState);
-                monsterState.TakeDamage(Damage);
+                //monsterState.TakeDamage(Damage);
                 Debug.Log("몬스터 불꽃 영역에 진입!");
             }
         }

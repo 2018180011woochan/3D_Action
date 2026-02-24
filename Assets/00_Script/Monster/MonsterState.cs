@@ -27,6 +27,8 @@ public class MonsterState : MonoBehaviour
     public AudioClip redSkeletonDeathSfx;
     public AudioClip GolemDeathSfx;
     public AudioClip MutantDeathSfx;
+
+    public int monsterId = 100;
     void Awake()
     {
         currentHP = maxHP;
@@ -36,13 +38,17 @@ public class MonsterState : MonoBehaviour
         sfx.loop = false;
     }
 
-    public void TakeDamage(float dmg)
+    public void ApplyRemoteDamage(float dmg, float serverHp)
     {
-        if (BossPhaseCutscene.isPlayingCutScene) return;
+        if (BossPhaseCutscene.isPlayingCutScene || isDead) return;
+
+        currentHP = serverHp;
+
         if (StunEffect != null)
             StunEffect.SetActive(true);
+
         if (hitSfx && sfx) sfx.PlayOneShot(hitSfx, hitVolume);
-        currentHP = Mathf.Max(currentHP - dmg, 0f);
+
         OnDamaged?.Invoke(dmg);
         onHealthChanged.Invoke(currentHP / maxHP);
 
@@ -53,7 +59,9 @@ public class MonsterState : MonoBehaviour
             animator.SetTrigger(hits[idx]);
         }
         else
+        {
             animator.SetTrigger("GetHit");
+        }
 
         var agent = GetComponent<NavMeshAgent>();
         if (agent != null)
@@ -62,55 +70,49 @@ public class MonsterState : MonoBehaviour
             agent.velocity = Vector3.zero;
         }
 
-        if (currentHP <= 0f)
+        if (currentHP <= 0f && !isDead)
         {
             isDead = true;
+
             if (monsterName == "Golem")
             {
                 var monAI = GetComponent<GolemAI>();
-                monAI.state = GolemAI.State.Dead;
+                if (monAI != null) monAI.state = GolemAI.State.Dead;
 
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-
-                GameObject potion = Instantiate(
-                    Potion,
-                    spawnPos,
-                    Quaternion.identity
-                    );
-                sfx.PlayOneShot(GolemDeathSfx, 1f);
+                Instantiate(Potion, spawnPos, Quaternion.identity);
+                if (GolemDeathSfx) sfx.PlayOneShot(GolemDeathSfx, 1f);
             }
             else if (monsterName == "Mutant")
             {
                 GetComponent<MutantAI>()?.HandleDeath(5f, 1f);
-                BossScene1Manager.Instance?.BossDied();
-                sfx.PlayOneShot(MutantDeathSfx, 1f);
+                if (BossScene1Manager.Instance != null) BossScene1Manager.Instance.BossDied();
+                if (MutantDeathSfx) sfx.PlayOneShot(MutantDeathSfx, 1f);
             }
             else if (monsterName == "Necromanser")
             {
-                GetComponent<NecromanserAI>().isDead = true;
-                sfx.PlayOneShot(GolemDeathSfx, 1f);
+                var necAI = GetComponent<NecromanserAI>();
+                if (necAI != null) necAI.isDead = true;
+                if (GolemDeathSfx) sfx.PlayOneShot(GolemDeathSfx, 1f);
             }
             else if (monsterName == "Zombi")
             {
-                GetComponent<ZombiAI>().isDead = true;         
+                var zomAI = GetComponent<ZombiAI>();
+                if (zomAI != null) zomAI.isDead = true;
                 GetComponent<ZombiDissolve>()?.Play();
-                sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
+                if (redSkeletonDeathSfx) sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
             }
             else if (monsterName == "Ghost")
             {
                 var monAI = GetComponent<GhostAI>();
-                monAI.state = GhostAI.State.Dead;
+                if (monAI != null) monAI.state = GhostAI.State.Dead;
 
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+                Instantiate(Potion, spawnPos, Quaternion.identity);
 
-                GameObject potion = Instantiate(
-                    Potion,
-                    spawnPos,
-                    Quaternion.identity
-                    );
                 var dissolve = GetComponent<GhostDissolve>();
                 if (dissolve) dissolve.Play();
-                BossScene1Manager.Instance.ReportGhostDeath();
+                if (BossScene1Manager.Instance != null) BossScene1Manager.Instance.ReportGhostDeath();
             }
             else
             {
@@ -120,18 +122,13 @@ public class MonsterState : MonoBehaviour
                     monAI.currentState = EMonsterState.DEAD;
                 }
 
-                Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y  + 1f, transform.position.z);
-
-                GameObject potion = Instantiate(
-                    Potion,
-                    spawnPos,
-                    Quaternion.identity
-                    );
-                sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
+                Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+                Instantiate(Potion, spawnPos, Quaternion.identity);
+                if (redSkeletonDeathSfx) sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
             }
 
             animator.SetTrigger("Dead");
-            UIManager.Instance.RemoveTargetMonster(this);
+            if (UIManager.Instance != null) UIManager.Instance.RemoveTargetMonster(this);
         }
     }
 }
