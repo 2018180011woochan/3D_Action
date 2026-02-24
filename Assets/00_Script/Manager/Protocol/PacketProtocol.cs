@@ -1,0 +1,75 @@
+using System.Runtime.InteropServices;
+
+public enum PacketID : ushort
+{
+    PKT_C_LOGIN = 1000,
+    PKT_S_LOGIN = 1001,
+    PKT_C_ENTER_GAME = 1002,
+    PKT_S_ENTER_GAME = 1003,
+    PKT_C_CHAT = 1004,
+    PKT_S_CHAT = 1005,
+    PKT_C_MOVE = 1006,
+    PKT_S_MOVE = 1007,
+    PKT_S_LEAVE_GAME = 1008,
+    PKT_C_STANCE = 1009,
+    PKT_S_STANCE = 1010,
+    PKT_C_JUMP = 1011,
+    PKT_S_JUMP = 1012,
+    PKT_C_ATTACK = 1013,
+    PKT_S_ATTACK = 1014,
+    PKT_S_MONSTER_STATE = 1015,
+}
+
+public enum ROOM : ushort { ROOM_1, ROOM_2, ROOM_3 }
+public enum AttackType : ushort { SLASH1 = 0, SLASH2, SLASH3, SKILL }
+public enum EMonsterState : ushort { IDLE = 0, WANDER, CHASE, CONFRONT, ATTACK, RETREAT, DEAD }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct PacketHeader { public ushort size; public ushort id; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_LOGIN { public ulong dummyId; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_LOGIN { public int playerId; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_MOVE { public float posX; public float posY; public float posZ; public float rotY; public int isRunning; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_MOVE { public int playerId; public float posX; public float posY; public float posZ; public float rotY; public int isRunning; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_ENTER_GAME { public int playerId; public float posX; public float posY; public float posZ; public float rotY; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_LEAVE_GAME { public int playerId; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_STANCE { public int isStance; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_STANCE { public int playerId; public int isStance; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_JUMP { public int dummy; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_JUMP { public int playerId; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_ATTACK { public AttackType attackType; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_ATTACK { public int playerId; public AttackType attackType; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_MONSTER_STATE
+{
+    public int monsterId;
+    public EMonsterState state;
+    public int targetId;
+    public float destX;
+    public float destY;
+    public float destZ;
+}
