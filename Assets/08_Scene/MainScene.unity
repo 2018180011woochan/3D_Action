@@ -7701,6 +7701,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsterId: 101
+  monsterType: 2
   maxHP: 100
   monsterName: Golem
   isDead: 0
@@ -7796,15 +7798,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61ea2b1771f880b44af93be3a8309e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 12
-  loseSightMultiplier: 1.25
   chaseSpeed: 3.5
-  stoppingDistance: 3
-  wanderRadius: 10
-  wanderInterval: 3
   wanderSpeed: 2
-  attackRange: 3.5
-  attackCooldown: 1
   attackTrigger1: Attack1
   attackTrigger2: Attack2
   hitTags:
@@ -14210,6 +14205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db1e72336a6f53429f07d8033fbfd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsterId: 100
+  monsterType: 1
   maxHP: 30
   monsterName: Skelton
   isDead: 0
@@ -14306,23 +14303,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28030ea40dadaa842a78704662b084f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRange: 5
-  attackRange: 6
-  wanderRadius: 5
-  wanderInterval: 3
-  wanderSpeed: 1
-  chaseSpeed: 2
-  confrontDuration: 2
-  confrontRadius: 3
-  confrontSpeed: 60
-  confrontMoveSpeed: 2
-  attackCooldown: 1
-  attackLungeDistance: 1
-  attackLungeSpeed: 5
-  attackLungeDuration: 0.3
-  retreatDistance: 3
-  retreatSpeed: 3
-  retreatDuration: 1.5
   currentState: 0
 --- !u!4 &868042320
 Transform:

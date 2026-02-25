@@ -243,8 +243,13 @@ public class NetworkManager : MonoBehaviour
         lock (_lock)
         {
             _packetQueue.Enqueue(() => {
-                if (_monsters.TryGetValue(pkt.monsterId, out GameObject mob) && mob.TryGetComponent(out MonsterAI ai))
-                    ai.ApplyRemoteState(pkt);
+                if (_monsters.TryGetValue(pkt.monsterId, out GameObject mob))
+                {
+                    if (mob.TryGetComponent(out MonsterAI monAI))
+                        monAI.ApplyRemoteState(pkt);
+                    else if (mob.TryGetComponent(out GolemAI golemAI))
+                        golemAI.ApplyRemoteState(pkt);
+                }
             });
         }
     }

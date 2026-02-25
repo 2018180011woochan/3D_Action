@@ -3,38 +3,25 @@ using UnityEngine.AI;
 
 public class GolemAI : MonoBehaviour
 {
-    [Header("탐지/추격")]
-    public float detectionRange = 12f;
-    public float loseSightMultiplier = 1.25f;
+    [Header("이동 속도")]
     public float chaseSpeed = 3.5f;
-    public float stoppingDistance = 2f;
-
-    [Header("배회")]
-    public float wanderRadius = 10f;
-    public float wanderInterval = 3f;
     public float wanderSpeed = 2f;
 
     [Header("공격")]
-    public float attackRange = 3.5f;
-    public float attackCooldown = 1.0f;
     public string attackTrigger1 = "Attack1";
     public string attackTrigger2 = "Attack2";
 
-    [Header("피격 정지")]
-    public string[] hitTags = { "Hit" }; // 애니메이터 상태 Tag
-    public float hitStopSeconds = 0.35f;          // 데미지 직후 강제 정지 시간
+    [Header("피격 정지 (역경직)")]
+    public string[] hitTags = { "Hit" };
+    public float hitStopSeconds = 0.35f;
 
     private NavMeshAgent agent;
-    private Transform player;
     private Animator animator;
     private float moveThreshold = 0.05f;
-    private float wanderTimer;
-    private float attackTimer;
+
     public enum State { Wander, Chase, Attack, Dead }
     public State state = State.Wander;
-    private int attackPhase = 0;
 
-    // 데미지 콜백용
     private MonsterState ms;
     private float hitStopTimer = 0f;
 
@@ -64,98 +51,23 @@ public class GolemAI : MonoBehaviour
     {
         TryWarpToNavMesh();
 
-        if (!player)
+        if (NetworkManager.Instance != null && ms != null)
         {
-            var p = GameObject.FindGameObjectWithTag("Player");
-            if (p) player = p.transform;
+            NetworkManager.Instance._monsters[ms.monsterId] = this.gameObject;
         }
-
-        agent.stoppingDistance = stoppingDistance;
-        state = State.Wander;
-        wanderTimer = wanderInterval;
-        attackTimer = 0f;
     }
 
     void Update()
     {
         if (state == State.Dead) return;
 
-
         if (hitStopTimer > 0f || IsHitPlaying())
         {
             hitStopTimer -= Time.deltaTime;
             agent.isStopped = true;
-            agent.ResetPath();
             agent.velocity = Vector3.zero;
             animator.SetBool("IsMoving", false);
-            return; 
-        }
-
-
-        if (attackTimer > 0f) attackTimer -= Time.deltaTime;
-        float dist = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;
-
-        switch (state)
-        {
-            case State.Wander:
-                agent.speed = wanderSpeed;
-                agent.isStopped = false;
-
-                wanderTimer += Time.deltaTime;
-                if (wanderTimer >= wanderInterval || !agent.hasPath || agent.remainingDistance < 0.2f)
-                {
-                    SetRandomWanderDestination();
-                    wanderTimer = 0f;
-                }
-
-                if (dist <= detectionRange)
-                    state = State.Chase;
-                break;
-
-            case State.Chase:
-                if (!player) { state = State.Wander; break; }
-
-                agent.speed = chaseSpeed;
-                agent.isStopped = false;
-                agent.SetDestination(player.position);
-
-                if (dist <= attackRange && attackTimer <= 0f && !IsAttackPlaying())
-                {
-                    state = State.Attack;
-                    EnterAttack();
-                    TriggerAttack1();
-                    attackPhase = 1;
-                }
-
-                if (dist > detectionRange * loseSightMultiplier)
-                    state = State.Wander;
-                break;
-
-            case State.Attack:
-                if (!player) { ExitToChase(); break; }
-
-                agent.isStopped = true;
-                agent.ResetPath();
-                agent.velocity = Vector3.zero;
-                FacePlayer();
-
-                if (!IsAttackPlaying() && dist > attackRange * 1.15f)
-                {
-                    ExitToChase();
-                    break;
-                }
-
-                if (attackPhase == 1 && !IsAttackPlaying())
-                {
-                    TriggerAttack2();
-                    attackPhase = 2;
-                }
-                else if (attackPhase == 2 && !IsAttackPlaying())
-                {
-                    attackTimer = attackCooldown;
-                    ExitToChase();
-                }
-                break;
+            return;
         }
 
         float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
@@ -163,69 +75,69 @@ public class GolemAI : MonoBehaviour
         animator.SetBool("IsMoving", isMoving);
     }
 
-    void EnterAttack()
+    public void ApplyRemoteState(S_MONSTER_STATE pkt)
     {
-        agent.isStopped = true;
-        agent.ResetPath();
-        agent.velocity = Vector3.zero;
-        FacePlayer();
-    }
+        switch (pkt.state)
+        {
+            case EMonsterState.IDLE:
+                agent.isStopped = true;
+                break;
 
-    void ExitToChase()
-    {
-        state = State.Chase;
-        agent.isStopped = false;
-        attackPhase = 0;
-    }
+            case EMonsterState.WANDER:
+                agent.isStopped = false;
+                agent.speed = wanderSpeed;
+                Vector3 dest = new Vector3(pkt.destX, pkt.destY, pkt.destZ);
+                if (NavMesh.SamplePosition(dest, out NavMeshHit hit, 20f, NavMesh.AllAreas))
+                    agent.SetDestination(hit.position);
+                break;
 
-    void TriggerAttack1()
-    {
-        animator.ResetTrigger(attackTrigger2);
-        animator.SetTrigger(attackTrigger1);
-    }
+            case EMonsterState.CHASE:
+                {
+                    agent.isStopped = false;
+                    agent.speed = chaseSpeed;
 
-    void TriggerAttack2()
-    {
-        animator.ResetTrigger(attackTrigger1);
-        animator.SetTrigger(attackTrigger2);
-    }
+                    agent.stoppingDistance = 2f;
 
-    bool IsAttackPlaying()
-    {
-        var st = animator.GetCurrentAnimatorStateInfo(0);
-        if (animator.IsInTransition(0)) return true;
-        return st.IsTag("Attack") && st.normalizedTime < 0.98f;
+                    if (NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
+                    {
+                        agent.SetDestination(targetUser.transform.position);
+                    }
+                    break;
+                }
+
+            case EMonsterState.ATTACK:
+                {
+                    agent.isStopped = true;
+                    agent.velocity = Vector3.zero;
+                    agent.ResetPath();
+
+                    if (pkt.targetId != -1 && NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
+                    {
+                        Vector3 lookDir = targetUser.transform.position - transform.position;
+                        lookDir.y = 0f;
+                        if (lookDir.sqrMagnitude > 0.0001f)
+                            transform.rotation = Quaternion.LookRotation(lookDir);
+                    }
+
+                    animator.SetTrigger(UnityEngine.Random.value > 0.5f ? attackTrigger1 : attackTrigger2);
+                    break;
+                }
+
+            case EMonsterState.DEAD:
+                agent.isStopped = true;
+                state = State.Dead;
+                break;
+        }
     }
 
     bool IsHitPlaying()
     {
         if (!animator) return false;
         var st = animator.GetCurrentAnimatorStateInfo(0);
-        // 현재 상태가 Hit 관련 태그인지 확인
-        for (int i = 0; i < hitTags.Length; i++)
-        {
-            var tag = hitTags[i];
-            if (!string.IsNullOrEmpty(tag) && st.IsTag(tag))
-                return st.normalizedTime < 0.98f;
-        }
-        // 태그를 안 쓰고 상태명이 "GetHit"인 경우 대비
+        foreach (var tag in hitTags)
+            if (!string.IsNullOrEmpty(tag) && st.IsTag(tag)) return st.normalizedTime < 0.98f;
         if (st.IsName("GetHit")) return st.normalizedTime < 0.98f;
         return false;
-    }
-
-    void FacePlayer()
-    {
-        if (!player) return;
-        Vector3 dir = player.position - transform.position; dir.y = 0;
-        if (dir.sqrMagnitude > 0.0001f)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 6f);
-    }
-
-    void SetRandomWanderDestination()
-    {
-        Vector3 random = transform.position + Random.insideUnitSphere * wanderRadius;
-        if (NavMesh.SamplePosition(random, out var hit, 4f, NavMesh.AllAreas))
-            agent.SetDestination(hit.position);
     }
 
     void TryWarpToNavMesh()

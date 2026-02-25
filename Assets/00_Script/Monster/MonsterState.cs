@@ -8,6 +8,10 @@ public class MonsterState : MonoBehaviour
 {
     public event Action<float> OnDamaged;
 
+    [Header("몬스터 정보")]
+    public int monsterId;
+    public EMonsterType monsterType = EMonsterType.SKELETON;
+
     [Header("체력 설정")]
     public float maxHP = 100f;
     public string monsterName;
@@ -28,7 +32,6 @@ public class MonsterState : MonoBehaviour
     public AudioClip GolemDeathSfx;
     public AudioClip MutantDeathSfx;
 
-    public int monsterId = 100;
     void Awake()
     {
         currentHP = maxHP;
