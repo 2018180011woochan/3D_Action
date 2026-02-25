@@ -479,37 +479,38 @@ public class MonsterAI : MonoBehaviour
                 break;
 
             case EMonsterState.CHASE:
-                agent.isStopped = false;
-                if (NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
                 {
-                    agent.SetDestination(targetUser.transform.position);
+                    agent.isStopped = false;
+                    if (NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
+                    {
+                        agent.SetDestination(targetUser.transform.position);
+                    }
+                    break;
                 }
-                break;
-
-            case EMonsterState.CONFRONT:
-                agent.isStopped = true;
-                animator.SetTrigger("LeftMove");
-                break;
 
             case EMonsterState.ATTACK:
-                agent.isStopped = true;
-                animator.SetTrigger("Attack");
-                break;
-
-            case EMonsterState.RETREAT:
-                agent.isStopped = false;
-                GameObject danger = GameObject.FindGameObjectWithTag("Player");
-                if (danger != null)
                 {
-                    Vector3 retreatDir = (transform.position - danger.transform.position).normalized;
-                    if (NavMesh.SamplePosition(transform.position + retreatDir * 3f, out NavMeshHit rHit, 3f, NavMesh.AllAreas))
-                        agent.SetDestination(rHit.position);
+                    agent.isStopped = true;
+                    agent.velocity = Vector3.zero;
+                    agent.ResetPath();
+
+                    if (pkt.targetId != -1 && NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
+                    {
+                        Vector3 lookDir = targetUser.transform.position - transform.position;
+                        lookDir.y = 0f;
+
+                        if (lookDir.sqrMagnitude > 0.01f)
+                        {
+                            transform.rotation = Quaternion.LookRotation(lookDir);
+                        }
+                    }
+
+                    animator.SetTrigger("Attack");
+                    break;
                 }
-                break;
 
             case EMonsterState.DEAD:
                 agent.isStopped = true;
-                animator.SetTrigger("Dead");
                 break;
         }
     }
