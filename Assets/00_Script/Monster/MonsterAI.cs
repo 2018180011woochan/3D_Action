@@ -12,12 +12,6 @@ public class MonsterAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-
-        if (NetworkManager.Instance != null)
-        {
-            // Dictionary에 100번 키로 나 자신을 등록!
-            NetworkManager.Instance._monsters[100] = this.gameObject;
-        }
     }
 
     void Update()

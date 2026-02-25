@@ -13,6 +13,10 @@ public class NetworkManager : MonoBehaviour
     public Dictionary<int, GameObject> _monsters = new Dictionary<int, GameObject>();
     public int myPlayerId;
 
+    [Header("몬스터 프리팹")]
+    public GameObject skeletonPrefab;
+    public GameObject golemPrefab;
+
     private Socket _socket;
     private byte[] _recvBuffer = new byte[1024];
     private List<byte> _packetBuffer = new List<byte>();
@@ -87,6 +91,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_DASH, Handle_S_DASH);
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_MONSTER, Handle_S_HIT_MONSTER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_PLAYER, Handle_S_HIT_PLAYER);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_MONSTER, Handle_S_SPAWN_MONSTER);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -295,6 +300,38 @@ public class NetworkManager : MonoBehaviour
                 if (_players.TryGetValue(pkt.playerId, out GameObject go) && go.TryGetComponent(out PlayerState ps))
                 {
                     ps.ApplyRemoteDamage(pkt.damage, pkt.currentHp, pkt.isBlocked == 1);
+                }
+            });
+        }
+    }
+
+    private void Handle_S_SPAWN_MONSTER(IntPtr payloadPtr)
+    {
+        S_SPAWN_MONSTER pkt = (S_SPAWN_MONSTER)Marshal.PtrToStructure(payloadPtr, typeof(S_SPAWN_MONSTER));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+
+                if (_monsters.ContainsKey(pkt.monsterId)) return;
+
+                GameObject prefabToSpawn = null;
+                if (pkt.monsterType == (int)EMonsterType.SKELETON) prefabToSpawn = skeletonPrefab;
+                else if (pkt.monsterType == (int)EMonsterType.GOLEM) prefabToSpawn = golemPrefab;
+
+                if (prefabToSpawn != null)
+                {
+                    Vector3 spawnPos = new Vector3(pkt.posX, pkt.posY, pkt.posZ);
+                    GameObject newMob = Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+
+                    if (newMob.TryGetComponent(out MonsterState ms))
+                    {
+                        ms.monsterId = pkt.monsterId;
+                        ms.monsterType = (EMonsterType)pkt.monsterType;
+                    }
+
+                    _monsters[pkt.monsterId] = newMob;
+
+                    Debug.Log($"[서버 스폰] {pkt.monsterId}번 몬스터(타입:{pkt.monsterType}) 소환 완료!");
                 }
             });
         }

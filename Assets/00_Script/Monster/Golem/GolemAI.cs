@@ -50,11 +50,6 @@ public class GolemAI : MonoBehaviour
     void Start()
     {
         TryWarpToNavMesh();
-
-        if (NetworkManager.Instance != null && ms != null)
-        {
-            NetworkManager.Instance._monsters[ms.monsterId] = this.gameObject;
-        }
     }
 
     void Update()
