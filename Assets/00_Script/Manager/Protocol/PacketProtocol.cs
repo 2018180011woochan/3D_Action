@@ -22,6 +22,8 @@ public enum PacketID : ushort
     PKT_S_DASH = 1017,
     PKT_C_HIT_MONSTER = 1018, 
     PKT_S_HIT_MONSTER = 1019,
+    PKT_C_HIT_PLAYER = 1020, 
+    PKT_S_HIT_PLAYER = 1021,
 }
 
 public enum EMonsterType : ushort
@@ -109,3 +111,9 @@ public struct S_HIT_MONSTER
     public float damage;
     public float currentHp; 
 }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_HIT_PLAYER { public int monsterId; public float damage; public int isBlocked; }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_HIT_PLAYER { public int playerId; public int monsterId; public float damage; public float currentHp; public int isBlocked; }

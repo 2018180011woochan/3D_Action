@@ -45,7 +45,7 @@ public class Phase2Projectile : MonoBehaviour
                 PlayerState playerState = hit.GetComponent<PlayerState>();
                 if (playerState != null)
                 {
-                    playerState.TakeDamage(damage);
+                    //playerState.TakeDamage(damage);
                 }
             }
         }

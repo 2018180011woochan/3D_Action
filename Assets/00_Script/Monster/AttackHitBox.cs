@@ -31,15 +31,26 @@ public class AttackHitBox : MonoBehaviour
             return;
 
         var ps = other.GetComponentInParent<PlayerState>();
-        if (ps == null) return;
+        var movement = other.GetComponentInParent<SamuraiMovement>();
 
-        hasSwing = true; 
+        if (ps == null || movement == null) return;
+        if (!movement.isMine) return;
 
-        bool isAttackSucces = ps.TakeDamage(damage);
+        hasSwing = true;
 
-        if (!isAttackSucces)
+        bool isBlocked = ps.IsBlocking();
+
+        var ms = GetComponentInParent<MonsterState>();
+        int mobId = ms != null ? ms.monsterId : -1;
+
+        if (NetworkManager.Instance != null)
         {
-            animator.SetTrigger("GetHit"); // ÆÐ¸µ
+            NetworkManager.Instance.SendHitPlayerPacket(mobId, damage, isBlocked);
+        }
+
+        if (isBlocked)
+        {
+            animator.SetTrigger("GetHit"); 
         }
 
         if (AttackEffect != null)

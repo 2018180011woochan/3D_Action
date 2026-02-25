@@ -21,14 +21,14 @@ public class SwingAttackHitBox : MonoBehaviour
             var ps = other.GetComponent<PlayerState>();
             if (ps != null)
             {
-                bool isAttackSucces = ps.TakeDamage(damage);
+                //bool isAttackSucces = ps.TakeDamage(damage);
 
-                if (false == isAttackSucces)
+/*                if (false == isAttackSucces)
                 {
                     // 패링 효과로 기절 
                     animator.SetTrigger("GetHit");
                     Debug.Log("패링 성공!");
-                }
+                }*/
 
                 if (AttackEffect != null)
                 {

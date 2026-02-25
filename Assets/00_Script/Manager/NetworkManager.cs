@@ -71,6 +71,8 @@ public class NetworkManager : MonoBehaviour
     public void SendDashPacket() => SendPacket(new C_DASH { dummy = 1 }, PacketID.PKT_C_DASH);
     public void SendHitMonsterPacket(int mobId, float dmg)
         => SendPacket(new C_HIT_MONSTER { monsterId = mobId, damage = dmg }, PacketID.PKT_C_HIT_MONSTER);
+    public void SendHitPlayerPacket(int mobId, float dmg, bool isBlocked)
+        => SendPacket(new C_HIT_PLAYER { monsterId = mobId, damage = dmg, isBlocked = isBlocked ? 1 : 0 }, PacketID.PKT_C_HIT_PLAYER);
 
     private void RegisterPacketHandlers()
     {
@@ -84,6 +86,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_MONSTER_STATE, Handle_S_MONSTER_STATE);
         _packetHandlers.Add((ushort)PacketID.PKT_S_DASH, Handle_S_DASH);
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_MONSTER, Handle_S_HIT_MONSTER);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_PLAYER, Handle_S_HIT_PLAYER);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -271,6 +274,22 @@ public class NetworkManager : MonoBehaviour
                 if (_monsters.TryGetValue(pkt.monsterId, out GameObject mob) && mob.TryGetComponent(out MonsterState ms))
                 {
                     ms.ApplyRemoteDamage(pkt.damage, pkt.currentHp);
+                }
+            });
+        }
+    }
+
+    private void Handle_S_HIT_PLAYER(IntPtr payloadPtr)
+    {
+        S_HIT_PLAYER pkt = (S_HIT_PLAYER)Marshal.PtrToStructure(payloadPtr, typeof(S_HIT_PLAYER));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+
+                Debug.Log($"[네트워크] {pkt.playerId}번 유저 맞음! 남은 HP: {pkt.currentHp}");
+                if (_players.TryGetValue(pkt.playerId, out GameObject go) && go.TryGetComponent(out PlayerState ps))
+                {
+                    ps.ApplyRemoteDamage(pkt.damage, pkt.currentHp, pkt.isBlocked == 1);
                 }
             });
         }

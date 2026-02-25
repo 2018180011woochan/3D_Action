@@ -59,17 +59,18 @@ public class PlayerState : MonoBehaviour
         if (GameDataManager.instance != null)
             GameDataManager.instance.LoadPlayerHP(this);
     }
-    public bool TakeDamage(float dmg)
+    public void ApplyRemoteDamage(float dmg, float serverHp, bool isBlocked)
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Block"))
+        if (isBlocked)
         {
             Src.PlayOneShot(blockSfx, Volume);
-            return false;
+            return;
         }
-        Src.PlayOneShot(hitSfx, 1f);
-        StunEffect.SetActive(true);
 
-        currentHP = Mathf.Max(currentHP - dmg, 0f);
+        Src.PlayOneShot(hitSfx, 1f);
+        if (StunEffect != null) StunEffect.SetActive(true);
+
+        currentHP = serverHp; 
         onHealthChanged.Invoke(currentHP / maxHP);
 
         animator.SetTrigger("GetHit");
@@ -77,7 +78,11 @@ public class PlayerState : MonoBehaviour
 
         if (movement) movement.Stance = false;
 
-        return true;
+    }
+
+    public bool IsBlocking()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsTag("Block");
     }
 
     public void TakeCriticalDamage(float dmg)
