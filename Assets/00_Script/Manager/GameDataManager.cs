@@ -65,7 +65,7 @@ public class GameDataManager : MonoBehaviour
             Item item = itemDatabase.GetItem(itemName);
             if (item != null)
             {
-                inventory.AddItem(item);
+                //inventory.AddItem(item);
             }
         }
 

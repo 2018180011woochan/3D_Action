@@ -8,10 +8,10 @@ public class Potion : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (InventoryManager.instance.AddItem(potion))
+/*            if (InventoryManager.instance.AddItem(potion))
             {
                 Destroy(gameObject);
-            }
+            }*/
         }
     }
 

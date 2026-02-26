@@ -96,8 +96,8 @@ public class SwordCombat : MonoBehaviour
         else
             comboStep = 0;
 
-        if (InventoryManager.instance.IsInventoryOpen())
-            return;
+/*        if (InventoryManager.instance.IsInventoryOpen())
+            return;*/
 
         HandleInput();
     }

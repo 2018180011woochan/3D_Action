@@ -31,6 +31,6 @@ public class Portal : MonoBehaviour
     {
         var player = GameObject.FindWithTag("Player")?.GetComponent<PlayerState>();
         player?.SaveData();
-        InventoryManager.instance?.SaveData();
+        //InventoryManager.instance?.SaveData();
     }
 }

@@ -42,8 +42,8 @@ public class PlayerCombat : MonoBehaviour
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Hit"))
             return;
 
-        if (InventoryManager.instance.IsInventoryOpen())
-            return;
+/*        if (InventoryManager.instance.IsInventoryOpen())
+            return;*/
     }
 
     // 무기 전환 시 호출할 메서드들

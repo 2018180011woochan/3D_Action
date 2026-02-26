@@ -66,8 +66,8 @@ public class EquipManager : MonoBehaviour
         if (bowItem != null)
         {
             //bowItem.isEquip = false;
-            InventoryManager.instance.AddItem(bowItem);
-            InventoryManager.instance.weaponSlot?.ClearSlot();
+            //InventoryManager.instance.AddItem(bowItem);
+            //InventoryManager.instance.weaponSlot?.ClearSlot();
             Bow.SetActive(false);
             PlayerCombat.UnequipWeapon();
         }
@@ -80,8 +80,8 @@ public class EquipManager : MonoBehaviour
         if (swordItem != null)
         {
             //swordItem.isEquip = false;
-            InventoryManager.instance.AddItem(swordItem);
-            InventoryManager.instance.weaponSlot?.ClearSlot();
+            //InventoryManager.instance.AddItem(swordItem);
+            //InventoryManager.instance.weaponSlot?.ClearSlot();
             Sword.SetActive(false);
         }
 
@@ -90,8 +90,8 @@ public class EquipManager : MonoBehaviour
         if (shieldItem != null)
         {
             //shieldItem.isEquip = false;
-            InventoryManager.instance.AddItem(shieldItem);
-            InventoryManager.instance.sheildSlot?.ClearSlot();
+            //InventoryManager.instance.AddItem(shieldItem);
+            //InventoryManager.instance.sheildSlot?.ClearSlot();
             Shield.SetActive(false);
         }
 
@@ -107,7 +107,7 @@ public class EquipManager : MonoBehaviour
         {
             RemoveItemFromInventory(swordItem);
             //swordItem.isEquip = true;
-            InventoryManager.instance.EquipSword(swordItem);
+            //InventoryManager.instance.EquipSword(swordItem);
             Sword.SetActive(true);
             PlayerCombat.EquipSword();
         }
@@ -119,7 +119,7 @@ public class EquipManager : MonoBehaviour
         {
             RemoveItemFromInventory(shieldItem);
             //shieldItem.isEquip = true;
-            InventoryManager.instance.EquipShield(shieldItem);
+            //InventoryManager.instance.EquipShield(shieldItem);
             Shield.SetActive(true);
         }
 
@@ -134,7 +134,7 @@ public class EquipManager : MonoBehaviour
         {
             RemoveItemFromInventory(bowItem);
             //bowItem.isEquip = true;
-            InventoryManager.instance.EquipBow(bowItem);
+            //InventoryManager.instance.EquipBow(bowItem);
             Bow.SetActive(true);
             PlayerCombat.EquipBow();
             currentWeapon = WeaponType.Bow;
@@ -143,15 +143,15 @@ public class EquipManager : MonoBehaviour
 
     private void RemoveItemFromInventory(Item item)
     {
-        var slots = InventoryManager.instance.GetInventorySlots();
-        foreach (var slot in slots)
+        //var slots = InventoryManager.instance.GetInventorySlots();
+/*        foreach (var slot in slots)
         {
             if (slot.curItem != null && slot.curItem.ItemName == item.ItemName)
             {
                 slot.ClearSlot();
                 break;
             }
-        }
+        }*/
     }
 
     public void EquipArmor()
