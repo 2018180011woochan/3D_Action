@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("HP Bar")]
-    [SerializeField] private Image hpFillImage;     
+    [SerializeField] private Image hpFillImage;
     [SerializeField] private Image hpDamageImage;
     public float damageDelay = 0.1f;
     public float damageDuration = 0.3f;
@@ -20,123 +20,52 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image stamDamageImage;
     private Coroutine stamCoroutine;
 
-    [Header("FireSkill")]
-    public GameObject FireSkill;
-    [SerializeField] private Image FireSkillTimer;
-    private Coroutine fireCooldownCoroutine;
-
-    [Header("BattoSkill")]
-    public GameObject BattoSkill;
-    [SerializeField] private Image battoSkillTimer;
-    private Coroutine battoCooldownCoroutine;
-
     [Header("Monster HP Bar")]
     [SerializeField] public MonsterHPBar monsterHPBarPrefab;
     [SerializeField] public Transform monsterHPParent;
     private List<MonsterHPBar> activeBars = new List<MonsterHPBar>();
     private int maxBars = 2;
 
-    [SerializeField] private PlayerState playerState;
+    [SerializeField] private PlayerState playerState; 
 
     void Awake()
     {
         Instance = this;
     }
 
-    void OnEnable()
-    {
-        if (playerState != null)
-        {
-            playerState.onHealthChanged.AddListener(OnHealthChanged);
-            playerState.onStaminaChanged.AddListener(OnStaminaChanged);
-        }
-        FireSkill.SetActive(false);
-        BattoSkill.SetActive(true);
-    }
-
-    public void SwordSkillOn()
-    {
-        FireSkill.SetActive(false);
-        BattoSkill.SetActive(true);
-    }
-
-    public void BowSkillOn()
-    {
-        FireSkill.SetActive(true);
-        BattoSkill.SetActive(false);
-    }
-
-    void OnDisable()
-    {
-        if (playerState != null)
-        {
-            playerState.onHealthChanged.RemoveListener(OnHealthChanged);
-            playerState.onStaminaChanged.RemoveListener(OnStaminaChanged);
-        }
-    }
-
     void Start()
     {
-        float hpNorm = playerState.currentHP / playerState.maxHP;
-        hpFillImage.fillAmount = hpNorm;
-        hpDamageImage.fillAmount = hpNorm;
-
-        float stNorm = playerState.currentStamina / playerState.maxStamina;
-        stamFillImage.fillAmount = stNorm;
-        stamDamageImage.fillAmount = stNorm;
-
-        FireSkillTimer.fillAmount = 0f;
-        FireSkillTimer.gameObject.SetActive(false);
-        battoSkillTimer.fillAmount = 0f;
-        battoSkillTimer.gameObject.SetActive(false);
+        StartCoroutine(FindMyPlayerCoroutine());
     }
 
-    public void StartFireSkillCooldown(float cooldownTime)
+    private IEnumerator FindMyPlayerCoroutine()
     {
-        if (fireCooldownCoroutine != null) StopCoroutine(fireCooldownCoroutine);
-        fireCooldownCoroutine = StartCoroutine(FireSkillCooldownRoutine(cooldownTime));
-    }
-
-    IEnumerator FireSkillCooldownRoutine(float cooldownTime)
-    {
-        FireSkillTimer.gameObject.SetActive(true);
-        FireSkillTimer.fillAmount = 1f;
-
-        float elapsed = 0f;
-
-        while (elapsed < cooldownTime)
+        while (playerState == null)
         {
-            elapsed += Time.deltaTime;
-            FireSkillTimer.fillAmount = 1f - (elapsed / cooldownTime);
-            yield return null;
+            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+
+            foreach (GameObject p in allPlayers)
+            {
+                SamuraiMovement movement = p.GetComponent<SamuraiMovement>();
+                if (movement != null && movement.isMine)
+                {
+                    playerState = p.GetComponent<PlayerState>();
+                    Debug.Log("UIManager: 캐릭터 스폰 확인 UI 연결 성공");
+                    break;
+                }
+            }
+
+            if (playerState == null)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
         }
 
-        FireSkillTimer.fillAmount = 0f;
-        FireSkillTimer.gameObject.SetActive(false);
-    }
+        playerState.onHealthChanged.AddListener(OnHealthChanged);
+        playerState.onStaminaChanged.AddListener(OnStaminaChanged);
 
-    public void StartBattoSkillCooldown(float cooldownTime)
-    {
-        if (battoCooldownCoroutine != null) StopCoroutine(battoCooldownCoroutine);
-        battoCooldownCoroutine = StartCoroutine(BattoSkillCooldownRoutine(cooldownTime));
-    }
-
-    IEnumerator BattoSkillCooldownRoutine(float cooldownTime)
-    {
-        battoSkillTimer.gameObject.SetActive(true);
-        battoSkillTimer.fillAmount = 1f;
-
-        float elapsed = 0f;
-
-        while (elapsed < cooldownTime)
-        {
-            elapsed += Time.deltaTime;
-            battoSkillTimer.fillAmount = 1f - (elapsed / cooldownTime);
-            yield return null;
-        }
-
-        battoSkillTimer.fillAmount = 0f;
-        battoSkillTimer.gameObject.SetActive(false);
+        OnHealthChanged(playerState.currentHP / playerState.maxHP);
+        OnStaminaChanged(playerState.currentStamina / playerState.maxStamina);
     }
 
     void OnHealthChanged(float normalizedHP)
@@ -144,8 +73,7 @@ public class UIManager : MonoBehaviour
         hpFillImage.fillAmount = normalizedHP;
 
         if (hpCoroutine != null) StopCoroutine(hpCoroutine);
-        hpCoroutine = StartCoroutine(
-            AnimateBar(hpDamageImage, normalizedHP));
+        hpCoroutine = StartCoroutine(AnimateBar(hpDamageImage, normalizedHP));
     }
 
     void OnStaminaChanged(float normalizedStam)
@@ -153,8 +81,7 @@ public class UIManager : MonoBehaviour
         stamFillImage.fillAmount = normalizedStam;
 
         if (stamCoroutine != null) StopCoroutine(stamCoroutine);
-        stamCoroutine = StartCoroutine(
-            AnimateBar(stamDamageImage, normalizedStam));
+        stamCoroutine = StartCoroutine(AnimateBar(stamDamageImage, normalizedStam));
     }
 
     public IEnumerator AnimateBar(Image barImage, float targetFill)
@@ -167,8 +94,7 @@ public class UIManager : MonoBehaviour
         while (elapsed < damageDuration)
         {
             elapsed += Time.deltaTime;
-            barImage.fillAmount =
-                Mathf.Lerp(startFill, targetFill, elapsed / damageDuration);
+            barImage.fillAmount = Mathf.Lerp(startFill, targetFill, elapsed / damageDuration);
             yield return null;
         }
 
@@ -177,8 +103,7 @@ public class UIManager : MonoBehaviour
 
     public void AddTargetMonster(MonsterState m)
     {
-        if (activeBars.Exists(b => b.nameText.text == m.monsterName))
-            return;
+        if (activeBars.Exists(b => b.nameText.text == m.monsterName)) return;
 
         if (activeBars.Count >= maxBars)
         {
@@ -192,7 +117,6 @@ public class UIManager : MonoBehaviour
         activeBars.Add(bar);
     }
 
-    // 몬스터가 사망하거나 타겟에서 해제될 때 호출
     public void RemoveTargetMonster(MonsterState m)
     {
         var bar = activeBars.Find(b => b.nameText.text == m.monsterName);
@@ -202,5 +126,4 @@ public class UIManager : MonoBehaviour
             Destroy(bar.gameObject);
         }
     }
-
 }

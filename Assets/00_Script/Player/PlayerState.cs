@@ -58,6 +58,9 @@ public class PlayerState : MonoBehaviour
     {
         if (GameDataManager.instance != null)
             GameDataManager.instance.LoadPlayerHP(this);
+
+        onHealthChanged.Invoke(currentHP / maxHP);
+        onStaminaChanged.Invoke(currentStamina / maxStamina);
     }
     public void ApplyRemoteDamage(float dmg, float serverHp, bool isBlocked)
     {

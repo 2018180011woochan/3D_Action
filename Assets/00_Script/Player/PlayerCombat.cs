@@ -46,53 +46,6 @@ public class PlayerCombat : MonoBehaviour
             return;*/
     }
 
-    // 무기 전환 시 호출할 메서드들
-    public void EquipSword()
-    {
-        UIManager.Instance.SwordSkillOn();
-        if (bowCombat != null && bowCombat.enabled)
-        {
-            bowCombat.OnWeaponUnequipped();
-            bowCombat.enabled = false;
-        }
-
-        if (swordCombat != null)
-        {
-            swordCombat.enabled = true;
-            //swordCombat.OnWeaponEquipped();
-        }
-    }
-
-    public void EquipBow()
-    {
-        UIManager.Instance.BowSkillOn();
-        if (swordCombat != null && swordCombat.enabled)
-        {
-            //swordCombat.OnWeaponUnequipped();
-            swordCombat.enabled = false;
-        }
-
-        if (bowCombat != null)
-        {
-            bowCombat.enabled = true;
-            bowCombat.OnWeaponEquipped();
-        }
-    }
-
-    public void UnequipWeapon()
-    {
-        if (swordCombat != null && swordCombat.enabled)
-        {
-            //swordCombat.OnWeaponUnequipped();
-            swordCombat.enabled = false;
-        }
-
-        if (bowCombat != null && bowCombat.enabled)
-        {
-            bowCombat.OnWeaponUnequipped();
-            bowCombat.enabled = false;
-        }
-    }
 
     protected virtual void OnCutsceneComplete(PlayableDirector director)
     {

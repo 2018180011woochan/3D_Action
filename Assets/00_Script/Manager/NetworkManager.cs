@@ -103,7 +103,6 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_PLAYER, Handle_S_HIT_PLAYER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_MONSTER, Handle_S_SPAWN_MONSTER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
-        _packetHandlers.Add((ushort)PacketID.PKT_S_EQUIP_ITEM, Handle_S_EQUIP_ITEM);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -357,18 +356,6 @@ public class NetworkManager : MonoBehaviour
             _packetQueue.Enqueue(() => {
                 if (InventoryManager.instance != null)
                     InventoryManager.instance.UpdateSlotFromServer(pkt.slotIndex, pkt.itemId);
-            });
-        }
-    }
-
-    private void Handle_S_EQUIP_ITEM(IntPtr payloadPtr)
-    {
-        S_EQUIP_ITEM pkt = (S_EQUIP_ITEM)Marshal.PtrToStructure(payloadPtr, typeof(S_EQUIP_ITEM));
-        lock (_lock)
-        {
-            _packetQueue.Enqueue(() => {
-                // TODO: 남의 캐릭터 장비 끼는 것도 보여야 하지만, 일단 로그만!
-                Debug.Log($"[서버 명령] {pkt.playerId}번 유저가 {pkt.equipSlot}번 부위에 {pkt.itemId}번 장비를 꼈음!");
             });
         }
     }

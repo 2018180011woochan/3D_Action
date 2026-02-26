@@ -154,7 +154,7 @@ public class SwordCombat : MonoBehaviour
         if (playerCombat.IsPlayingCutscene) return;
         if (battoSkillOnCooldown) return;
 
-        UIManager.Instance.StartBattoSkillCooldown(battoSkillCoolTime);
+        //UIManager.Instance.StartBattoSkillCooldown(battoSkillCoolTime);
         playerCombat.IsPlayingCutscene = true;
         battoSkillOnCooldown = true;
 

@@ -95,7 +95,7 @@ public class BowCombat : MonoBehaviour
         if (playerCombat.IsPlayingCutscene) return;
         if (fireSkillOnCooldown) return;
 
-        UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
+        //UIManager.Instance.StartFireSkillCooldown(fireSkillCoolTime);
         playerCombat.IsPlayingCutscene = true;
         fireSkillOnCooldown = true;
 

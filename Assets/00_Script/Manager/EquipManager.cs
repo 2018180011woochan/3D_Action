@@ -69,7 +69,7 @@ public class EquipManager : MonoBehaviour
             //InventoryManager.instance.AddItem(bowItem);
             //InventoryManager.instance.weaponSlot?.ClearSlot();
             Bow.SetActive(false);
-            PlayerCombat.UnequipWeapon();
+            //PlayerCombat.UnequipWeapon();
         }
     }
 
@@ -96,7 +96,7 @@ public class EquipManager : MonoBehaviour
         }
 
         // PlayerCombat에 무기 해제 알림
-        PlayerCombat.UnequipWeapon();
+        //PlayerCombat.UnequipWeapon();
     }
 
     private void EquipSwordAndShield()
@@ -109,7 +109,7 @@ public class EquipManager : MonoBehaviour
             //swordItem.isEquip = true;
             //InventoryManager.instance.EquipSword(swordItem);
             Sword.SetActive(true);
-            PlayerCombat.EquipSword();
+            //PlayerCombat.EquipSword();
         }
 
 
@@ -136,7 +136,7 @@ public class EquipManager : MonoBehaviour
             //bowItem.isEquip = true;
             //InventoryManager.instance.EquipBow(bowItem);
             Bow.SetActive(true);
-            PlayerCombat.EquipBow();
+            //PlayerCombat.EquipBow();
             currentWeapon = WeaponType.Bow;
         }
     }
@@ -169,13 +169,13 @@ public class EquipManager : MonoBehaviour
     public void EquipSword()
     {
         Sword.SetActive(true);
-        PlayerCombat.EquipSword();
+        //PlayerCombat.EquipSword();
     }
 
     public void UnEquipSword()
     {
         Sword.SetActive(false);
-        PlayerCombat.UnequipWeapon();
+        //PlayerCombat.UnequipWeapon();
     }
 
     public void EquipShield()
@@ -191,12 +191,12 @@ public class EquipManager : MonoBehaviour
     public void EquipBow()
     {
         Bow.SetActive(true);
-        PlayerCombat.EquipBow();
+        //PlayerCombat.EquipBow();
     }
 
     public void UnEquipBow()
     {
         Bow.SetActive(false);
-        PlayerCombat.UnequipWeapon();
+        //PlayerCombat.UnequipWeapon();
     }
 }
