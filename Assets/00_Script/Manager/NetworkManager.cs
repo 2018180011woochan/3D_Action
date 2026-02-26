@@ -82,6 +82,11 @@ public class NetworkManager : MonoBehaviour
         C_USE_ITEM pkt = new C_USE_ITEM { slotIndex = slotIdx };
         SendPacket(pkt, PacketID.PKT_C_USE_ITEM);
     }
+    public void SendPickupItemPacket(int itemId)
+    {
+        C_PICKUP_ITEM pkt = new C_PICKUP_ITEM { itemId = itemId };
+        SendPacket(pkt, PacketID.PKT_C_PICKUP_ITEM);
+    }
 
     private void RegisterPacketHandlers()
     {
