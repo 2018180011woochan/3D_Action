@@ -25,6 +25,9 @@ public enum PacketID : ushort
     PKT_C_HIT_PLAYER = 1020, 
     PKT_S_HIT_PLAYER = 1021,
     PKT_S_SPAWN_MONSTER = 1022,
+    PKT_C_USE_ITEM = 1023,        
+    PKT_S_UPDATE_INVEN = 1024,    
+    PKT_S_EQUIP_ITEM = 1025,
 }
 
 public enum EMonsterType : ushort
@@ -127,4 +130,25 @@ public struct S_SPAWN_MONSTER
     public float posX;
     public float posY;
     public float posZ;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_USE_ITEM
+{
+    public int slotIndex; 
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_UPDATE_INVEN
+{
+    public int slotIndex; 
+    public int itemId;    
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_EQUIP_ITEM
+{
+    public int playerId;     
+    public int equipSlot;    
+    public int itemId;       
 }

@@ -12,6 +12,11 @@ public class ItemDatabase : ScriptableObject
         return items.Find(x => x.ItemName == itemName);
     }
 
+    public Item GetItemById(int id)
+    {
+        return items.Find(x => x.itemId == id);
+    }
+
     public bool HasItem(string itemName)
     {
         return items.Exists(x => x.ItemName == itemName);

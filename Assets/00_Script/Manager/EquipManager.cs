@@ -65,7 +65,7 @@ public class EquipManager : MonoBehaviour
         Item bowItem = GameDataManager.instance.itemDatabase.GetItem("Bow");
         if (bowItem != null)
         {
-            bowItem.isEquip = false;
+            //bowItem.isEquip = false;
             InventoryManager.instance.AddItem(bowItem);
             InventoryManager.instance.weaponSlot?.ClearSlot();
             Bow.SetActive(false);
@@ -79,7 +79,7 @@ public class EquipManager : MonoBehaviour
         Item swordItem = GameDataManager.instance.itemDatabase.GetItem("Sword");
         if (swordItem != null)
         {
-            swordItem.isEquip = false;
+            //swordItem.isEquip = false;
             InventoryManager.instance.AddItem(swordItem);
             InventoryManager.instance.weaponSlot?.ClearSlot();
             Sword.SetActive(false);
@@ -89,7 +89,7 @@ public class EquipManager : MonoBehaviour
         Item shieldItem = GameDataManager.instance.itemDatabase.GetItem("Shield");
         if (shieldItem != null)
         {
-            shieldItem.isEquip = false;
+            //shieldItem.isEquip = false;
             InventoryManager.instance.AddItem(shieldItem);
             InventoryManager.instance.sheildSlot?.ClearSlot();
             Shield.SetActive(false);
@@ -106,7 +106,7 @@ public class EquipManager : MonoBehaviour
         if (swordItem != null)
         {
             RemoveItemFromInventory(swordItem);
-            swordItem.isEquip = true;
+            //swordItem.isEquip = true;
             InventoryManager.instance.EquipSword(swordItem);
             Sword.SetActive(true);
             PlayerCombat.EquipSword();
@@ -118,7 +118,7 @@ public class EquipManager : MonoBehaviour
         if (shieldItem != null)
         {
             RemoveItemFromInventory(shieldItem);
-            shieldItem.isEquip = true;
+            //shieldItem.isEquip = true;
             InventoryManager.instance.EquipShield(shieldItem);
             Shield.SetActive(true);
         }
@@ -133,7 +133,7 @@ public class EquipManager : MonoBehaviour
         if (bowItem != null)
         {
             RemoveItemFromInventory(bowItem);
-            bowItem.isEquip = true;
+            //bowItem.isEquip = true;
             InventoryManager.instance.EquipBow(bowItem);
             Bow.SetActive(true);
             PlayerCombat.EquipBow();

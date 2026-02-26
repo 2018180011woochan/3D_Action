@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b37b10113367404b8c1eddb8acbf2a2, type: 3}
   m_Name: Armor
   m_EditorClassIdentifier: 
+  itemId: 200
+  itemType: 4
   ItemName: Armor
   ItemImage: {fileID: 21300000, guid: d659f7396cd57754eba78763cf986c51, type: 3}
   ItemObj: {fileID: 0}
-  isEquip: 1

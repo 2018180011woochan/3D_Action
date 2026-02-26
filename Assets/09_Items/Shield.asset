@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b37b10113367404b8c1eddb8acbf2a2, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: 
+  itemId: 300
+  itemType: 5
   ItemName: Shield
   ItemImage: {fileID: 21300000, guid: 5bf2627863b7efa4d990e63d6e735f0a, type: 3}
   ItemObj: {fileID: 0}
-  isEquip: 0

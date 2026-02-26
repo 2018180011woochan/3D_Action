@@ -72,7 +72,30 @@ public class InventoryManager : MonoBehaviour
         {
             GameObject newSlot = Instantiate(slotPrefab, itemSlotsGameObject);
             ItemSlot slot = newSlot.GetComponent<ItemSlot>();
+
+            slot.slotIndex = i;
+
             slots.Add(slot);
+        }
+    }
+
+    public void UpdateSlotFromServer(int slotIndex, int itemId)
+    {
+        if (slotIndex < 0 || slotIndex >= inventorySize) return;
+
+        ItemSlot slot = slots[slotIndex];
+
+        if (itemId == 0)
+        {
+            slot.ClearSlot();
+        }
+        else
+        {
+            Item itemData = GameDataManager.instance.itemDatabase.GetItemById(itemId);
+            if (itemData != null)
+            {
+                slot.AddItem(itemData);
+            }
         }
     }
 

@@ -77,6 +77,11 @@ public class NetworkManager : MonoBehaviour
         => SendPacket(new C_HIT_MONSTER { monsterId = mobId, damage = dmg }, PacketID.PKT_C_HIT_MONSTER);
     public void SendHitPlayerPacket(int mobId, float dmg, bool isBlocked)
         => SendPacket(new C_HIT_PLAYER { monsterId = mobId, damage = dmg, isBlocked = isBlocked ? 1 : 0 }, PacketID.PKT_C_HIT_PLAYER);
+    public void SendUseItemPacket(int slotIdx)
+    {
+        C_USE_ITEM pkt = new C_USE_ITEM { slotIndex = slotIdx };
+        SendPacket(pkt, PacketID.PKT_C_USE_ITEM);
+    }
 
     private void RegisterPacketHandlers()
     {
@@ -92,6 +97,8 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_MONSTER, Handle_S_HIT_MONSTER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_PLAYER, Handle_S_HIT_PLAYER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_MONSTER, Handle_S_SPAWN_MONSTER);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_EQUIP_ITEM, Handle_S_EQUIP_ITEM);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -333,6 +340,30 @@ public class NetworkManager : MonoBehaviour
 
                     Debug.Log($"[서버 스폰] {pkt.monsterId}번 몬스터(타입:{pkt.monsterType}) 소환 완료!");
                 }
+            });
+        }
+    }
+
+    private void Handle_S_UPDATE_INVEN(IntPtr payloadPtr)
+    {
+        S_UPDATE_INVEN pkt = (S_UPDATE_INVEN)Marshal.PtrToStructure(payloadPtr, typeof(S_UPDATE_INVEN));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                if (InventoryManager.instance != null)
+                    InventoryManager.instance.UpdateSlotFromServer(pkt.slotIndex, pkt.itemId);
+            });
+        }
+    }
+
+    private void Handle_S_EQUIP_ITEM(IntPtr payloadPtr)
+    {
+        S_EQUIP_ITEM pkt = (S_EQUIP_ITEM)Marshal.PtrToStructure(payloadPtr, typeof(S_EQUIP_ITEM));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                // TODO: 남의 캐릭터 장비 끼는 것도 보여야 하지만, 일단 로그만!
+                Debug.Log($"[서버 명령] {pkt.playerId}번 유저가 {pkt.equipSlot}번 부위에 {pkt.itemId}번 장비를 꼈음!");
             });
         }
     }
