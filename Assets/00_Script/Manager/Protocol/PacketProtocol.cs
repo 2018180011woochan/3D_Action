@@ -49,8 +49,15 @@ public enum EMonsterState : ushort { IDLE = 0, WANDER, CHASE, CONFRONT, ATTACK, 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct PacketHeader { public ushort size; public ushort id; }
 
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct C_LOGIN { public ulong dummyId; }
+[StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
+public struct C_LOGIN
+{
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+    public string accountName;
+
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+    public string password;
+}
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct S_LOGIN { public int playerId; }

@@ -67,7 +67,16 @@ public class NetworkManager : MonoBehaviour
         _socket.Send(sendBuffer);
     }
 
-    public void SendLoginPacket() => SendPacket(new C_LOGIN { dummyId = 7777777 }, PacketID.PKT_C_LOGIN);
+    public void SendLoginPacket()
+    {
+        C_LOGIN loginPkt = new C_LOGIN
+        {
+            accountName = "test_user1",
+            password = "1234"
+        };
+
+        SendPacket(loginPkt, PacketID.PKT_C_LOGIN);
+    }
     public void SendMovePacket(Vector3 pos, float rotY, bool isRun) => SendPacket(new C_MOVE { posX = pos.x, posY = pos.y, posZ = pos.z, rotY = rotY, isRunning = isRun ? 1 : 0 }, PacketID.PKT_C_MOVE);
     public void SendStancePacket(bool isStance) => SendPacket(new C_STANCE { isStance = isStance ? 1 : 0 }, PacketID.PKT_C_STANCE);
     public void SendJumpPacket() => SendPacket(new C_JUMP { dummy = 1 }, PacketID.PKT_C_JUMP);
