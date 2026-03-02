@@ -72,6 +72,8 @@ public class GolemAI : MonoBehaviour
 
     public void ApplyRemoteState(S_MONSTER_STATE pkt)
     {
+        if (!agent.isActiveAndEnabled || !agent.isOnNavMesh) return;
+
         switch (pkt.state)
         {
             case EMonsterState.IDLE:

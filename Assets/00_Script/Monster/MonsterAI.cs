@@ -8,7 +8,7 @@ public class MonsterAI : MonoBehaviour
 
     public EMonsterState currentState = EMonsterState.IDLE;
 
-    void Start()
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
@@ -23,6 +23,8 @@ public class MonsterAI : MonoBehaviour
     public void ApplyRemoteState(S_MONSTER_STATE pkt)
     {
         currentState = pkt.state;
+
+        if (!agent.isActiveAndEnabled || !agent.isOnNavMesh) return;
 
         switch (pkt.state)
         {

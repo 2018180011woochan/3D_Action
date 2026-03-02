@@ -22,6 +22,8 @@ public class NormalSceneGameManager : MonoBehaviour
 
     private void Update()
     {
+        if (bossState == null) return;
+
         if (!portalOpened && bossState.isDead)
         {
             OpenPortal();

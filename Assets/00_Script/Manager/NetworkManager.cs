@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class NetworkManager : MonoBehaviour
 
     private Dictionary<ushort, Action<IntPtr>> _packetHandlers = new Dictionary<ushort, Action<IntPtr>>();
 
+    private bool _isSceneLoading = false;
     private void Awake()
     {
         if (Instance == null)
@@ -168,8 +170,28 @@ public class NetworkManager : MonoBehaviour
     private void Handle_S_LOGIN(IntPtr payloadPtr)
     {
         S_LOGIN pkt = (S_LOGIN)Marshal.PtrToStructure(payloadPtr, typeof(S_LOGIN));
-        myPlayerId = pkt.playerId;
-        Debug.Log($"로그인 성공! 내 ID: {myPlayerId}");
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                if (pkt.success == 1)
+                {
+                    myPlayerId = pkt.playerId;
+                    Debug.Log($"로그인 성공! 내 ID: {myPlayerId}");
+                    _isSceneLoading = true;
+                    SceneBridge.NextSceneName = "MainScene";
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("LoadingScene");
+                }
+                else
+                {
+                    Debug.Log("로그인 실패! 팝업창 띄운다!");
+                    LoginUI loginUI = FindObjectOfType<LoginUI>();
+                    if (loginUI != null)
+                    {
+                        loginUI.ShowPopup("로그인 정보가 없습니다.\n아이디와 비밀번호를 확인해주세요.");
+                    }
+                }
+            });
+        }
     }
 
     private void Handle_S_ENTER_GAME(IntPtr payloadPtr)
@@ -274,6 +296,12 @@ public class NetworkManager : MonoBehaviour
             _packetQueue.Enqueue(() => {
                 if (_monsters.TryGetValue(pkt.monsterId, out GameObject mob))
                 {
+                    if (mob == null)
+                    {
+                        _monsters.Remove(pkt.monsterId);
+                        return;
+                    }
+
                     if (mob.TryGetComponent(out MonsterAI monAI))
                         monAI.ApplyRemoteState(pkt);
                     else if (mob.TryGetComponent(out GolemAI golemAI))
@@ -375,7 +403,32 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-        lock (_lock) { while (_packetQueue.Count > 0) _packetQueue.Dequeue().Invoke(); }
+        lock (_lock)
+        {
+            if (_isSceneLoading)
+            {
+                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainScene")
+                {
+                    _isSceneLoading = false; 
+                }
+                else
+                {
+                    return; 
+                }
+            }
+
+            while (_packetQueue.Count > 0)
+            {
+                Action action = _packetQueue.Dequeue();
+                try { action.Invoke(); }
+                catch (Exception e) { Debug.LogError($"[패킷 처리 에러] : {e.Message}"); }
+
+                if (_isSceneLoading)
+                {
+                    break;
+                }
+            }
+        }
     }
 
     private void OnApplicationQuit() => Disconnect();
