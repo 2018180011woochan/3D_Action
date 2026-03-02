@@ -28,7 +28,11 @@ public class NetworkManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else Destroy(gameObject);
 
         RegisterPacketHandlers(); 
@@ -43,7 +47,7 @@ public class NetworkManager : MonoBehaviour
         {
             _socket.Connect("127.0.0.1", 7777);
             Debug.Log("Connected to Server.");
-            SendLoginPacket();
+            //SendLoginPacket();
             _socket.BeginReceive(_recvBuffer, 0, _recvBuffer.Length, SocketFlags.None, OnReceive, null);
         }
         catch (Exception e) { Debug.LogError($"Connection Failed: {e.Message}"); }
@@ -67,12 +71,12 @@ public class NetworkManager : MonoBehaviour
         _socket.Send(sendBuffer);
     }
 
-    public void SendLoginPacket()
+    public void SendLoginPacket(string id, string pw)
     {
         C_LOGIN loginPkt = new C_LOGIN
         {
-            accountName = "test_user1",
-            password = "1234"
+            accountName = id,
+            password = pw
         };
 
         SendPacket(loginPkt, PacketID.PKT_C_LOGIN);

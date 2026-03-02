@@ -60,7 +60,10 @@ public struct C_LOGIN
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct S_LOGIN { public int playerId; }
+public struct S_LOGIN {
+    public int success;
+    public int playerId;
+}
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct C_MOVE { public float posX; public float posY; public float posZ; public float rotY; public int isRunning; }
