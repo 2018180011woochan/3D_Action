@@ -9,6 +9,11 @@ public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager Instance { get; private set; }
 
+    [Header("개발 테스트용 (메인 씬 다이렉트 시작)")]
+    public bool isTestMode = false;
+    public string testId = "testid"; 
+    public string testPw = "testpw";  
+
     public GameObject playerPrefab;
     public Dictionary<int, GameObject> _players = new Dictionary<int, GameObject>();
     public Dictionary<int, GameObject> _monsters = new Dictionary<int, GameObject>();
@@ -40,7 +45,17 @@ public class NetworkManager : MonoBehaviour
         RegisterPacketHandlers(); 
     }
 
-    private void Start() => ConnectToServer();
+    private void Start()
+    {
+        ConnectToServer();
+
+        if (isTestMode && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainScene")
+        {
+            Debug.Log($"[테스트 모드] 메인 씬 접속 자동 로그인 : ID = {testId}");
+
+            SendLoginPacket(testId, testPw);
+        }
+    }
 
     private void ConnectToServer()
     {
@@ -177,6 +192,14 @@ public class NetworkManager : MonoBehaviour
                 {
                     myPlayerId = pkt.playerId;
                     Debug.Log($"로그인 성공! 내 ID: {myPlayerId}");
+
+                    if (isTestMode && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainScene")
+                    {
+                        Debug.Log("??? [테스트 모드] 씬 이동 생략! 바로 스폰 패킷 받기 대기!");
+                        _isSceneLoading = false; 
+                        return; 
+                    }
+
                     _isSceneLoading = true;
                     SceneBridge.NextSceneName = "MainScene";
                     UnityEngine.SceneManagement.SceneManager.LoadScene("LoadingScene");

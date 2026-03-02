@@ -119,54 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &38327656
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 38327658}
-  - component: {fileID: 38327657}
-  m_Layer: 0
-  m_Name: NetworkManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &38327657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 38327656}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf3241b252f4e904090ac01914ca7583, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 7665191116360014714, guid: a4d67fcd7aca8a34dbb04ff166eb9cf5, type: 3}
-  myPlayerId: 0
-  skeletonPrefab: {fileID: 6164145412699347845, guid: 59a1d71b9fa1ff94bb09fb459992d1ef, type: 3}
-  golemPrefab: {fileID: 1449474843237436027, guid: b9c5bd166618d9249979bde3733fed3c, type: 3}
---- !u!4 &38327658
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 38327656}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 961.48346, y: 532.87134, z: 34.57354}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &105801653
 GameObject:
   m_ObjectHideFlags: 0
@@ -2728,6 +2680,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2112149367}
   m_CullTransparentMesh: 1
+--- !u!1001 &7093812812678902650
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 961.48346
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 532.87134
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 34.57354
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 813569462302003181, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 949850468614493271, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: m_Name
+      value: NetworkManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2736,4 +2745,4 @@ SceneRoots:
   - {fileID: 693289103}
   - {fileID: 168414320}
   - {fileID: 786080125}
-  - {fileID: 38327658}
+  - {fileID: 7093812812678902650}
