@@ -2239,7 +2239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PortalPrefab: {fileID: 857630728}
-  NormalBoss: {fileID: 0}
+  NormalBoss: {fileID: 1449474843237436027, guid: b9c5bd166618d9249979bde3733fed3c, type: 3}
 --- !u!1001 &128236564
 PrefabInstance:
   m_ObjectHideFlags: 0

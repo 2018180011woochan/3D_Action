@@ -29,6 +29,7 @@ public enum PacketID : ushort
     PKT_S_UPDATE_INVEN = 1024,    
     PKT_S_EQUIP_ITEM = 1025,
     PKT_C_PICKUP_ITEM = 1026,
+    PKT_S_OPEN_PORTAL = 1027,
 }
 
 public enum EMonsterType : ushort
@@ -169,3 +170,9 @@ public struct C_PICKUP_ITEM
 {
     public int itemId; 
 }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_OPEN_PORTAL
+{
+    public int isOpened; 
+};
