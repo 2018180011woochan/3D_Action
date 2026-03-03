@@ -85,6 +85,11 @@ public class MonsterState : MonoBehaviour
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
                 Instantiate(Potion, spawnPos, Quaternion.identity);
                 if (GolemDeathSfx) sfx.PlayOneShot(GolemDeathSfx, 1f);
+
+                if (NormalSceneGameManager.Instance != null)
+                {
+                    NormalSceneGameManager.Instance.OpenPortal();
+                }
             }
             else if (monsterName == "Mutant")
             {

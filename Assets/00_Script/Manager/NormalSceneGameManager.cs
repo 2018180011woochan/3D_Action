@@ -14,25 +14,15 @@ public class NormalSceneGameManager : MonoBehaviour
 
     void Start()
     {
-        if (NormalBoss)
-            bossState = NormalBoss.GetComponentInChildren<MonsterState>();
-
         if (PortalPrefab) PortalPrefab.SetActive(false);
     }
 
-    private void Update()
+    public void OpenPortal()
     {
-        if (bossState == null) return;
-
-        if (!portalOpened && bossState.isDead)
+        if (PortalPrefab != null && !PortalPrefab.activeSelf)
         {
-            OpenPortal();
+            PortalPrefab.SetActive(true);
+            Debug.Log("보스 처치! 다음 스테이지 포탈 개방!");
         }
-    }
-
-    private void OpenPortal()
-    {
-        PortalPrefab.SetActive(true);
-        portalOpened = true;
     }
 }
