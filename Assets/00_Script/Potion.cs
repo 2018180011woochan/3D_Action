@@ -3,6 +3,7 @@ using UnityEngine;
 public class Potion : MonoBehaviour
 {
     public Item potion;
+    public int droppedMonsterId;
 
     void OnTriggerEnter(Collider other)
     {
@@ -11,7 +12,7 @@ public class Potion : MonoBehaviour
         {
             if (NetworkManager.Instance != null && potion != null)
             {
-                NetworkManager.Instance.SendPickupItemPacket(potion.itemId);
+                NetworkManager.Instance.SendPickupItemPacket(potion.itemId, droppedMonsterId);
             }
 
             Destroy(gameObject);

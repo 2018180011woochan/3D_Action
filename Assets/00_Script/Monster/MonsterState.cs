@@ -83,7 +83,11 @@ public class MonsterState : MonoBehaviour
                 if (monAI != null) monAI.state = GolemAI.State.Dead;
 
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-                Instantiate(Potion, spawnPos, Quaternion.identity);
+
+                GameObject droppedPotion = Instantiate(Potion, spawnPos, Quaternion.identity);
+                if (droppedPotion.TryGetComponent(out Potion potionScript))
+                    potionScript.droppedMonsterId = this.monsterId;
+
                 if (GolemDeathSfx) sfx.PlayOneShot(GolemDeathSfx, 1f);
 
                 if (NormalSceneGameManager.Instance != null)
@@ -116,7 +120,10 @@ public class MonsterState : MonoBehaviour
                 if (monAI != null) monAI.state = GhostAI.State.Dead;
 
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-                Instantiate(Potion, spawnPos, Quaternion.identity);
+
+                GameObject droppedPotion = Instantiate(Potion, spawnPos, Quaternion.identity);
+                if (droppedPotion.TryGetComponent(out Potion potionScript))
+                    potionScript.droppedMonsterId = this.monsterId;
 
                 var dissolve = GetComponent<GhostDissolve>();
                 if (dissolve) dissolve.Play();
@@ -131,7 +138,9 @@ public class MonsterState : MonoBehaviour
                 }
 
                 Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-                Instantiate(Potion, spawnPos, Quaternion.identity);
+                GameObject droppedPotion = Instantiate(Potion, spawnPos, Quaternion.identity);
+                if (droppedPotion.TryGetComponent(out Potion potionScript))
+                    potionScript.droppedMonsterId = this.monsterId;
                 if (redSkeletonDeathSfx) sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
             }
 

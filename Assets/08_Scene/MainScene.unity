@@ -26945,6 +26945,14 @@ PrefabInstance:
       value: NetworkManager
       objectReference: {fileID: 0}
     - target: {fileID: 7572133422513479075, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: testId
+      value: test1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7572133422513479075, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: testPw
+      value: 1234
+      objectReference: {fileID: 0}
+    - target: {fileID: 7572133422513479075, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
       propertyPath: isTestMode
       value: 1
       objectReference: {fileID: 0}

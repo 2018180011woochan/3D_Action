@@ -112,9 +112,14 @@ public class NetworkManager : MonoBehaviour
         C_USE_ITEM pkt = new C_USE_ITEM { slotIndex = slotIdx };
         SendPacket(pkt, PacketID.PKT_C_USE_ITEM);
     }
-    public void SendPickupItemPacket(int itemId)
+    public void SendPickupItemPacket(int itemId, int droppedMonsterId)
     {
-        C_PICKUP_ITEM pkt = new C_PICKUP_ITEM { itemId = itemId };
+        C_PICKUP_ITEM pkt = new C_PICKUP_ITEM
+        {
+            itemId = itemId,
+            droppedMonsterId = droppedMonsterId
+        };
+
         SendPacket(pkt, PacketID.PKT_C_PICKUP_ITEM);
     }
 
@@ -133,6 +138,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_PLAYER, Handle_S_HIT_PLAYER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_MONSTER, Handle_S_SPAWN_MONSTER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_PICKUP_ITEM, Handle_S_PICKUP_ITEM);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -451,6 +457,25 @@ public class NetworkManager : MonoBehaviour
                     break;
                 }
             }
+        }
+    }
+
+    private void Handle_S_PICKUP_ITEM(IntPtr payloadPtr)
+    {
+        S_PICKUP_ITEM pkt = (S_PICKUP_ITEM)Marshal.PtrToStructure(payloadPtr, typeof(S_PICKUP_ITEM));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                Potion[] potions = FindObjectsOfType<Potion>();
+                foreach (Potion p in potions)
+                {
+                    if (p.droppedMonsterId == pkt.droppedMonsterId)
+                    {
+                        Destroy(p.gameObject);
+                        break;
+                    }
+                }
+            });
         }
     }
 
