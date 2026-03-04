@@ -52,9 +52,9 @@ public class NetworkManager : MonoBehaviour
     {
         ConnectToServer();
 
-        if (isTestMode && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainScene")
+        if (isTestMode)
         {
-            Debug.Log($"[테스트 모드] 메인 씬 접속 자동 로그인 : ID = {testId}");
+            Debug.Log($"[테스트 모드] 자동 로그인 : ID = {testId}");
 
             SendLoginPacket(testId, testPw);
         }
@@ -148,6 +148,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
         _packetHandlers.Add((ushort)PacketID.PKT_S_PICKUP_ITEM, Handle_S_PICKUP_ITEM);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_ITEM, Handle_S_SPAWN_ITEM);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_OPEN_PORTAL, Handle_S_OPEN_PORTAL);
         _packetHandlers.Add((ushort)PacketID.PKT_S_ENTER_PORTAL, Handle_S_ENTER_PORTAL);
     }
 
@@ -209,9 +210,9 @@ public class NetworkManager : MonoBehaviour
                     myPlayerId = pkt.playerId;
                     Debug.Log($"로그인 성공! 내 ID: {myPlayerId}");
 
-                    if (isTestMode && UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainScene")
+                    if (isTestMode)
                     {
-                        Debug.Log("??? [테스트 모드] 씬 이동 생략! 바로 스폰 패킷 받기 대기!");
+                        Debug.Log("[테스트 모드] 씬 이동 생략! 바로 스폰 패킷 받기 대기!");
                         _isSceneLoading = false; 
                         return; 
                     }
@@ -459,12 +460,30 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    private void Handle_S_OPEN_PORTAL(IntPtr payloadPtr)
+    {
+        S_OPEN_PORTAL pkt = (S_OPEN_PORTAL)Marshal.PtrToStructure(payloadPtr, typeof(S_OPEN_PORTAL));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                if (pkt.isOpened == 1)
+                {
+                    if (NormalSceneGameManager.Instance != null) NormalSceneGameManager.Instance.OpenPortal();
+                    if (BossScene1Manager.Instance != null) BossScene1Manager.Instance.BossDied();
+                }
+            });
+        }
+    }
+
     private void Handle_S_ENTER_PORTAL(IntPtr payloadPtr)
     {
         S_ENTER_PORTAL pkt = (S_ENTER_PORTAL)Marshal.PtrToStructure(payloadPtr, typeof(S_ENTER_PORTAL));
         lock (_lock)
         {
             _packetQueue.Enqueue(() => {
+                _players.Clear();
+                _monsters.Clear();
+
                 string nextScene = "";
 
                 if (pkt.destRoomId == 2) nextScene = "BossScene1";
@@ -486,9 +505,10 @@ public class NetworkManager : MonoBehaviour
         {
             if (_isSceneLoading)
             {
-                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainScene")
+                string curScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                if (curScene == "MainScene" || curScene == "BossScene1" || curScene == "BossScene2")
                 {
-                    _isSceneLoading = false; 
+                    _isSceneLoading = false;
                 }
                 else
                 {
