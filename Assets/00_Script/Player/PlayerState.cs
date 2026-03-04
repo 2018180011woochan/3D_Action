@@ -56,9 +56,6 @@ public class PlayerState : MonoBehaviour
 
     void Start()
     {
-        if (GameDataManager.instance != null)
-            GameDataManager.instance.LoadPlayerHP(this);
-
         onHealthChanged.Invoke(currentHP / maxHP);
         onStaminaChanged.Invoke(currentStamina / maxStamina);
     }
@@ -170,14 +167,5 @@ public class PlayerState : MonoBehaviour
     {
         currentHP = hp;
         onHealthChanged.Invoke(currentHP / maxHP);
-    }
-
-    // 씬 전환전 호출
-    public void SaveData()
-    {
-        if (GameDataManager.instance != null)
-        {
-            GameDataManager.instance.SavePlayerHP(currentHP);
-        }
     }
 }

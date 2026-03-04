@@ -126,6 +126,11 @@ public class NetworkManager : MonoBehaviour
         SendPacket(pkt, PacketID.PKT_C_PICKUP_ITEM);
     }
 
+    public void SendEnterPortalPacket()
+    {
+        C_ENTER_PORTAL pkt = new C_ENTER_PORTAL { dummy = 1 };
+        SendPacket(pkt, PacketID.PKT_C_ENTER_PORTAL);
+    }
     private void RegisterPacketHandlers()
     {
         _packetHandlers.Add((ushort)PacketID.PKT_S_LOGIN, Handle_S_LOGIN);
@@ -143,6 +148,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
         _packetHandlers.Add((ushort)PacketID.PKT_S_PICKUP_ITEM, Handle_S_PICKUP_ITEM);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_ITEM, Handle_S_SPAWN_ITEM);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_ENTER_PORTAL, Handle_S_ENTER_PORTAL);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -453,6 +459,27 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    private void Handle_S_ENTER_PORTAL(IntPtr payloadPtr)
+    {
+        S_ENTER_PORTAL pkt = (S_ENTER_PORTAL)Marshal.PtrToStructure(payloadPtr, typeof(S_ENTER_PORTAL));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                string nextScene = "";
+
+                if (pkt.destRoomId == 2) nextScene = "BossScene1";
+                else if (pkt.destRoomId == 3) nextScene = "BossScene2";
+
+                if (nextScene != "")
+                {
+                    Debug.Log($"[네트워크] 서버 명령 수신! {nextScene}으로 이동합니다!");
+                    SceneBridge.NextSceneName = nextScene;
+                    _isSceneLoading = true;
+                    UnityEngine.SceneManagement.SceneManager.LoadScene("LoadingScene");
+                }
+            });
+        }
+    }
     private void Update()
     {
         lock (_lock)

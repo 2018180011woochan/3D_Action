@@ -11681,6 +11681,7 @@ MonoBehaviour:
   itemSlotsGameObject: {fileID: 1394166037}
   inventorySize: 16
   inventoryGameObject: {fileID: 1595610567}
+  itemDatabase: {fileID: 11400000, guid: 653745657246bf045b3cb294547cf2f7, type: 2}
 --- !u!4 &755820611
 Transform:
   m_ObjectHideFlags: 0
@@ -13036,7 +13037,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fc6ebae5940ec84fa08715301fb0c55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destinationScene: BossScene1
 --- !u!65 &857630730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19863,53 +19863,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5359200552070968122, guid: a946ba4f8def802428a7a5148532f449, type: 3}
   m_PrefabInstance: {fileID: 1242132150}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1246104910
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1246104912}
-  - component: {fileID: 1246104911}
-  m_Layer: 0
-  m_Name: '##GameDataManager'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1246104911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246104910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd92d51f4035b8248a584c8f8804f887, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemDatabase: {fileID: 11400000, guid: 653745657246bf045b3cb294547cf2f7, type: 2}
-  playerHP: 100
-  inventoryItems: []
---- !u!4 &1246104912
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246104910}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1143.287, y: 608.593, z: -276.88568}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1253595468
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35158,7 +35111,6 @@ SceneRoots:
   - {fileID: 1460469073}
   - {fileID: 1426683760}
   - {fileID: 521182913}
-  - {fileID: 1246104912}
   - {fileID: 821280637}
   - {fileID: 491195756}
   - {fileID: 1835048849}

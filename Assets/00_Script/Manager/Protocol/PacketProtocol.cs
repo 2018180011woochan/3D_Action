@@ -32,6 +32,8 @@ public enum PacketID : ushort
     PKT_S_PICKUP_ITEM = 1027,
     PKT_S_OPEN_PORTAL = 1028,
     PKT_S_SPAWN_ITEM = 1029,
+    PKT_C_ENTER_PORTAL = 1030,
+    PKT_S_ENTER_PORTAL = 1031,
 }
 
 public enum EMonsterType : ushort
@@ -194,4 +196,16 @@ struct S_SPAWN_ITEM
     public float posX;
     public float posY;
     public float posZ;
+};
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct C_ENTER_PORTAL
+{
+    public int dummy;
+};
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct S_ENTER_PORTAL
+{
+    public int destRoomId;
 };

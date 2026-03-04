@@ -11,7 +11,7 @@ public class InventoryManager : MonoBehaviour
 
     public GameObject inventoryGameObject;
     private bool isInventoryOpen = false;
-
+    public ItemDatabase itemDatabase;
     void Awake()
     {
         if (instance == null) instance = this;
@@ -52,14 +52,19 @@ public class InventoryManager : MonoBehaviour
 
         if (itemId == 0)
         {
-            slot.ClearSlot(); 
+            slot.ClearSlot();
         }
         else
         {
-            Item itemData = GameDataManager.instance?.itemDatabase?.GetItemById(itemId);
+            Item itemData = itemDatabase?.GetItemById(itemId);
+
             if (itemData != null)
             {
                 slot.AddItem(itemData);
+            }
+            else
+            {
+                Debug.LogWarning($"[인벤토리] {itemId}번 아이템을 도감에서 찾을 수 없습니다!");
             }
         }
     }
