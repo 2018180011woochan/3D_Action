@@ -26956,6 +26956,10 @@ PrefabInstance:
       propertyPath: isTestMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7572133422513479075, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: potionPrefab
+      value: 
+      objectReference: {fileID: 7356109540691922653, guid: 115bc52d708583f4c9b353953c963aae, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

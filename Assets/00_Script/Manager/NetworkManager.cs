@@ -23,6 +23,9 @@ public class NetworkManager : MonoBehaviour
     public GameObject skeletonPrefab;
     public GameObject golemPrefab;
 
+    [Header("아이템 프리팹")]
+    public GameObject potionPrefab;
+
     private Socket _socket;
     private byte[] _recvBuffer = new byte[1024];
     private List<byte> _packetBuffer = new List<byte>();
@@ -139,6 +142,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_MONSTER, Handle_S_SPAWN_MONSTER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
         _packetHandlers.Add((ushort)PacketID.PKT_S_PICKUP_ITEM, Handle_S_PICKUP_ITEM);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_ITEM, Handle_S_SPAWN_ITEM);
     }
 
     private void OnReceive(IAsyncResult ar)
@@ -426,6 +430,25 @@ public class NetworkManager : MonoBehaviour
             _packetQueue.Enqueue(() => {
                 if (InventoryManager.instance != null)
                     InventoryManager.instance.UpdateSlotFromServer(pkt.slotIndex, pkt.itemId);
+            });
+        }
+    }
+
+    private void Handle_S_SPAWN_ITEM(IntPtr payloadPtr)
+    {
+        S_SPAWN_ITEM pkt = (S_SPAWN_ITEM)Marshal.PtrToStructure(payloadPtr, typeof(S_SPAWN_ITEM));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                Vector3 spawnPos = new Vector3(pkt.posX, pkt.posY + 1f, pkt.posZ);
+                GameObject go = Instantiate(potionPrefab, spawnPos, Quaternion.identity);
+
+                if (go.TryGetComponent(out Potion p))
+                {
+                    p.droppedMonsterId = pkt.droppedMonsterId;
+                }
+
+                Debug.Log($"[클라 로그] {pkt.droppedMonsterId}번 몬스터가 떨군 {pkt.itemId}번 템 바닥에 스폰 완료!");
             });
         }
     }

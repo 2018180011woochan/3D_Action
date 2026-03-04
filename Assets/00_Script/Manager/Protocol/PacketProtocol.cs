@@ -31,6 +31,7 @@ public enum PacketID : ushort
     PKT_C_PICKUP_ITEM = 1026,
     PKT_S_PICKUP_ITEM = 1027,
     PKT_S_OPEN_PORTAL = 1028,
+    PKT_S_SPAWN_ITEM = 1029,
 }
 
 public enum EMonsterType : ushort
@@ -185,3 +186,12 @@ public struct S_OPEN_PORTAL
     public int isOpened; 
 };
 
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct S_SPAWN_ITEM
+{
+    public int itemId;
+    public int droppedMonsterId;
+    public float posX;
+    public float posY;
+    public float posZ;
+};
