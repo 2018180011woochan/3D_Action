@@ -22,6 +22,7 @@ public class NetworkManager : MonoBehaviour
     [Header("몬스터 프리팹")]
     public GameObject skeletonPrefab;
     public GameObject golemPrefab;
+    public GameObject ghostPrefab;
 
     [Header("아이템 프리팹")]
     public GameObject potionPrefab;
@@ -409,6 +410,7 @@ public class NetworkManager : MonoBehaviour
                 GameObject prefabToSpawn = null;
                 if (pkt.monsterType == (int)EMonsterType.SKELETON) prefabToSpawn = skeletonPrefab;
                 else if (pkt.monsterType == (int)EMonsterType.GOLEM) prefabToSpawn = golemPrefab;
+                else if (pkt.monsterType == (int)EMonsterType.GHOST) prefabToSpawn = ghostPrefab;
 
                 if (prefabToSpawn != null)
                 {
