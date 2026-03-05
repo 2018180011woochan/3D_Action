@@ -45934,7 +45934,7 @@ MonoBehaviour:
   itemSlotsGameObject: {fileID: 915214650}
   inventorySize: 16
   inventoryGameObject: {fileID: 390253990}
-  itemDatabase: {fileID: 0}
+  itemDatabase: {fileID: 11400000, guid: 653745657246bf045b3cb294547cf2f7, type: 2}
 --- !u!4 &1676295459
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -282,5 +282,56 @@ public class GhostAI : MonoBehaviour
     {
         a.y = 0f; b.y = 0f;
         return Vector3.Distance(a, b);
+    }
+}
+*/
+
+using UnityEngine;
+using UnityEngine.AI;
+
+public class GhostAI : MonoBehaviour
+{
+    private NavMeshAgent agent;
+    private Animator animator;
+
+
+    void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+
+        if (agent != null)
+        {
+            agent.updateRotation = true;
+            agent.isStopped = false;
+        }
+    }
+
+    public void ApplyRemoteState(S_MONSTER_STATE pkt)
+    {
+        if (agent == null || !agent.isOnNavMesh) return;
+
+        int state = (int)pkt.state;
+        Vector3 dest = new Vector3(pkt.destX, pkt.destY, pkt.destZ);
+
+        if (state == 0)
+        {
+            agent.speed = 2.0f;
+        }
+        else if (state == 1)
+        {
+            agent.speed = 3.5f;
+        }
+
+        agent.SetDestination(dest);
+    }
+
+    void Update()
+    {
+        if (animator != null && agent != null)
+        {
+            float currentSpeed = agent.velocity.magnitude;
+
+        }
     }
 }

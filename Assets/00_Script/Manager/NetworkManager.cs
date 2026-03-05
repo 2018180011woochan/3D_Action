@@ -347,6 +347,8 @@ public class NetworkManager : MonoBehaviour
                         monAI.ApplyRemoteState(pkt);
                     else if (mob.TryGetComponent(out GolemAI golemAI))
                         golemAI.ApplyRemoteState(pkt);
+                    else if (mob.TryGetComponent(out GhostAI ghostAI))
+                        ghostAI.ApplyRemoteState(pkt);
                 }
             });
         }
