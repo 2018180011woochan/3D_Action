@@ -294,6 +294,9 @@ public class GhostAI : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
 
+    [Header("공격 (서버 동기화)")]
+    public GameObject projectilePrefab;
+    public string attackTrigger = "Attack";
 
     void Awake()
     {
@@ -314,24 +317,34 @@ public class GhostAI : MonoBehaviour
         int state = (int)pkt.state;
         Vector3 dest = new Vector3(pkt.destX, pkt.destY, pkt.destZ);
 
-        if (state == 0)
+        if (state == 0) // 배회
         {
+            agent.isStopped = false; // 다시 걷기
             agent.speed = 2.0f;
+            agent.SetDestination(dest);
         }
-        else if (state == 1)
+        else if (state == 1) // 추격
         {
+            agent.isStopped = false; // 다시 걷기
             agent.speed = 3.5f;
+            agent.SetDestination(dest);
         }
-
-        agent.SetDestination(dest);
-    }
-
-    void Update()
-    {
-        if (animator != null && agent != null)
+        else if (state == 2)
         {
-            float currentSpeed = agent.velocity.magnitude;
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
 
+            Vector3 dir = dest - transform.position;
+            dir.y = 0;
+            if (dir.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.LookRotation(dir);
+
+            if (animator != null) animator.SetTrigger(attackTrigger);
+
+            if (projectilePrefab != null)
+            {
+                Instantiate(projectilePrefab, dest, Quaternion.identity);
+            }
         }
     }
 }
