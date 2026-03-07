@@ -298,6 +298,9 @@ public class GhostAI : MonoBehaviour
     public GameObject projectilePrefab;
     public string attackTrigger = "Attack";
 
+    [Header("텔레포트")]
+    public GameObject teleportEffectPrefab;
+
     private float lastAttackTime = 0f;
 
     void Awake()
@@ -350,6 +353,18 @@ public class GhostAI : MonoBehaviour
             {
                 Instantiate(projectilePrefab, dest, Quaternion.identity);
             }
+        }
+        else if (state == 4) 
+        {
+            if (teleportEffectPrefab != null)
+                Instantiate(teleportEffectPrefab, transform.position, Quaternion.identity);
+
+            agent.Warp(dest);
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+
+            if (teleportEffectPrefab != null)
+                Instantiate(teleportEffectPrefab, dest, Quaternion.identity);
         }
     }
 }
