@@ -22,6 +22,7 @@ public class MonsterAI : MonoBehaviour
 
     public void ApplyRemoteState(S_MONSTER_STATE pkt)
     {
+        if (currentState == EMonsterState.DEAD) return;
         currentState = pkt.state;
 
         if (!agent.isActiveAndEnabled || !agent.isOnNavMesh) return;

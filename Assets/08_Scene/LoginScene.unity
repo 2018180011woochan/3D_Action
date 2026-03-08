@@ -2732,6 +2732,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7572133422513479075, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: ghostPrefab
+      value: 
+      objectReference: {fileID: 1432283394414117266, guid: 19046300060f44e45b314f22af679f13, type: 3}
+    - target: {fileID: 7572133422513479075, guid: 8456ca4049356734080ae2b4cda1ffb7, type: 3}
+      propertyPath: potionPrefab
+      value: 
+      objectReference: {fileID: 7356109540691922653, guid: 115bc52d708583f4c9b353953c963aae, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
