@@ -402,6 +402,21 @@ public class NetworkManager : MonoBehaviour
                 {
                     ps.ApplyRemoteDamage(pkt.damage, pkt.currentHp, pkt.isBlocked == 1);
                 }
+
+                if (pkt.isBlocked == 1 && pkt.monsterId != -1)
+                {
+                    if (pkt.playerId != myPlayerId)
+                    {
+                        if (_monsters.TryGetValue(pkt.monsterId, out GameObject mob))
+                        {
+                            Animator mobAnim = mob.GetComponentInChildren<Animator>();
+                            if (mobAnim != null)
+                            {
+                                mobAnim.SetTrigger("GetHit");
+                            }
+                        }
+                    }
+                }
             });
         }
     }

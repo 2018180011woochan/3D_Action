@@ -76,6 +76,9 @@ public class MonsterState : MonoBehaviour
         {
             isDead = true;
 
+            animator.ResetTrigger("Attack");
+            animator.ResetTrigger("GetHit");
+
             if (monsterName == "Golem")
             {
                 var monAI = GetComponent<GolemAI>();
