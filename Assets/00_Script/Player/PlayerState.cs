@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class PlayerState : MonoBehaviour
-{ 
+{
     public float maxHP = 100f;
     public float currentHP { get; private set; }
 
@@ -37,6 +37,7 @@ public class PlayerState : MonoBehaviour
     public AudioClip hitSfx;
     public float Volume = 1f;
     private AudioSource Src;
+
     void Awake()
     {
         currentHP = maxHP;
@@ -59,6 +60,7 @@ public class PlayerState : MonoBehaviour
         onHealthChanged.Invoke(currentHP / maxHP);
         onStaminaChanged.Invoke(currentStamina / maxStamina);
     }
+
     public void ApplyRemoteDamage(float dmg, float serverHp, bool isBlocked)
     {
         if (isBlocked)
@@ -70,14 +72,28 @@ public class PlayerState : MonoBehaviour
         Src.PlayOneShot(hitSfx, 1f);
         if (StunEffect != null) StunEffect.SetActive(true);
 
-        currentHP = serverHp; 
+        currentHP = serverHp;
         onHealthChanged.Invoke(currentHP / maxHP);
 
         animator.SetTrigger("GetHit");
         bloodScreen?.Flash();
 
         if (movement) movement.Stance = false;
+    }
 
+    public void ApplyRemoteUseItem(int itemId, float serverHp)
+    {
+        currentHP = serverHp;
+        onHealthChanged.Invoke(currentHP / maxHP);
+
+        if (itemId == 1)
+        {
+            if (HealEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(HealEffectPrefab, transform.position + Vector3.up * 1f, Quaternion.identity, transform);
+                Destroy(effect, 2f);
+            }
+        }
     }
 
     public bool IsBlocking()
@@ -129,7 +145,6 @@ public class PlayerState : MonoBehaviour
             healEffectInstance = null;
         }
 
-        // 새로 시작
         healCoroutine = StartCoroutine(HealCoroutine(healPerSecond, duration));
     }
 

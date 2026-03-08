@@ -18,22 +18,23 @@ public enum PacketID : ushort
     PKT_C_ATTACK = 1013,
     PKT_S_ATTACK = 1014,
     PKT_S_MONSTER_STATE = 1015,
-    PKT_C_DASH = 1016, 
+    PKT_C_DASH = 1016,
     PKT_S_DASH = 1017,
-    PKT_C_HIT_MONSTER = 1018, 
+    PKT_C_HIT_MONSTER = 1018,
     PKT_S_HIT_MONSTER = 1019,
-    PKT_C_HIT_PLAYER = 1020, 
+    PKT_C_HIT_PLAYER = 1020,
     PKT_S_HIT_PLAYER = 1021,
     PKT_S_SPAWN_MONSTER = 1022,
-    PKT_C_USE_ITEM = 1023,        
-    PKT_S_UPDATE_INVEN = 1024,    
-    PKT_S_EQUIP_ITEM = 1025,
-    PKT_C_PICKUP_ITEM = 1026,
-    PKT_S_PICKUP_ITEM = 1027,
-    PKT_S_OPEN_PORTAL = 1028,
-    PKT_S_SPAWN_ITEM = 1029,
-    PKT_C_ENTER_PORTAL = 1030,
-    PKT_S_ENTER_PORTAL = 1031,
+    PKT_C_USE_ITEM = 1023,
+    PKT_S_USE_ITEM = 1024,
+    PKT_S_UPDATE_INVEN = 1025,
+    PKT_S_EQUIP_ITEM = 1026,
+    PKT_C_PICKUP_ITEM = 1027,
+    PKT_S_PICKUP_ITEM = 1028,
+    PKT_S_OPEN_PORTAL = 1029,
+    PKT_S_SPAWN_ITEM = 1030,
+    PKT_C_ENTER_PORTAL = 1031,
+    PKT_S_ENTER_PORTAL = 1032,
 }
 
 public enum EMonsterType : ushort
@@ -153,6 +154,14 @@ public struct C_USE_ITEM
 {
     public int slotIndex; 
 }
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct S_USE_ITEM
+{
+    public int playerId;
+    public int itemId;
+    public float currentHp;
+};
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct S_UPDATE_INVEN

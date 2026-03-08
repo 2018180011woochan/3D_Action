@@ -10,6 +10,7 @@ public class GhostAI : MonoBehaviour
     public string attackTrigger = "Attack";
     public GameObject teleportEffectPrefab;
 
+    private float lastAttackTime = 0f;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -40,6 +41,9 @@ public class GhostAI : MonoBehaviour
         }
         else if (state == 4)
         {
+            if (Time.time - lastAttackTime < 2.5f) return;
+            lastAttackTime = Time.time;
+
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
 

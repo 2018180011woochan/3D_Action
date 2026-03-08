@@ -5,6 +5,7 @@ public class MonsterAI : MonoBehaviour
 {
     private NavMeshAgent agent;
     private Animator animator;
+    private MonsterState ms;
 
     public EMonsterState currentState = EMonsterState.IDLE;
 
@@ -12,17 +13,25 @@ public class MonsterAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        ms = GetComponent<MonsterState>();
     }
 
     void Update()
     {
-        float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
-        animator.SetFloat("Speed", speed);
+        if (ms != null && ms.isDead) return;
+
+        if (agent.isActiveAndEnabled && agent.isOnNavMesh)
+        {
+            float speed = new Vector3(agent.velocity.x, 0, agent.velocity.z).magnitude;
+            animator.SetFloat("Speed", speed);
+        }
     }
 
     public void ApplyRemoteState(S_MONSTER_STATE pkt)
     {
+        if (ms != null && ms.isDead) return;
         if (currentState == EMonsterState.DEAD) return;
+
         currentState = pkt.state;
 
         if (!agent.isActiveAndEnabled || !agent.isOnNavMesh) return;
@@ -44,35 +53,31 @@ public class MonsterAI : MonoBehaviour
                 break;
 
             case EMonsterState.CHASE:
+                agent.isStopped = false;
+                if (NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
                 {
-                    agent.isStopped = false;
-                    if (NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
-                    {
-                        agent.SetDestination(targetUser.transform.position);
-                    }
-                    break;
+                    agent.SetDestination(targetUser.transform.position);
                 }
+                break;
 
             case EMonsterState.ATTACK:
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+                if (agent.isOnNavMesh) agent.ResetPath();
+
+                if (pkt.targetId != -1 && NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject tgt))
                 {
-                    agent.isStopped = true;
-                    agent.velocity = Vector3.zero;
-                    agent.ResetPath();
+                    Vector3 lookDir = tgt.transform.position - transform.position;
+                    lookDir.y = 0f;
 
-                    if (pkt.targetId != -1 && NetworkManager.Instance._players.TryGetValue(pkt.targetId, out GameObject targetUser))
+                    if (lookDir.sqrMagnitude > 0.01f)
                     {
-                        Vector3 lookDir = targetUser.transform.position - transform.position;
-                        lookDir.y = 0f;
-
-                        if (lookDir.sqrMagnitude > 0.01f)
-                        {
-                            transform.rotation = Quaternion.LookRotation(lookDir);
-                        }
+                        transform.rotation = Quaternion.LookRotation(lookDir);
                     }
-
-                    animator.SetTrigger("Attack");
-                    break;
                 }
+
+                animator.SetTrigger("Attack");
+                break;
 
             case EMonsterState.DEAD:
                 agent.isStopped = true;

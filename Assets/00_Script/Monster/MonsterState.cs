@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -140,8 +139,22 @@ public class MonsterState : MonoBehaviour
                 if (redSkeletonDeathSfx) sfx.PlayOneShot(redSkeletonDeathSfx, 1f);
             }
 
-            animator.SetTrigger("Dead");
+            if (HasParameter("Dead", animator))
+            {
+                animator.SetTrigger("Dead");
+            }
+
             if (UIManager.Instance != null) UIManager.Instance.RemoveTargetMonster(this);
         }
+    }
+
+    private bool HasParameter(string paramName, Animator anim)
+    {
+        if (anim == null) return false;
+        foreach (AnimatorControllerParameter param in anim.parameters)
+        {
+            if (param.name == paramName) return true;
+        }
+        return false;
     }
 }

@@ -147,6 +147,7 @@ public class NetworkManager : MonoBehaviour
         _packetHandlers.Add((ushort)PacketID.PKT_S_HIT_PLAYER, Handle_S_HIT_PLAYER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_MONSTER, Handle_S_SPAWN_MONSTER);
         _packetHandlers.Add((ushort)PacketID.PKT_S_UPDATE_INVEN, Handle_S_UPDATE_INVEN);
+        _packetHandlers.Add((ushort)PacketID.PKT_S_USE_ITEM, Handle_S_USE_ITEM);
         _packetHandlers.Add((ushort)PacketID.PKT_S_PICKUP_ITEM, Handle_S_PICKUP_ITEM);
         _packetHandlers.Add((ushort)PacketID.PKT_S_SPAWN_ITEM, Handle_S_SPAWN_ITEM);
         _packetHandlers.Add((ushort)PacketID.PKT_S_OPEN_PORTAL, Handle_S_OPEN_PORTAL);
@@ -548,6 +549,20 @@ public class NetworkManager : MonoBehaviour
                         Destroy(p.gameObject);
                         break;
                     }
+                }
+            });
+        }
+    }
+
+    private void Handle_S_USE_ITEM(IntPtr payloadPtr)
+    {
+        S_USE_ITEM pkt = (S_USE_ITEM)Marshal.PtrToStructure(payloadPtr, typeof(S_USE_ITEM));
+        lock (_lock)
+        {
+            _packetQueue.Enqueue(() => {
+                if (_players.TryGetValue(pkt.playerId, out GameObject go) && go.TryGetComponent(out PlayerState ps))
+                {
+                    ps.ApplyRemoteUseItem(pkt.itemId, pkt.currentHp);
                 }
             });
         }
