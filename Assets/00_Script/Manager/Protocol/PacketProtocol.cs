@@ -72,6 +72,12 @@ public struct S_LOGIN {
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct C_ENTER_GAME
+{
+    public int dummy;
+};
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct C_MOVE { public float posX; public float posY; public float posZ; public float rotY; public int isRunning; }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]

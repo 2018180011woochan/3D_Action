@@ -132,6 +132,11 @@ public class NetworkManager : MonoBehaviour
         C_ENTER_PORTAL pkt = new C_ENTER_PORTAL { dummy = 1 };
         SendPacket(pkt, PacketID.PKT_C_ENTER_PORTAL);
     }
+    public void SendEnterGamePacket()
+    {
+        C_ENTER_GAME pkt = new C_ENTER_GAME { dummy = 1 };
+        SendPacket(pkt, PacketID.PKT_C_ENTER_GAME);
+    }
     private void RegisterPacketHandlers()
     {
         _packetHandlers.Add((ushort)PacketID.PKT_S_LOGIN, Handle_S_LOGIN);
